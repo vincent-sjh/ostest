@@ -261,3 +261,6 @@
 /musl/busybox echo "#### OS COMP TEST GROUP START lua-glibc ####"
 /musl/busybox sh /musl/lua_testcode.sh
 /musl/busybox echo "#### OS COMP TEST GROUP END lua-glibc ####"
+/musl/busybox echo "#### OS COMP TEST GROUP START iozone-glibc ####"
+/musl/busybox sh /musl/iozone_testcode.sh
+/musl/busybox echo "#### OS COMP TEST GROUP END iozone-glibc ####"
