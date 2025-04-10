@@ -54,16 +54,16 @@ jobs:
           echo 'start---aarch64' > aarch64_output.txt
           touch x86_64_output.txt
           echo 'start---x86_64' > x86_64_output.txt
-          make oscomp_run ARCH=riscv64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs >> riscv64_output.txt || true
+          make oscomp_run ARCH=riscv64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs | tee riscv64_output.txt || true
           echo 'end---riscv64' >> riscv64_output.txt
           make clean
-          make oscomp_run ARCH=loongarch64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs >> loongarch64_output.txt || true
+          make oscomp_run ARCH=loongarch64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs | tee loongarch64_output.txt || true
           echo 'end---loongarch64' >> loongarch64_output.txt
           make clean
-          make oscomp_run ARCH=aarch64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs >> aarch64_output.txt || true
+          make oscomp_run ARCH=aarch64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs | tee aarch64_output.txt || true
           echo 'end---aarch64' >> aarch64_output.txt
           make clean
-          make oscomp_run ARCH=x86_64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs ACCEL=n >> x86_64_output.txt || true
+          make oscomp_run ARCH=x86_64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs ACCEL=n | tee x86_64_output.txt || true
           echo 'end---x86_64' >> x86_64_output.txt
           touch output.txt
           cat riscv64_output.txt >> output.txt
