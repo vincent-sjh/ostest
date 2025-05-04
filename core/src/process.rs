@@ -1,7 +1,7 @@
 use alloc::string::String;
 use alloc::sync::Arc;
 use alloc::vec::Vec;
-use axmm::{kernel_aspace, AddrSpace};
+use axmm::{AddrSpace, kernel_aspace};
 use axns::AxNamespace;
 use core::sync::atomic::{AtomicUsize, Ordering};
 use memory_addr::VirtAddrRange;
@@ -25,7 +25,6 @@ pub struct ProcessData {
 
 impl ProcessData {
     pub fn new(command_line: Vec<String>, addr_space: Arc<Mutex<AddrSpace>>) -> Self {
-        error!("ProcessData construct");
         Self {
             command_line: Mutex::new(command_line),
             addr_space,
@@ -54,7 +53,6 @@ impl ProcessData {
 
 impl Drop for ProcessData {
     fn drop(&mut self) {
-        error!("ProcessData destroy");
         // TODO: prevent memory leak
         if !cfg!(target_arch = "aarch64") && !cfg!(target_arch = "loongarch64") {
             // See [`crate::new_user_aspace`]
@@ -84,20 +82,11 @@ pub struct ThreadData {
 
 impl ThreadData {
     pub fn new(process_data: Arc<ProcessData>) -> Self {
-        error!("ThreadData construct");
-        error!("process data count: {}", Arc::strong_count(&process_data));
         Self {
             process_data,
             namespace: AxNamespace::new_thread_local(),
             addr_clear_child_tid: AtomicUsize::new(0),
             addr_set_child_tid: AtomicUsize::new(0),
         }
-    }
-}
-
-impl Drop for ThreadData {
-    fn drop(&mut self) {
-        error!("ThreadData destroy");
-        error!("process data count: {}", Arc::strong_count(&self.process_data));
     }
 }

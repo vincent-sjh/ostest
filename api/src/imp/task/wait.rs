@@ -1,7 +1,7 @@
 use crate::ptr::{PtrWrapper, UserOutPtr};
 use alloc::{sync::Arc, vec::Vec};
 use axerrno::{LinuxError, LinuxResult};
-use axtask::{yield_now};
+use axtask::yield_now;
 use bitflags::bitflags;
 use linux_raw_sys::general::{
     __WALL, __WCLONE, __WNOTHREAD, WCONTINUED, WEXITED, WNOHANG, WNOWAIT, WUNTRACED,

@@ -2,9 +2,7 @@ use core::ffi::CStr;
 
 use alloc::{string::String, vec};
 use axerrno::{AxError, AxResult};
-use axhal::{
-    paging::MappingFlags,
-};
+use axhal::paging::MappingFlags;
 use axmm::{AddrSpace, kernel_aspace};
 use kernel_elf_parser::{AuxvEntry, ELFParser, app_stack_region};
 use memory_addr::{MemoryAddr, PAGE_SIZE_4K, VirtAddr};

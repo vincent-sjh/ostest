@@ -20,10 +20,6 @@ pub fn sys_execve_impl(path: String, args: Vec<String>, envs: Vec<String>) -> Li
         debug!("[execve] args = {:?}, envs = {:?}", &args, &envs);
 
         let process_data = current_process_data();
-        error!(
-            "at execve process data count: {}",
-            Arc::strong_count(&process_data)
-        );
 
         // clear address space
         let addr_space = &process_data.addr_space;

@@ -1,13 +1,13 @@
 use core::{alloc::Layout, sync::atomic::Ordering};
 
+use crate::ctypes::TimeStat;
 use crate::process::{ProcessData, ThreadData};
-use crate::{ctypes::TimeStat};
 use alloc::{string::String, sync::Arc};
 use axhal::{
     arch::{TrapFrame, UspaceContext},
     time::{NANOS_PER_MICROS, NANOS_PER_SEC, monotonic_time_nanos},
 };
-use axmm::{kernel_aspace};
+use axmm::kernel_aspace;
 use axns::{AxNamespace, AxNamespaceIf};
 use axtask::{TaskExtRef, TaskInner, current};
 use core::cell::RefCell;
@@ -39,13 +39,11 @@ pub fn current_process() -> Arc<Process> {
 }
 
 pub fn current_process_data() -> Arc<ProcessData> {
-    error!("before clone: process data count: {}", Arc::strong_count(&current_thread_data().process_data));
     current_thread_data().process_data.clone()
 }
 
 impl TaskExt {
     pub fn new(thread: Arc<Thread>, thread_data: Arc<ThreadData>) -> Self {
-        error!("TaskExt construct");
         Self {
             time: TimeStat::new().into(),
             thread,
@@ -91,7 +89,6 @@ impl AxNamespaceIf for AxNamespaceImpl {
 
 impl Drop for TaskExt {
     fn drop(&mut self) {
-        error!("TaskExt destroy");
         if !cfg!(target_arch = "aarch64") && !cfg!(target_arch = "loongarch64") {
             // See [`crate::new_user_aspace`]
             let kernel = kernel_aspace().lock();
