@@ -5,10 +5,10 @@ on:
     # paths-ignore:
     #   - '.github/**' 
 env:
-  IMG_URL_riscv64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.1/sdcard-riscv64.img.gz # 镜像url
-  IMG_URL_loongarch64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.1/sdcard-loongarch64.img.gz # 镜像url
-  IMG_URL_aarch64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.1/sdcard-aarch64.img.gz # 镜像url
-  IMG_URL_x86_64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.1/sdcard-x86_64.img.gz # 镜像url
+  IMG_URL_riscv64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.2/sdcard-riscv64.img.gz # 镜像url
+  IMG_URL_loongarch64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.2/sdcard-loongarch64.img.gz # 镜像url
+  IMG_URL_aarch64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.2/sdcard-aarch64.img.gz # 镜像url
+  IMG_URL_x86_64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.2/sdcard-x86_64.img.gz # 镜像url
   TIMEOUT: 1000 # 超时时间
   SCRIPT_REPO: https://github.com/oscontent25/EvaluationScript # 脚本仓库
   
