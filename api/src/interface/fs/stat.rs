@@ -1,16 +1,18 @@
-use crate::StatX;
-use crate::ptr::{PtrWrapper, UserConstPtr, UserPtr};
-use crate::status::{FileStatus, TimeSpec, sys_stat_impl};
+use crate::imp::fs::FsStatxTimestamp;
+use crate::imp::fs::status::{FileStatus, TimeSpec, sys_stat_impl};
+use crate::ptr::{PtrWrapper, UserInPtr, UserOutPtr};
+use alloc::format;
 use arceos_posix_api::AT_FDCWD;
 use axerrno::LinuxError;
 use axerrno::LinuxResult;
 use core::ffi::{c_char, c_int, c_long, c_uint, c_ulong};
+use syscall_trace::syscall_trace;
 
-// constants
+// user constants
 const AT_EMPTY_PATH: c_int = 0x1000;
 const AT_SYMLINK_NOFOLLOW: c_int = 0x100;
 
-/// File status: struct stat
+/// user struct: stat
 #[cfg(target_arch = "x86_64")]
 #[derive(Debug, Clone, Copy, Default)]
 #[repr(C)]
@@ -136,103 +138,125 @@ impl From<FileStatus> for UserStat {
 #[cfg(not(target_arch = "x86_64"))]
 const _: () = assert!(size_of::<UserStat>() == 128, "size of Stat is not 128");
 
-pub fn sys_stat(path: UserConstPtr<c_char>, stat_buf: UserPtr<UserStat>) -> LinuxResult<isize> {
+/// user struct: statx
+#[repr(C)]
+#[derive(Debug, Default)]
+pub struct UserStatX {
+    /// Bitmask of what information to get.
+    pub stx_mask: u32,
+    /// Block size for filesystem I/O.
+    pub stx_blksize: u32,
+    /// File attributes.
+    pub stx_attributes: u64,
+    /// Number of hard links.
+    pub stx_nlink: u32,
+    /// User ID of owner.
+    pub stx_uid: u32,
+    /// Group ID of owner.
+    pub stx_gid: u32,
+    /// File mode (permissions).
+    pub stx_mode: u16,
+    /// padding
+    pub _pad0: u16,
+    /// Inode number.
+    pub stx_ino: u64,
+    /// Total size, in bytes.
+    pub stx_size: u64,
+    /// Number of 512B blocks allocated.
+    pub stx_blocks: u64,
+    /// Mask to show what's supported in stx_attributes.
+    pub stx_attributes_mask: u64,
+    /// Last access timestamp.
+    pub stx_atime: FsStatxTimestamp,
+    /// Birth (creation) timestamp.
+    pub stx_btime: FsStatxTimestamp,
+    /// Last status change timestamp.
+    pub stx_ctime: FsStatxTimestamp,
+    /// Last modification timestamp.
+    pub stx_mtime: FsStatxTimestamp,
+    /// Major device ID (if special file).
+    pub stx_rdev_major: u32,
+    /// Minor device ID (if special file).
+    pub stx_rdev_minor: u32,
+    /// Major device ID of file system.
+    pub stx_dev_major: u32,
+    /// Minor device ID of file system.
+    pub stx_dev_minor: u32,
+    /// Mount ID.
+    pub stx_mnt_id: u64,
+    /// Memory alignment for direct I/O.
+    pub stx_dio_mem_align: u32,
+    /// Offset alignment for direct I/O.
+    pub stx_dio_offset_align: u32,
+    /// Reserved for future use.
+    pub _spare: [u32; 12],
+}
+
+impl From<FileStatus> for UserStatX {
+    fn from(fs: FileStatus) -> Self {
+        Self {
+            stx_blksize: fs.block_size as _,
+            stx_attributes: fs.mode as _,
+            stx_nlink: fs.n_link as _,
+            stx_uid: fs.uid,
+            stx_gid: fs.gid,
+            stx_mode: fs.mode as _,
+            stx_ino: fs.inode as _,
+            stx_size: fs.size as _,
+            stx_blocks: fs.n_blocks as _,
+            stx_attributes_mask: 0x7FF,
+            stx_atime: fs.access_time.into(),
+            stx_ctime: fs.change_time.into(),
+            stx_mtime: fs.modify_time.into(),
+            ..Default::default()
+        }
+    }
+}
+
+#[syscall_trace]
+pub fn sys_stat(path: UserInPtr<c_char>, stat_buf: UserOutPtr<UserStat>) -> LinuxResult<isize> {
     // get params
     let path = path.get_as_str()?;
     let stat_buf = stat_buf.get()?;
 
     // perform syscall
-    let result = (|| -> LinuxResult<_> { sys_stat_impl(-1, path, false) })();
-
-    // check result
-    match result {
-        Ok(fs) => {
-            let stat: UserStat = fs.into();
-            debug!(
-                "[syscall] stat(pathname={:?}, statbuf={:?}) = {}",
-                path, stat, 0
-            );
-            // copy to user space
-            unsafe { stat_buf.write(fs.into()) }
-            Ok(0)
-        }
-        Err(err) => {
-            debug!(
-                "[syscall] stat(pathname={:?}, statbuf={:p}) = {:?}",
-                path, stat_buf, err
-            );
-            Err(err)
-        }
-    }
+    let file_status = sys_stat_impl(-1, path, false)?;
+    unsafe { stat_buf.write(file_status.into()) }
+    Ok(0)
 }
 
 /// TODO: ignored following symlinks
-pub fn sys_lstat(path: UserConstPtr<c_char>, stat_buf: UserPtr<UserStat>) -> LinuxResult<isize> {
+#[syscall_trace]
+pub fn sys_lstat(path: UserInPtr<c_char>, stat_buf: UserOutPtr<UserStat>) -> LinuxResult<isize> {
     // get params
     let path = path.get_as_str()?;
     let stat_buf = stat_buf.get()?;
 
     // perform syscall
-    let result = (|| -> LinuxResult<_> { sys_stat_impl(-1, path, true) })();
-
-    // check result
-    match result {
-        Ok(fs) => {
-            let stat: UserStat = fs.into();
-            debug!(
-                "[syscall] lstat(pathname={:?}, statbuf={:?}) = {}",
-                path, stat, 0
-            );
-            // copy to user space
-            unsafe { stat_buf.write(fs.into()) }
-            Ok(0)
-        }
-        Err(err) => {
-            debug!(
-                "[syscall] lstat(pathname={:?}, statbuf={:p}) = {:?}",
-                path, stat_buf, err
-            );
-            Err(err)
-        }
-    }
+    let file_status = sys_stat_impl(-1, path, true)?;
+    unsafe { stat_buf.write(file_status.into()) }
+    Ok(0)
 }
 
-pub fn sys_fstat(fd: c_int, stat_buf: UserPtr<UserStat>) -> LinuxResult<isize> {
+#[syscall_trace]
+pub fn sys_fstat(fd: c_int, stat_buf: UserOutPtr<UserStat>) -> LinuxResult<isize> {
     // get params
     let stat_buf = stat_buf.get()?;
 
     // perform syscall
-    let result = (|| -> LinuxResult<_> {
-        if fd < 0 && fd != AT_FDCWD as i32 {
-            Err(LinuxError::EBADFD)
-        } else {
-            sys_stat_impl(fd, "", false)
-        }
-    })();
-
-    // check result
-    match result {
-        Ok(fs) => {
-            let stat: UserStat = fs.into();
-            debug!("[syscall] fstat(fd={}, statbuf={:?}) = {}", fd, stat, 0);
-            // copy to user space
-            unsafe { stat_buf.write(fs.into()) }
-            Ok(0)
-        }
-        Err(err) => {
-            debug!(
-                "[syscall] fstat(fd={}, statbuf={:p}) = {:?}",
-                fd, stat_buf, err
-            );
-            Err(err)
-        }
+    if fd < 0 && fd != AT_FDCWD as i32 {
+        return Err(LinuxError::EBADFD);
     }
+    let file_status = sys_stat_impl(fd, "", false)?;
+    unsafe { stat_buf.write(file_status.into()) }
+    Ok(0)
 }
 
+#[syscall_trace]
 pub fn sys_fstatat(
     dir_fd: c_int,
-    path: UserConstPtr<c_char>,
-    stat_buf: UserPtr<UserStat>,
+    path: UserInPtr<c_char>,
+    stat_buf: UserOutPtr<UserStat>,
     flags: c_int,
 ) -> LinuxResult<isize> {
     // get params
@@ -240,83 +264,44 @@ pub fn sys_fstatat(
     let stat_buf = stat_buf.get()?;
 
     // perform syscall
-    let result = (|| -> LinuxResult<_> {
-        if dir_fd < 0 && dir_fd != AT_FDCWD as i32 {
-            return Err(LinuxError::EBADFD);
-        }
-        // TODO: some flags are ignored
-        if path.is_empty() && (flags & AT_EMPTY_PATH == 0) {
-            return Err(LinuxError::ENOENT);
-        }
-        let follow_symlinks = flags & AT_SYMLINK_NOFOLLOW == 0;
-        sys_stat_impl(dir_fd, path, follow_symlinks)
-    })();
-
-    // check result
-    match result {
-        Ok(fs) => {
-            let stat: UserStat = fs.into();
-            debug!(
-                "[syscall] fstatat(dirfd={}, pathname={:?}, statbuf={:?}, flags={}) = {}",
-                dir_fd, path, stat, flags, 0
-            );
-            // copy to user space
-            unsafe { stat_buf.write(fs.into()) }
-            Ok(0)
-        }
-        Err(err) => {
-            debug!(
-                "[syscall] fstatat(dirfd={}, pathname={:?}, statbuf={:p}, flags={}) = {:?}",
-                dir_fd, path, stat_buf, flags, err
-            );
-            Err(err)
-        }
+    if dir_fd < 0 && dir_fd != AT_FDCWD as i32 {
+        return Err(LinuxError::EBADFD);
     }
+    // TODO: some flags are ignored
+    if path.is_empty() && (flags & AT_EMPTY_PATH == 0) {
+        return Err(LinuxError::ENOENT);
+    }
+    let follow_symlinks = flags & AT_SYMLINK_NOFOLLOW == 0;
+    let file_status = sys_stat_impl(dir_fd, path, follow_symlinks)?;
+
+    // write result
+    unsafe { stat_buf.write(file_status.into()) }
+    Ok(0)
 }
 
+#[syscall_trace]
 pub fn sys_statx(
     dir_fd: c_int,
-    path: UserConstPtr<c_char>,
+    path: UserInPtr<c_char>,
     flags: c_int,
     _mask: c_uint,
-    statx_buf: UserPtr<StatX>,
+    statx_buf: UserOutPtr<UserStatX>,
 ) -> LinuxResult<isize> {
     // get params
     let path = path.get_as_str().unwrap_or("");
     let statx_buf = statx_buf.get()?;
 
     // perform syscall
-    let result = (|| -> LinuxResult<_> {
-        if dir_fd < 0 && dir_fd != AT_FDCWD as i32 {
-            return Err(LinuxError::EBADFD);
-        }
-        // TODO: some flags are ignored
-        if path.is_empty() && (flags & AT_EMPTY_PATH == 0) {
-            return Err(LinuxError::ENOENT);
-        }
-        let follow_symlinks = flags & AT_SYMLINK_NOFOLLOW == 0;
-        let file_status = sys_stat_impl(dir_fd, path, follow_symlinks)?;
-        // TODO: add more fields
-        Ok(StatX::from(file_status))
-    })();
-
-    // check result
-    match result {
-        Ok(statx) => {
-            debug!(
-                "[syscall] statx(dirfd={}, pathname={:?}, flags={}, mask={}, statx_buf={:?}) = {}",
-                dir_fd, path, flags, _mask, statx, 0
-            );
-            // copy to user space
-            unsafe { statx_buf.write(statx.into()) }
-            Ok(0)
-        }
-        Err(err) => {
-            debug!(
-                "[syscall] statx(dirfd={}, pathname={:?}, flags={}, mask={}, statx_buf={:p}) = {:?}",
-                dir_fd, path, flags, _mask, statx_buf, err
-            );
-            Err(err)
-        }
+    if dir_fd < 0 && dir_fd != AT_FDCWD as i32 {
+        return Err(LinuxError::EBADFD);
     }
+    // TODO: some flags are ignored
+    if path.is_empty() && (flags & AT_EMPTY_PATH == 0) {
+        return Err(LinuxError::ENOENT);
+    }
+    let follow_symlinks = flags & AT_SYMLINK_NOFOLLOW == 0;
+    let file_status = sys_stat_impl(dir_fd, path, follow_symlinks)?;
+    // TODO: add more fields
+    unsafe { statx_buf.write(file_status.into()) }
+    Ok(0)
 }

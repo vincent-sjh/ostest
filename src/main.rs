@@ -6,9 +6,11 @@ extern crate alloc;
 #[macro_use]
 extern crate axlog;
 
+mod mm;
 mod syscall;
 
 use alloc::string::{String, ToString};
+use alloc::vec;
 use alloc::vec::Vec;
 use starry_core::entry::run_user_app;
 
@@ -20,28 +22,14 @@ fn main() {
         .filter(|&x| !x.is_empty());
 
     for testcase in testcases {
-        let args = testcase
-            .split_ascii_whitespace()
-            .map(Into::into)
-            .collect::<Vec<String>>();
-
-        if args.is_empty() {
+        let testcase = testcase.trim();
+        if testcase.is_empty() {
             continue;
         }
+        let args = vec!["/musl/busybox", "sh", "-c", testcase];
+        let args: Vec<String> = args.into_iter().map(String::from).collect();
 
-        if args[0].starts_with('#') {
-            info!(
-                "[task manager] Skipping testcase: {} with args: {:?}",
-                &args[0][1..],
-                args
-            );
-            continue;
-        }
-
-        info!(
-            "[task manager] Running user task: {} with args: {:?}",
-            testcase, args
-        );
+        info!("[task manager] Running user task: {}", testcase);
 
         let exit_code = run_user_app(&args, &["PATH=/bin".to_string()]);
         info!(

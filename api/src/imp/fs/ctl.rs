@@ -1,12 +1,14 @@
 use core::ffi::{c_char, c_void};
 
 use arceos_posix_api::AT_FDCWD;
-use arceos_posix_api::ctypes::stat;
 use axerrno::{AxError, LinuxError, LinuxResult};
 use axfs::fops::DirEntry;
 use macro_rules_attribute::apply;
 
-use crate::{ptr::{PtrWrapper, UserConstPtr, UserPtr}, syscall_instrument, Kstat};
+use crate::{
+    ptr::{PtrWrapper, UserConstPtr, UserPtr},
+    syscall_instrument,
+};
 
 /// The ioctl() system call manipulates the underlying device parameters
 /// of special files.
@@ -42,19 +44,6 @@ pub fn sys_mkdirat(dirfd: i32, path: UserConstPtr<c_char>, mode: u32) -> LinuxRe
         info!("directory mode not supported.");
     }
 
-    axfs::api::create_dir(path).map(|_| 0).map_err(|err| {
-        warn!("Failed to create directory {path}: {err:?}");
-        err.into()
-    })
-}
-
-// 基于 sys_mkdirat 实现的 sys_mkdir
-pub fn sys_mkdir(path: UserConstPtr<c_char>, mode: u32) -> LinuxResult<isize> {
-    //sys_mkdirat(AT_FDCWD as i32, path, mode);
-    let path = path.get_as_str()?;
-    if mode != 0 {
-        info!("directory mode not supported.");
-    }
     axfs::api::create_dir(path).map(|_| 0).map_err(|err| {
         warn!("Failed to create directory {path}: {err:?}");
         err.into()
@@ -249,26 +238,7 @@ pub fn sys_getcwd(buf: UserPtr<c_char>, size: usize) -> LinuxResult<isize> {
 }
 
 // TODO: [stub]
-// pub fn sys_unlink(_path: UserConstPtr<c_char>) -> LinuxResult<isize> {
-//     warn!("[sys_unlink] not implemented yet");
-//     Ok(0)
-// }
-pub fn sys_unlink(path: UserConstPtr<c_char>) -> LinuxResult<isize> {
-    // 调用 sys_unlinkat，使用 AT_FDCWD 表示当前工作目录，flags 设为 0 表示普通文件删除
-    sys_unlinkat(AT_FDCWD as isize, path, 0);
-    Ok(0)
-}
-pub fn sys_access(_path: UserConstPtr<c_char>, _mode: i32) -> LinuxResult<isize> {
-    warn!("[sys_access] not implemented yet");
-    Ok(0)
-}
-
-pub fn sys_faccessat(_dirfd: i32, _path: UserConstPtr<c_char>, _mode: i32,_flags:i32) -> LinuxResult<isize> {
-    warn!("[sys_faccesst] not implemented yet");
-    Ok(0)
-}
-
-pub fn sys_utimensat(_dirfd:i32, _path: UserConstPtr<c_char>, _times: UserConstPtr<Kstat>, _flags:i32) -> LinuxResult<isize> {
-    warn!("[sys_utimensat] not implemented yet");
+pub fn sys_unlink(_path: UserConstPtr<c_char>) -> LinuxResult<isize> {
+    warn!("[sys_unlink] not implemented yet");
     Ok(0)
 }

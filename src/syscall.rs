@@ -3,24 +3,22 @@ use axhal::{
     arch::TrapFrame,
     trap::{SYSCALL, register_trap_handler},
 };
+use starry_api::imp::fs::*;
+use starry_api::imp::mm::*;
+use starry_api::imp::signal::*;
+use starry_api::imp::sys::*;
+use starry_api::imp::task::*;
+use starry_api::imp::utils::*;
+use starry_api::interface::task::*;
 use starry_api::*;
 use starry_core::task::{time_stat_from_kernel_to_user, time_stat_from_user_to_kernel};
 use syscalls::Sysno;
 
 #[register_trap_handler(SYSCALL)]
-fn handle_syscall(tf: &TrapFrame, syscall_num: usize) -> isize {
+fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
     info!("[syscall] <{:?}> begin", Sysno::from(syscall_num as u32));
     time_stat_from_user_to_kernel();
     let result: LinuxResult<isize> = match Sysno::from(syscall_num as u32) {
-        #[cfg(target_arch = "x86_64")]
-        Sysno::access => sys_access(tf.arg0().into(), tf.arg1() as _),
-        Sysno::kill => sys_kill(tf.arg0() as _, tf.arg1() as _),
-        Sysno::faccessat => sys_faccessat(
-            tf.arg0() as _,
-            tf.arg1().into(),
-            tf.arg2() as _,
-            tf.arg3() as _,
-        ),
         Sysno::read => sys_read(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         Sysno::write => sys_write(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         Sysno::mmap => sys_mmap(
@@ -34,7 +32,7 @@ fn handle_syscall(tf: &TrapFrame, syscall_num: usize) -> isize {
         Sysno::ioctl => sys_ioctl(tf.arg0() as _, tf.arg1() as _, tf.arg2().into()),
         Sysno::writev => sys_writev(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         Sysno::sched_yield => sys_sched_yield(),
-        Sysno::nanosleep => stub_bypass(syscall_num as _),
+        // Sysno::nanosleep => sys_nanosleep(tf.arg0().into(), tf.arg1().into()),
         Sysno::getpid => sys_getpid(),
         Sysno::getppid => sys_getppid(),
         Sysno::exit => sys_exit(tf.arg0() as _),
@@ -43,20 +41,27 @@ fn handle_syscall(tf: &TrapFrame, syscall_num: usize) -> isize {
         Sysno::dup => sys_dup(tf.arg0() as _),
         Sysno::dup3 => sys_dup3(tf.arg0() as _, tf.arg1() as _),
         Sysno::fcntl => sys_fcntl(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
+        #[cfg(any(target_arch = "riscv64", target_arch = "aarch64"))]
         Sysno::clone => sys_clone(
             tf.arg0() as _,
             tf.arg1() as _,
-            tf.arg2() as _,
-            tf.arg3() as _,
+            tf.arg2().into(),
+            tf.arg3().into(),
             tf.arg4() as _,
+        ),
+        #[cfg(any(target_arch = "x86_64", target_arch = "loongarch64"))]
+        Sysno::clone => sys_clone(
+            tf.arg0() as _,
+            tf.arg1() as _,
+            tf.arg2().into(),
+            tf.arg3() as _,
+            tf.arg4().into(),
         ),
         Sysno::wait4 => sys_wait4(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         Sysno::pipe2 => sys_pipe2(tf.arg0().into(), tf.arg1() as _),
         Sysno::close => sys_close(tf.arg0() as _),
         Sysno::chdir => sys_chdir(tf.arg0().into()),
         Sysno::mkdirat => sys_mkdirat(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
-        #[cfg(target_arch = "x86_64")]
-        Sysno::mkdir => sys_mkdir(tf.arg0().into(), tf.arg1() as _),
         Sysno::execve => sys_execve(tf.arg0().into(), tf.arg1().into(), tf.arg2().into()),
         Sysno::openat => sys_openat(
             tf.arg0() as _,
@@ -171,12 +176,6 @@ fn handle_syscall(tf: &TrapFrame, syscall_num: usize) -> isize {
             tf.arg2().into(),
             tf.arg3() as _,
         ),
-        //Sysno::sysinfo=> sys_sysinfo(tf.arg0().into()),
-        Sysno::syslog => sys_syslog(
-            tf.arg0() as _,
-            tf.arg1().into(),
-            tf.arg2() as _,
-        ),
         #[cfg(target_arch = "x86_64")]
         Sysno::stat => interface::fs::sys_stat(tf.arg0().into(), tf.arg1().into()),
         Sysno::statfs => sys_statfs(tf.arg0().into(), tf.arg1().into()),
@@ -226,5 +225,5 @@ fn stub_kill(syscall_num: usize) -> Result<isize, LinuxError> {
         "Unimplemented syscall: {:?}, killed",
         Sysno::from(syscall_num as u32)
     );
-    axtask::exit(LinuxError::ENOSYS as _)
+    sys_exit(0)
 }

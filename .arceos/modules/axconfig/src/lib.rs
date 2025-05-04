@@ -7,5 +7,4 @@
 //! [configs]: https://github.com/arceos-org/arceos/tree/main/configs
 
 #![no_std]
-
 axconfig_gen_macros::include_configs!("../../../.axconfig.toml");

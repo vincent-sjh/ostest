@@ -2,20 +2,11 @@ use core::ffi::{c_int, c_ulong, c_void};
 
 use crate::ptr::{PtrWrapper, UserConstPtr, UserPtr};
 use arceos_posix_api as api;
-use arceos_posix_api::FD_TABLE;
 use arceos_posix_api::PollFd;
 use arceos_posix_api::ctypes::timespec;
 use axerrno::LinuxResult;
-use axerrno::LinuxError;
-use axtask::{current, TaskExtRef};
 
 pub fn sys_dup(old_fd: c_int) -> LinuxResult<isize> {
-    let curr = current();
-    let task = curr.task_ext();
-    if FD_TABLE.read().count()  >= task.get_rlimit_nofile().rlim_cur as usize{
-       return Err(LinuxError::EMFILE);
-    }
-
     Ok(api::sys_dup(old_fd) as _)
 }
 

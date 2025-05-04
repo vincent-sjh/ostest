@@ -1,16 +1,13 @@
 use axerrno::LinuxResult;
-use axtask::{TaskExtRef, current};
-use macro_rules_attribute::apply;
+use starry_core::task::current_process_data;
+use syscall_trace::syscall_trace;
 
-use crate::syscall_instrument;
-
-#[apply(syscall_instrument)]
+#[syscall_trace]
 pub fn sys_brk(addr: usize) -> LinuxResult<isize> {
-    let current_task = current();
-    let mut return_val: isize = current_task.task_ext().get_heap_top() as isize;
-    let heap_bottom = current_task.task_ext().get_heap_bottom() as usize;
+    let mut return_val: isize = current_process_data().get_heap_top() as isize;
+    let heap_bottom = current_process_data().get_heap_bottom();
     if addr != 0 && addr >= heap_bottom && addr <= heap_bottom + axconfig::plat::USER_HEAP_SIZE {
-        current_task.task_ext().set_heap_top(addr as u64);
+        current_process_data().set_heap_top(addr);
         return_val = addr as isize;
     }
     Ok(return_val)

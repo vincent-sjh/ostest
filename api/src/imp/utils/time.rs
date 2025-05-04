@@ -1,4 +1,4 @@
-use crate::Kstat;
+use crate::imp::fs::Kstat;
 use crate::ptr::{PtrWrapper, UserConstPtr, UserPtr};
 use arceos_posix_api::{self as api, ctypes::timeval};
 use axerrno::LinuxResult;
@@ -27,3 +27,12 @@ pub fn sys_times(tms: UserPtr<Tms>) -> LinuxResult<isize> {
     Ok(nanos_to_ticks(monotonic_time_nanos()) as _)
 }
 
+pub fn sys_utimensat(
+    _dirfd: i32,
+    _path: UserConstPtr<c_char>,
+    _times: UserConstPtr<Kstat>,
+    _flags: i32,
+) -> LinuxResult<isize> {
+    warn!("[sys_utimensat] not implemented yet");
+    Ok(0)
+}

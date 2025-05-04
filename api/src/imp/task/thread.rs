@@ -1,22 +1,14 @@
-use alloc::string::{String, ToString};
-use core::{ffi::c_char, ptr};
-
-use alloc::vec::Vec;
-use arceos_posix_api::{FD_TABLE, close_all_file_like};
-use arceos_posix_api::ctypes::RLIMIT_NOFILE;
-use axerrno::{LinuxError, LinuxResult};
-use axtask::{TaskExtRef, current, yield_now};
-use macro_rules_attribute::apply;
-use num_enum::TryFromPrimitive;
-use starry_core::{
-    ctypes::{WaitFlags, WaitStatus},
-    task::{exec, wait_pid},
-};
-use starry_core::task::Rlimit;
+use crate::ptr::UserInPtr;
 use crate::{
     ptr::{PtrWrapper, UserConstPtr, UserPtr},
     syscall_instrument,
 };
+use axerrno::LinuxResult;
+use core::sync::atomic::Ordering;
+use macro_rules_attribute::apply;
+use num_enum::TryFromPrimitive;
+use starry_core::task::{current_process, current_thread, current_thread_data};
+use syscall_trace::syscall_trace;
 
 /// ARCH_PRCTL codes
 ///
@@ -39,52 +31,32 @@ enum ArchPrctlCode {
     SetCpuid = 0x1012,
 }
 
-#[apply(syscall_instrument)]
+#[syscall_trace]
 pub fn sys_getpid() -> LinuxResult<isize> {
-    Ok(axtask::current().task_ext().proc_id as _)
+    Ok(current_process().get_pid() as _)
 }
 
-#[apply(syscall_instrument)]
+#[syscall_trace]
 pub fn sys_getppid() -> LinuxResult<isize> {
-    Ok(axtask::current().task_ext().get_parent() as _)
+    Ok(match current_process().get_parent() {
+        Some(p) => p.get_pid() as _,
+        None => 0,
+    })
 }
 
-// TODO: [dummy]
-#[apply(syscall_instrument)]
+#[syscall_trace]
 pub fn sys_gettid() -> LinuxResult<isize> {
-    Ok(current().task_ext().proc_id as _)
-}
-
-pub fn sys_exit(status: i32) -> ! {
-    let curr = current();
-    let clear_child_tid = curr.task_ext().clear_child_tid() as *mut i32;
-    if !clear_child_tid.is_null() {
-        // TODO: check whether the address is valid
-        unsafe {
-            // TODO: Encapsulate all operations that access user-mode memory into a unified function
-            *(clear_child_tid) = 0;
-        }
-        // TODO: wake up threads, which are blocked by futex, and waiting for the address pointed by clear_child_tid
-    }
-    // close any open file descriptors belonging to the process
-    close_all_file_like();
-    axtask::exit(status);
-}
-
-pub fn sys_exit_group(status: i32) -> ! {
-    warn!("Temporarily replace sys_exit_group with sys_exit");
-    sys_exit(status);
+    Ok(current_thread().get_tid() as _)
 }
 
 /// To set the clear_child_tid field in the task extended data.
 ///
 /// The set_tid_address() always succeeds
-#[apply(syscall_instrument)]
-pub fn sys_set_tid_address(tid_ptd: UserConstPtr<i32>) -> LinuxResult<isize> {
-    let curr = current();
-    curr.task_ext()
-        .set_clear_child_tid(tid_ptd.address().as_ptr() as _);
-    Ok(curr.id().as_u64() as isize)
+#[syscall_trace]
+pub fn sys_set_tid_address(tid_ptd: UserInPtr<i32>) -> LinuxResult<isize> {
+    let addr = &current_thread_data().addr_clear_child_tid;
+    addr.store(tid_ptd.address().as_ptr() as _, Ordering::Relaxed);
+    Ok(current_thread().get_tid() as _)
 }
 
 #[cfg(target_arch = "x86_64")]
@@ -124,159 +96,14 @@ pub fn sys_arch_prctl(code: i32, addr: UserPtr<u64>) -> LinuxResult<isize> {
     }
 }
 
-#[apply(syscall_instrument)]
-pub fn sys_clone(
-    flags: usize,
-    user_stack: usize,
-    ptid: usize,
-    arg3: usize,
-    arg4: usize,
-) -> LinuxResult<isize> {
-    let tls = arg3;
-    let ctid = arg4;
-
-    let stack = if user_stack == 0 {
-        None
-    } else {
-        Some(user_stack)
-    };
-
-    let curr_task = current();
-
-    if let Ok(new_task_id) = curr_task
-        .task_ext()
-        .clone_task(flags, stack, ptid, tls, ctid)
-    {
-        Ok(new_task_id as isize)
-    } else {
-        Err(LinuxError::ENOMEM)
-    }
-}
-
-// TODO: [incomplete]
-#[cfg(target_arch = "x86_64")]
-#[apply(syscall_instrument)]
-pub fn sys_fork() -> LinuxResult<isize> {
-    sys_clone(17, 0, 0, 0, 0)
-}
-
 // TODO: [stub] The method signature is not correct yet
 #[apply(syscall_instrument)]
 pub fn sys_prlimit64(
     _pid: i32,
-    resource: u32,
-    new_limit: UserConstPtr<Rlimit>,
-    old_limit: UserPtr<Rlimit>,
+    _resource: i32,
+    _new_limit: UserConstPtr<usize>,
+    _old_limit: UserPtr<usize>,
 ) -> LinuxResult<isize> {
-
-    let curr = current();
-    let task = curr.task_ext();
-
-    match resource {
-        RLIMIT_NOFILE => {
-            let old_num: Rlimit = task.get_rlimit_nofile();
-            let new_limit = new_limit.nullable(UserConstPtr::get)?;
-            if let Some(new_limit) = new_limit {
-                unsafe { task.set_rlimit_nofile(*new_limit); }
-            }
-
-            let old_limit = old_limit.nullable(UserPtr::get)?;
-            if let Some(old_limit) = old_limit {
-                unsafe {
-                    *old_limit = old_num;
-                }
-            }
-        },
-        _ => {
-
-        }
-    }
+    warn!("[sys_prlimit64] Not implemented yet");
     Ok(0)
-}
-
-#[apply(syscall_instrument)]
-pub fn sys_wait4(pid: i32, exit_code_ptr: UserPtr<i32>, option: u32) -> LinuxResult<isize> {
-    let option_flag = WaitFlags::from_bits(option).unwrap();
-    let exit_code_ptr = exit_code_ptr.nullable(UserPtr::get)?;
-    loop {
-        let answer = unsafe { wait_pid(pid, exit_code_ptr.unwrap_or_else(ptr::null_mut)) };
-        match answer {
-            Ok(pid) => {
-                return Ok(pid as isize);
-            }
-            Err(status) => match status {
-                WaitStatus::NotExist => {
-                    return Err(LinuxError::ECHILD);
-                }
-                WaitStatus::Running => {
-                    if option_flag.contains(WaitFlags::WNOHANG) {
-                        return Ok(0);
-                    } else {
-                        yield_now();
-                    }
-                }
-                _ => {
-                    panic!("Shouldn't reach here!");
-                }
-            },
-        }
-    }
-}
-
-#[apply(syscall_instrument)]
-pub fn sys_execve(
-    path: UserConstPtr<c_char>,
-    argv: UserConstPtr<usize>,
-    envp: UserConstPtr<usize>,
-) -> LinuxResult<isize> {
-    let path_str = path.get_as_str()?;
-
-    let args = argv
-        .get_as_null_terminated()?
-        .iter()
-        .map(|arg| {
-            UserConstPtr::<c_char>::from(*arg)
-                .get_as_str()
-                .map(Into::into)
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-    let envs = envp
-        .get_as_null_terminated()?
-        .iter()
-        .map(|env| {
-            UserConstPtr::<c_char>::from(*env)
-                .get_as_str()
-                .map(Into::into)
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-
-    info!(
-        "execve: path: {:?}, args: {:?}, envs: {:?}",
-        path_str, args, envs
-    );
-
-    // TODO: an ugly workaround for shebang
-    if path_str.ends_with(".sh") {
-        const BUSYBOX: &str = "/musl/busybox";
-        info!("[execve] shebang detected, calling sh...");
-        let mut new_args: Vec<String> = Vec::with_capacity(args.len() + 1);
-        new_args.push(BUSYBOX.into());
-        new_args.push("sh".into());
-        new_args.extend(args);
-        info!(
-            "execve: path: {:?}, args: {:?}, envs: {:?}",
-            BUSYBOX, new_args, envs
-        );
-        if let Err(e) = exec(BUSYBOX, &new_args, &envs) {
-            error!("Failed to exec: {:?}", e);
-            return Err::<isize, _>(LinuxError::ENOSYS);
-        }
-    } else {
-        if let Err(e) = exec(path_str, &args, &envs) {
-            error!("Failed to exec: {:?}", e);
-            return Err::<isize, _>(LinuxError::ENOSYS);
-        }
-    }
-
-    unreachable!("execve should never return");
 }

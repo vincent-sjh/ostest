@@ -53,6 +53,10 @@ pub fn write_bytes(bytes: &[u8]) {
 /// Reads bytes from the console into the given mutable slice.
 /// Returns the number of bytes read.
 pub fn read_bytes(bytes: &mut [u8]) -> usize {
+    let ptr = bytes.as_mut_ptr();
+    debug!("ptr = {:#x}", ptr as usize);
+    let addr = VirtAddr::from_mut_ptr_of(ptr);
+    debug!("addr = {:#x}", addr.as_usize());
     sbi_rt::console_read(sbi_rt::Physical::new(
         bytes.len().min(MAX_RW_SIZE),
         virt_to_phys(VirtAddr::from_mut_ptr_of(bytes.as_mut_ptr())).as_usize(),
