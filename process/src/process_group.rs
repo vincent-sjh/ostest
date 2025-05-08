@@ -3,6 +3,7 @@ use crate::process::Process;
 use crate::session::Session;
 use alloc::collections::BTreeMap;
 use alloc::sync::{Arc, Weak};
+use alloc::vec::Vec;
 use spin::Mutex;
 
 pub struct ProcessGroup {
@@ -42,6 +43,10 @@ impl ProcessGroup {
         }
     }
 
+    pub fn get_processes(&self) -> Vec<Arc<Process>> {
+        self.processes.lock().values().cloned().collect()
+    }
+
     /// Create a new process group with the given process group id and session
     fn new(id: Pid, session: Weak<Session>) -> Arc<Self> {
         Arc::new(Self {
@@ -66,4 +71,9 @@ pub(crate) fn create_process_group(pgid: Pid, session: Weak<Session>) -> Arc<Pro
     session.add_process_group(pgid, process_group.clone());
     process_group_table.insert(pgid, process_group.clone());
     process_group
+}
+
+pub fn get_process_group(pgid: Pid) -> Option<Arc<ProcessGroup>> {
+    let process_group_table = PROCESS_GROUP_TABLE.lock();
+    process_group_table.get(&pgid).cloned()
 }

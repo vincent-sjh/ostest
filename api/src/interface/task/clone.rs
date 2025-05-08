@@ -19,6 +19,7 @@ use crate::imp::task::*;
 use crate::ptr::{PtrWrapper, UserOutPtr};
 use axerrno::{LinuxError, LinuxResult};
 use core::ffi::{c_int, c_ulong};
+use axsignal::Signo;
 use linux_raw_sys::general::CSIGNAL;
 use syscall_trace::syscall_trace;
 use undefined_process::Pid;
@@ -72,11 +73,17 @@ fn sys_clone_(
     let flags = flags as u32; // lower 32 bits of clone_flags
     let exit_signal = flags & CSIGNAL;
     let clone_flags = flags & !CSIGNAL;
-    // TODO: exit_signal
+    let exit_signal = Signo::from_repr(exit_signal as u8);
     let clone_flags = CloneFlags::from_bits_truncate(clone_flags);
 
     // param check
-    if exit_signal != 0 && clone_flags.contains(CloneFlags::THREAD | CloneFlags::PARENT) {
+    // If CLONE_THREAD or CLONE_PARENT was specified in the flags,
+    // a signal must not be specified in exit_signal.
+    if !exit_signal.is_none() && clone_flags.contains(CloneFlags::THREAD | CloneFlags::PARENT) {
+        return Err(LinuxError::EINVAL);
+    }
+    // Since Linux 2.6.0, the flags mask must also include CLONE_VM if CLONE_SIGHAND is specified.
+    if clone_flags.contains(CloneFlags::SIGHAND) && !clone_flags.contains(CloneFlags::VM) {
         return Err(LinuxError::EINVAL);
     }
     // Since Linux 2.5.35, the flags mask must also include CLONE_SIGHAND if CLONE_THREAD is specified.
@@ -92,6 +99,7 @@ fn sys_clone_(
         new_sp as _,
         tls as _,
         addr_child_tid.address().into(),
+        exit_signal
     );
 
     if let Ok(tid) = result {
@@ -112,5 +120,5 @@ fn sys_clone_(
 pub fn sys_fork() -> LinuxResult<isize> {
     // fork is a special case of clone
     // TODO: exit_signal = SIGCHLD
-    sys_clone_impl(CloneFlags::empty(), 0, 0, 0)
+    sys_clone_impl(CloneFlags::empty(), 0, 0, 0, None)
 }

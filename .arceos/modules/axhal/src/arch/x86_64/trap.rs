@@ -1,5 +1,6 @@
 use page_table_entry::MappingFlags;
-use x86::{controlregs::cr2, irq::*};
+use x86::controlregs::cr4;
+use x86::{controlregs::cr2, irq::*, msr};
 use x86_64::structures::idt::PageFaultErrorCode;
 
 use super::context::TrapFrame;
@@ -16,6 +17,8 @@ fn handle_page_fault(tf: &TrapFrame) {
     let access_flags = err_code_to_flags(tf.error_code)
         .unwrap_or_else(|e| panic!("Invalid #PF error code: {:#x}", e));
     let vaddr = va!(unsafe { cr2() });
+    let actual_fs_base = unsafe{ msr::rdmsr(msr::IA32_FS_BASE)};
+    debug!("fs = {:#x}", actual_fs_base);
     if !handle_trap!(PAGE_FAULT, vaddr, access_flags, tf.is_user()) {
         panic!(
             "Unhandled {} #PF @ {:#x}, fault_vaddr={:#x}, error_code={:#x} ({:?}):\n{:#x?}",
@@ -37,6 +40,10 @@ fn x86_trap_handler(tf: &mut TrapFrame) {
         PAGE_FAULT_VECTOR => handle_page_fault(tf),
         BREAKPOINT_VECTOR => debug!("#BP @ {:#x} ", tf.rip),
         GENERAL_PROTECTION_FAULT_VECTOR => {
+            let instr = unsafe { *(tf.rip as *const u64) };
+            debug!("instr: {:#x?}", instr);
+            let cr4 = unsafe { cr4() };
+            debug!("cr4: {:?}({:#b})", cr4, cr4.bits());
             panic!(
                 "#GP @ {:#x}, error_code={:#x}:\n{:#x?}",
                 tf.rip, tf.error_code, tf
@@ -58,6 +65,7 @@ fn x86_trap_handler(tf: &mut TrapFrame) {
             );
         }
     }
+    crate::trap::post_trap_callback(tf, tf.is_user());
     #[cfg(feature = "uspace")]
     super::tls::switch_to_user_fs_base(tf);
 }

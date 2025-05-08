@@ -63,3 +63,7 @@ pub(crate) fn create_session(session_id: Pid) -> Arc<Session> {
     session_table.insert(session_id, session.clone());
     session
 }
+
+pub fn get_session(session_id: Pid) -> Option<Arc<Session>> {
+    SESSION_TABLE.lock().get(&session_id).cloned()
+}

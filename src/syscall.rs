@@ -5,10 +5,11 @@ use axhal::{
 };
 use starry_api::imp::fs::*;
 use starry_api::imp::mm::*;
-use starry_api::imp::signal::*;
 use starry_api::imp::sys::*;
+use starry_api::imp::task::signal::*;
 use starry_api::imp::task::*;
 use starry_api::imp::utils::*;
+use starry_api::interface::fs::io::{sys_ftruncate, sys_truncate};
 use starry_api::interface::task::*;
 use starry_api::*;
 use starry_core::task::{time_stat_from_kernel_to_user, time_stat_from_user_to_kernel};
@@ -116,28 +117,25 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         Sysno::times => sys_times(tf.arg0().into()),
         Sysno::brk => sys_brk(tf.arg0() as _),
         #[cfg(target_arch = "x86_64")]
-        Sysno::arch_prctl => sys_arch_prctl(tf.arg0() as _, tf.arg1().into()),
+        Sysno::arch_prctl => sys_arch_prctl(tf.arg0() as _, tf.arg1().into(), tf),
         Sysno::set_tid_address => sys_set_tid_address(tf.arg0().into()),
         Sysno::clock_gettime => sys_clock_gettime(tf.arg0() as _, tf.arg1().into()),
         Sysno::exit_group => sys_exit_group(tf.arg0() as _),
+        Sysno::futex => sys_futex(
+            tf.arg0().into(),
+            tf.arg1() as _,
+            tf.arg2() as _,
+            tf.arg3().into(),
+            tf.arg4().into(),
+            tf.arg5() as _,
+        ),
         Sysno::getuid => sys_getuid(),
-        Sysno::rt_sigprocmask => sys_rt_sigprocmask(
-            tf.arg0() as _,
-            tf.arg1().into(),
-            tf.arg2().into(),
-            tf.arg3() as _,
-        ),
-        Sysno::rt_sigaction => sys_rt_sigaction(
-            tf.arg0() as _,
-            tf.arg1().into(),
-            tf.arg2().into(),
-            tf.arg3() as _,
-        ),
         #[cfg(target_arch = "x86_64")]
         Sysno::dup2 => sys_dup3(tf.arg0() as _, tf.arg1() as _),
         #[cfg(target_arch = "x86_64")]
         Sysno::fork => sys_fork(),
         Sysno::gettid => sys_gettid(),
+        Sysno::kill => sys_kill(tf.arg0() as _, tf.arg1() as _),
         Sysno::lseek => sys_lseek(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
         #[cfg(target_arch = "x86_64")]
         Sysno::lstat => interface::fs::sys_lstat(tf.arg0().into(), tf.arg1().into()),
@@ -164,11 +162,39 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg3().into(),
         ),
         Sysno::readv => sys_readv(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
-        Sysno::rt_sigtimedwait => sys_rt_sigtimedwait(
+        Sysno::rt_sigaction => sys_rt_sigaction(
             tf.arg0() as _,
             tf.arg1().into(),
             tf.arg2().into(),
             tf.arg3() as _,
+        ),
+        Sysno::rt_sigpending => sys_rt_sigpending(tf.arg0().into(), tf.arg1() as _),
+        Sysno::rt_sigprocmask => sys_rt_sigprocmask(
+            tf.arg0() as _,
+            tf.arg1().into(),
+            tf.arg2().into(),
+            tf.arg3() as _,
+        ),
+        Sysno::rt_sigqueueinfo => sys_rt_sigqueueinfo(
+            tf.arg0() as _,
+            tf.arg1() as _,
+            tf.arg2().into(),
+            tf.arg3() as _,
+        ),
+        Sysno::rt_sigreturn => sys_rt_sigreturn(tf),
+        Sysno::rt_sigtimedwait => sys_rt_sigtimedwait(
+            tf.arg0().into(),
+            tf.arg1().into(),
+            tf.arg2().into(),
+            tf.arg3() as _,
+        ),
+        Sysno::rt_sigsuspend => sys_rt_sigsuspend(tf, tf.arg0().into(), tf.arg1() as _),
+        Sysno::rt_tgsigqueueinfo => sys_rt_tgsigqueueinfo(
+            tf.arg0() as _,
+            tf.arg1() as _,
+            tf.arg2() as _,
+            tf.arg3().into(),
+            tf.arg4() as _,
         ),
         Sysno::sendfile => sys_sendfile(
             tf.arg0() as _,
@@ -176,9 +202,12 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg2().into(),
             tf.arg3() as _,
         ),
+        Sysno::sigaltstack => sys_sigaltstack(tf.arg0().into(), tf.arg1().into()),
         #[cfg(target_arch = "x86_64")]
         Sysno::stat => interface::fs::sys_stat(tf.arg0().into(), tf.arg1().into()),
         Sysno::statfs => sys_statfs(tf.arg0().into(), tf.arg1().into()),
+        Sysno::tgkill => sys_tgkill(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
+        Sysno::tkill => sys_tkill(tf.arg0() as _, tf.arg1() as _),
         #[cfg(target_arch = "x86_64")]
         Sysno::unlink => sys_unlink(tf.arg0().into()),
         Sysno::utimensat => sys_utimensat(
@@ -190,9 +219,14 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         #[cfg(target_arch = "x86_64")]
         Sysno::access => stub_bypass(syscall_num),
         Sysno::faccessat => stub_bypass(syscall_num),
-        Sysno::kill => stub_bypass(syscall_num),
         Sysno::sysinfo => stub_unimplemented(syscall_num),
-        _ => stub_kill(syscall_num),
+        Sysno::sync => stub_bypass(syscall_num),
+        Sysno::fsync => stub_bypass(syscall_num),
+        Sysno::truncate => sys_truncate(tf.arg0().into(), tf.arg1() as _),
+        Sysno::ftruncate => sys_ftruncate(tf.arg0() as _, tf.arg1() as _),
+        Sysno::sched_getaffinity => stub_unimplemented(syscall_num),
+        Sysno::sched_setaffinity => stub_unimplemented(syscall_num),
+        _ => stub_unimplemented(syscall_num),
     };
     let ans = result.unwrap_or_else(|err| -err.code() as _);
     time_stat_from_kernel_to_user();

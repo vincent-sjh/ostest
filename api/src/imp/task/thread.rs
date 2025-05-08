@@ -4,6 +4,7 @@ use crate::{
     syscall_instrument,
 };
 use axerrno::LinuxResult;
+use axhal::arch::TrapFrame;
 use core::sync::atomic::Ordering;
 use macro_rules_attribute::apply;
 use num_enum::TryFromPrimitive;
@@ -61,15 +62,21 @@ pub fn sys_set_tid_address(tid_ptd: UserInPtr<i32>) -> LinuxResult<isize> {
 
 #[cfg(target_arch = "x86_64")]
 #[apply(syscall_instrument)]
-pub fn sys_arch_prctl(code: i32, addr: UserPtr<u64>) -> LinuxResult<isize> {
+pub fn sys_arch_prctl(code: i32, addr: UserPtr<u64>, tf: &mut TrapFrame) -> LinuxResult<isize> {
     use axerrno::LinuxError;
+    debug!(
+        "arch_prctl: code = {:?}, addr = {:#x}",
+        ArchPrctlCode::try_from(code),
+        addr.address().as_usize()
+    );
     match ArchPrctlCode::try_from(code).map_err(|_| LinuxError::EINVAL)? {
         // According to Linux implementation, SetFs & SetGs does not return
         // error at all
         ArchPrctlCode::SetFs => {
-            unsafe {
-                axhal::arch::write_thread_pointer(addr.address().as_usize());
-            }
+            // unsafe {
+            //     axhal::arch::write_thread_pointer(addr.address().as_usize());
+            // }
+            tf.set_tls(addr.address().as_usize());
             Ok(0)
         }
         ArchPrctlCode::SetGs => {
@@ -80,7 +87,8 @@ pub fn sys_arch_prctl(code: i32, addr: UserPtr<u64>) -> LinuxResult<isize> {
         }
         ArchPrctlCode::GetFs => {
             unsafe {
-                *addr.get()? = axhal::arch::read_thread_pointer() as u64;
+                // *addr.get()? = axhal::arch::read_thread_pointer() as u64;
+                *addr.get()? = tf.tls() as u64;
             }
             Ok(0)
         }

@@ -53,3 +53,8 @@ pub(crate) fn create_thread(tid: Pid, process: Weak<Process>) -> Arc<Thread> {
     thread_table.insert(tid, thread.clone());
     thread
 }
+
+pub fn get_thread(tid: Pid) -> Option<Arc<Thread>> {
+    let thread_table = THREAD_TABLE.lock();
+    thread_table.get(&tid).cloned()
+}

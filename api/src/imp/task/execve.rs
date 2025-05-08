@@ -5,6 +5,7 @@ use axerrno::{AxError, LinuxResult};
 use axhal::arch::UspaceContext;
 use axtask::current;
 use starry_core::mm;
+use starry_core::mm::map_trampoline;
 use starry_core::task::{current_process, current_process_data};
 
 pub fn sys_execve_impl(path: String, args: Vec<String>, envs: Vec<String>) -> LinuxResult<isize> {
@@ -25,7 +26,8 @@ pub fn sys_execve_impl(path: String, args: Vec<String>, envs: Vec<String>) -> Li
         let addr_space = &process_data.addr_space;
         let mut addr_space = addr_space.lock();
         addr_space.unmap_user_areas()?;
-        // TODO: signals
+        // for signals
+        map_trampoline(&mut addr_space)?;
         axhal::arch::flush_tlb(None);
 
         // load executable binary

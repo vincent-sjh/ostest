@@ -4,13 +4,14 @@ use arceos_posix_api::FD_TABLE;
 use axerrno::{LinuxError, LinuxResult};
 use axfs::{CURRENT_DIR, CURRENT_DIR_PATH};
 use axhal::arch::UspaceContext;
+use axsignal::Signo;
 use axtask::current;
 use bitflags::bitflags;
 use core::sync::atomic::Ordering;
 use linux_raw_sys::general::*;
 use spin::Mutex;
 use starry_core::mm::copy_from_kernel;
-use starry_core::process::{ProcessData, ThreadData};
+use starry_core::process::{ProcessData, ThreadData, create_thread_data, get_process_data};
 use starry_core::task::{
     TaskExt, create_user_task, current_process, current_process_data, read_trapframe_from_kstack,
 };
@@ -83,6 +84,7 @@ pub fn sys_clone_impl(
     new_sp: usize,
     tls: usize,
     addr_child_tid: usize,
+    exit_signal: Option<Signo>,
 ) -> LinuxResult<isize> {
     // duplicate trap frame
     let trap_frame = read_trapframe_from_kstack(current().get_kernel_stack_top().unwrap());
@@ -115,8 +117,12 @@ pub fn sys_clone_impl(
         let page_table = current_process_data().addr_space.lock().page_table_root();
         new_task.ctx_mut().set_page_table_root(page_table);
 
-        let thread_data = ThreadData::new(current_process_data().clone());
         let thread = current_process().create_thread();
+        let thread_data = create_thread_data(current_process_data().clone(), thread.get_tid());
+        // signals
+        // for thread, there should be no exit_signal,
+        // and there must be a CLONE_SIGHAND flag
+        // so we needn't do anything here
         (thread, thread_data)
     } else {
         // create process
@@ -136,20 +142,30 @@ pub fn sys_clone_impl(
         };
         let page_table = addr_space.lock().page_table_root();
         new_task.ctx_mut().set_page_table_root(page_table);
-        // TODO: signals and other things
-        let process_data = ProcessData::new(
-            current_process_data().command_line.lock().clone(),
-            addr_space,
-        );
-        let thread_data = ThreadData::new(Arc::new(process_data));
-        // fork new process
+        // parent
         let parent = if clone_flags.contains(CloneFlags::PARENT) {
             current_process().get_parent().ok_or(LinuxError::EINVAL)?
         } else {
             current_process()
         };
+        // signals
+        let signal_actions = if clone_flags.contains(CloneFlags::SIGHAND) {
+            let parent_data = get_process_data(parent.get_pid()).unwrap();
+            parent_data.signal.actions.clone()
+        } else {
+            Arc::default()
+        };
+        // fork new process
         let new_process = parent.fork();
         let new_thread = new_process.get_main_thread().unwrap();
+        let process_data = ProcessData::new(
+            current_process_data().command_line.lock().clone(),
+            addr_space,
+            signal_actions,
+            exit_signal,
+        );
+        let thread_data = create_thread_data(Arc::new(process_data), new_thread.get_tid());
+
         (new_thread, thread_data)
     };
 
@@ -194,7 +210,7 @@ pub fn sys_clone_impl(
 
     // create `TaskExt`
     let tid = thread.get_tid();
-    new_task.init_task_ext(TaskExt::new(thread, Arc::new(thread_data)));
+    new_task.init_task_ext(TaskExt::new(thread, thread_data));
 
     // spawn the task
     axtask::spawn_task(new_task);

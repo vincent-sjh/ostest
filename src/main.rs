@@ -26,12 +26,21 @@ fn main() {
         if testcase.is_empty() {
             continue;
         }
+        // sh mode
         let args = vec!["/musl/busybox", "sh", "-c", testcase];
+        // direct mode
+        // let args = testcase.split(" ");
         let args: Vec<String> = args.into_iter().map(String::from).collect();
 
         info!("[task manager] Running user task: {}", testcase);
 
-        let exit_code = run_user_app(&args, &["PATH=/bin".to_string()]);
+        let envs = vec![
+            "PATH=/bin".to_string(),
+            "LD_LIBRARY_PATH=/glibc/lib/:/musl/lib/".to_string(),
+            // "LD_DEBUG=all".to_string(),
+        ];
+
+        let exit_code = run_user_app(&args, &envs);
         info!(
             "[task manager] User task {} exited with code: {:?}",
             testcase, exit_code

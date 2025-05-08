@@ -2,6 +2,7 @@ use core::ffi::CStr;
 
 use alloc::{string::String, vec};
 use axerrno::{AxError, AxResult};
+use axhal::mem::virt_to_phys;
 use axhal::paging::MappingFlags;
 use axmm::{AddrSpace, kernel_aspace};
 use kernel_elf_parser::{AuxvEntry, ELFParser, app_stack_region};
@@ -24,6 +25,18 @@ pub fn copy_from_kernel(aspace: &mut AddrSpace) -> AxResult {
         // kernel portion to the user page table.
         aspace.copy_mappings_from(&kernel_aspace().lock())?;
     }
+    Ok(())
+}
+
+/// Map the signal trampoline to the user address space.
+pub fn map_trampoline(aspace: &mut AddrSpace) -> AxResult {
+    let signal_trampoline_paddr = virt_to_phys(axsignal::arch::signal_trampoline_address().into());
+    aspace.map_linear(
+        axconfig::plat::SIGNAL_TRAMPOLINE.into(),
+        signal_trampoline_paddr,
+        PAGE_SIZE_4K,
+        MappingFlags::READ | MappingFlags::EXECUTE | MappingFlags::USER,
+    )?;
     Ok(())
 }
 
@@ -117,11 +130,15 @@ pub fn load_user_app(
         if interp_path == "/lib/ld-linux-riscv64-lp64.so.1"
             || interp_path == "/lib/ld-musl-riscv64.so.1"
             || interp_path == "/lib64/ld-linux-loongarch-lp64d.so.1"
-            || interp_path == "/lib64/ld-linux-x86-64.so.2"
-            || interp_path == "/lib/ld-linux-aarch64.so.1"
+        // || interp_path == "/lib64/ld-linux-x86-64.so.2"
+        // || interp_path == "/lib/ld-linux-aarch64.so.1"
         {
             // TODO: Use soft link
             interp_path = String::from("/musl/lib/libc.so");
+        }
+
+        if interp_path == "/lib64/ld-linux-x86-64.so.2" {
+            interp_path = String::from("/glibc/lib/ld-linux-x86-64.so.2")
         }
 
         // Set the first argument to the path of the user app.
@@ -162,7 +179,11 @@ pub fn load_user_app(
 
     let user_sp = ustack_end - stack_data.len();
 
+    assert!(user_sp.is_aligned(16usize), "user sp is not aligned to 16");
+
     uspace.write(user_sp, stack_data.as_slice())?;
+
+    debug!("entry: {:#x?}  sp:: {:#x?}", entry, user_sp);
 
     Ok((entry, user_sp))
 }

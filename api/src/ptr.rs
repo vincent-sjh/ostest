@@ -186,6 +186,16 @@ impl<T> UserPtr<T> {
         // SAFETY: We've validated the memory region.
         unsafe { Ok(slice::from_raw_parts_mut(ptr as *mut _, len)) }
     }
+
+    pub fn get_as_ref(&self) -> LinuxResult<&'static T> {
+        let ptr = self.get()?;
+        // SAFETY: We've validated the memory region.
+        unsafe { Ok(&*ptr) }
+    }
+
+    pub fn is_null(&self) -> bool {
+        self.0.is_null()
+    }
 }
 
 impl UserPtr<c_char> {
@@ -277,6 +287,16 @@ impl<T> UserConstPtr<T> {
         let (ptr, len) = check_null_terminated::<T>(self.address(), Self::ACCESS_FLAGS)?;
         // SAFETY: We've validated the memory region.
         unsafe { Ok(slice::from_raw_parts(ptr, len)) }
+    }
+
+    pub fn get_as_ref(&self) -> LinuxResult<&'static T> {
+        let ptr = self.get()?;
+        // SAFETY: We've validated the memory region.
+        unsafe { Ok(&*ptr) }
+    }
+
+    pub fn is_null(&self) -> bool {
+        self.0.is_null()
     }
 }
 

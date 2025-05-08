@@ -252,3 +252,11 @@ fn create_process(pid: Pid, parent: Weak<Process>, group: Weak<ProcessGroup>) ->
     process_table.insert(pid, process.clone());
     process
 }
+
+pub fn get_process(pid: Pid) -> Option<Arc<Process>> {
+    PROCESS_TABLE.lock().get(&pid).cloned()
+}
+
+pub fn get_all_processes() -> Vec<Arc<Process>> {
+    PROCESS_TABLE.lock().values().cloned().collect()
+}

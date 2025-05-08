@@ -1,11 +1,18 @@
+use crate::task::WaitQueueWrapper;
+use alloc::collections::BTreeMap;
 use alloc::string::String;
-use alloc::sync::Arc;
+use alloc::sync::{Arc, Weak};
 use alloc::vec::Vec;
 use axmm::{AddrSpace, kernel_aspace};
 use axns::AxNamespace;
+use axsignal::Signo;
+use axsignal::api::{ProcessSignalManager, SignalActions, ThreadSignalManager};
+use axsync::RawMutex;
+use axtask::WaitQueue;
 use core::sync::atomic::{AtomicUsize, Ordering};
 use memory_addr::VirtAddrRange;
 use spin::Mutex;
+use undefined_process::Pid;
 
 pub struct ProcessData {
     /// The command line arguments
@@ -19,18 +26,36 @@ pub struct ProcessData {
     /// The user heap top
     heap_top: AtomicUsize,
     // TODO: resource limits
-    // TODO: signals
-    // TODO: futex?
+    /// The child exit wait queue
+    pub child_exit_wq: WaitQueue,
+    /// The exit signal of the thread
+    pub exit_signal: Option<Signo>,
+    /// The process signal manager
+    pub signal: Arc<ProcessSignalManager<RawMutex, WaitQueueWrapper>>,
+    /// The futex table
+    pub futex_table: Mutex<BTreeMap<usize, Arc<WaitQueue>>>,
 }
 
 impl ProcessData {
-    pub fn new(command_line: Vec<String>, addr_space: Arc<Mutex<AddrSpace>>) -> Self {
+    pub fn new(
+        command_line: Vec<String>,
+        addr_space: Arc<Mutex<AddrSpace>>,
+        signal_actions: Arc<axsync::Mutex<SignalActions>>,
+        exit_signal: Option<Signo>,
+    ) -> Self {
         Self {
             command_line: Mutex::new(command_line),
             addr_space,
             heap_bottom: AtomicUsize::new(axconfig::plat::USER_HEAP_BASE),
             heap_top: AtomicUsize::new(axconfig::plat::USER_HEAP_BASE),
-            // rlim: RwLock::default(), }
+            futex_table: Mutex::new(BTreeMap::new()),
+            // rlim: RwLock::default(),
+            child_exit_wq: WaitQueue::new(),
+            exit_signal,
+            signal: Arc::new(ProcessSignalManager::new(
+                signal_actions,
+                axconfig::plat::SIGNAL_TRAMPOLINE,
+            )),
         }
     }
 
@@ -49,6 +74,12 @@ impl ProcessData {
     pub fn set_heap_top(&self, top: usize) {
         self.heap_top.store(top, Ordering::Release)
     }
+
+    /// Linux manual: A "clone" child is one which delivers no signal, or a
+    /// signal other than SIGCHLD to its parent upon termination.
+    pub fn is_clone_child(&self) -> bool {
+        self.exit_signal != Some(Signo::SIGCHLD)
+    }
 }
 
 impl Drop for ProcessData {
@@ -65,6 +96,8 @@ impl Drop for ProcessData {
 }
 
 pub struct ThreadData {
+    /// only for TABLE management
+    tid: Pid,
     /// The process data
     pub process_data: Arc<ProcessData>,
     /// The resource namespace, used by FD_TABLE and CURRENT_DIR, etc.
@@ -77,16 +110,50 @@ pub struct ThreadData {
     pub addr_clear_child_tid: AtomicUsize,
     /// The set thread tid field
     pub addr_set_child_tid: AtomicUsize,
-    // TODO: signals
+    /// The thread-level signal manager
+    pub signal: ThreadSignalManager<RawMutex, WaitQueueWrapper>,
 }
 
 impl ThreadData {
-    pub fn new(process_data: Arc<ProcessData>) -> Self {
+    fn new(process_data: Arc<ProcessData>, tid: Pid) -> Self {
         Self {
-            process_data,
             namespace: AxNamespace::new_thread_local(),
             addr_clear_child_tid: AtomicUsize::new(0),
             addr_set_child_tid: AtomicUsize::new(0),
+            signal: ThreadSignalManager::new(process_data.signal.clone()),
+            process_data,
+            tid,
         }
     }
+}
+
+impl Drop for ThreadData {
+    fn drop(&mut self) {
+        // remove form the thread data table
+        assert!(!THREAD_DATA_TABLE.lock().remove(&self.tid).is_none())
+    }
+}
+
+static THREAD_DATA_TABLE: Mutex<BTreeMap<Pid, Weak<ThreadData>>> = Mutex::new(BTreeMap::new());
+
+pub fn create_thread_data(process_data: Arc<ProcessData>, tid: Pid) -> Arc<ThreadData> {
+    let thread_data = Arc::new(ThreadData::new(process_data, tid));
+    let mut thread_data_table = THREAD_DATA_TABLE.lock();
+    thread_data_table.insert(tid, Arc::downgrade(&thread_data));
+    thread_data
+}
+
+pub fn get_thread_data(tid: Pid) -> Option<Arc<ThreadData>> {
+    let thread_data_table = THREAD_DATA_TABLE.lock();
+    let weak_thread_data = thread_data_table.get(&tid)?;
+    assert!(
+        weak_thread_data.strong_count() > 0,
+        "Thread data is not alive"
+    );
+    weak_thread_data.upgrade()
+}
+
+pub fn get_process_data(pid: Pid) -> Option<Arc<ProcessData>> {
+    let thread_data = get_thread_data(pid)?;
+    Some(thread_data.process_data.clone())
 }

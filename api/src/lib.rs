@@ -7,6 +7,7 @@ extern crate axlog;
 pub mod imp;
 pub mod interface;
 pub mod ptr;
+pub mod utils;
 
 macro_rules! syscall_instrument {(
     $( #[$attr:meta] )*

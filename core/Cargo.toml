@@ -15,6 +15,7 @@ axmm.workspace = true
 axns.workspace = true
 axsync.workspace = true
 axtask.workspace = true
+axsignal.workspace = true
 arceos_posix_api.workspace = true
 undefined-process.workspace = true
 
@@ -24,7 +25,7 @@ linkme.workspace = true
 memory_addr.workspace = true
 
 crate_interface = "0.1"
-kernel-elf-parser = "0.3"
+kernel-elf-parser = { git = "https://github.com/eternalcomet/kernel_elf_parser", branch = "patch-1" }
 numeric-enum-macro = "0.2"
 percpu = "0.2.0"
 spin = "0.10.0"

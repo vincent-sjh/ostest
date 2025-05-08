@@ -9,8 +9,9 @@ use axhal::{
 };
 use axmm::kernel_aspace;
 use axns::{AxNamespace, AxNamespaceIf};
-use axtask::{TaskExtRef, TaskInner, current};
+use axtask::{TaskExtRef, TaskInner, current, WaitQueue};
 use core::cell::RefCell;
+use core::time::Duration;
 use memory_addr::VirtAddrRange;
 use spin::Once;
 use undefined_process::process::Process;
@@ -173,4 +174,26 @@ pub fn create_user_task(name: String, uctx: UspaceContext) -> TaskInner {
         name,
         axconfig::plat::KERNEL_STACK_SIZE,
     )
+}
+
+#[doc(hidden)]
+pub struct WaitQueueWrapper(WaitQueue);
+impl Default for WaitQueueWrapper {
+    fn default() -> Self {
+        Self(WaitQueue::new())
+    }
+}
+impl axsignal::api::WaitQueue for WaitQueueWrapper {
+    fn wait_timeout(&self, timeout: Option<Duration>) -> bool {
+        if let Some(timeout) = timeout {
+            self.0.wait_timeout(timeout)
+        } else {
+            self.0.wait();
+            true
+        }
+    }
+
+    fn notify_one(&self) -> bool {
+        self.0.notify_one(false)
+    }
 }
