@@ -1,5 +1,5 @@
-#/musl/basic_testcode.sh
-#/glibc/basic_testcode.sh
+/musl/basic_testcode.sh
+/glibc/basic_testcode.sh
 /musl/busybox echo "#### OS COMP TEST GROUP START libctest-musl ####"
 /musl/runtest.exe -w entry-static.exe argv
 /musl/runtest.exe -w entry-static.exe basename
