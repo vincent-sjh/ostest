@@ -57,6 +57,8 @@ pub fn sys_gettid() -> LinuxResult<isize> {
 pub fn sys_set_tid_address(tid_ptd: UserInPtr<i32>) -> LinuxResult<isize> {
     let addr = &current_thread_data().addr_clear_child_tid;
     addr.store(tid_ptd.address().as_ptr() as _, Ordering::Relaxed);
+    let addr = &current_thread_data().addr_set_child_tid;
+    addr.store(tid_ptd.address().as_ptr() as _, Ordering::Relaxed);
     Ok(current_thread().get_tid() as _)
 }
 

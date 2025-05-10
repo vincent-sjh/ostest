@@ -1,4 +1,4 @@
-use crate::task::WaitQueueWrapper;
+use crate::task::{current_process, WaitQueueWrapper};
 use alloc::collections::BTreeMap;
 use alloc::string::String;
 use alloc::sync::{Arc, Weak};
@@ -84,6 +84,7 @@ impl ProcessData {
 
 impl Drop for ProcessData {
     fn drop(&mut self) {
+        trace!("process data drop: process={:?}", self.command_line.lock());
         // TODO: prevent memory leak
         if !cfg!(target_arch = "aarch64") && !cfg!(target_arch = "loongarch64") {
             // See [`crate::new_user_aspace`]
@@ -130,6 +131,7 @@ impl ThreadData {
 impl Drop for ThreadData {
     fn drop(&mut self) {
         // remove form the thread data table
+        trace!("thread data drop: tid={}", self.tid);
         assert!(!THREAD_DATA_TABLE.lock().remove(&self.tid).is_none())
     }
 }

@@ -18,8 +18,8 @@
 use crate::imp::task::*;
 use crate::ptr::{PtrWrapper, UserOutPtr};
 use axerrno::{LinuxError, LinuxResult};
-use core::ffi::{c_int, c_ulong};
 use axsignal::Signo;
+use core::ffi::{c_int, c_ulong};
 use linux_raw_sys::general::CSIGNAL;
 use syscall_trace::syscall_trace;
 use undefined_process::Pid;
@@ -31,8 +31,8 @@ pub fn sys_clone(
     clone_flags: c_ulong,
     new_sp: c_ulong,
     addr_parent_tid: UserOutPtr<c_int>,
-    tls: c_ulong,
     addr_child_tid: UserOutPtr<c_int>,
+    tls: c_ulong,
 ) -> LinuxResult<isize> {
     sys_clone_(
         clone_flags,
@@ -50,8 +50,8 @@ pub fn sys_clone(
     clone_flags: c_ulong,
     new_sp: c_ulong,
     addr_parent_tid: UserOutPtr<c_int>,
-    addr_child_tid: UserOutPtr<c_int>,
     tls: c_ulong,
+    addr_child_tid: UserOutPtr<c_int>,
 ) -> LinuxResult<isize> {
     sys_clone_(
         clone_flags,
@@ -99,7 +99,7 @@ fn sys_clone_(
         new_sp as _,
         tls as _,
         addr_child_tid.address().into(),
-        exit_signal
+        exit_signal,
     );
 
     if let Ok(tid) = result {

@@ -3,9 +3,9 @@ mod execve;
 mod exit;
 mod futex;
 mod schedule;
+pub mod signal;
 mod thread;
 mod wait;
-pub mod signal;
 
 pub use self::clone::*;
 pub use self::execve::*;

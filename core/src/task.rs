@@ -9,7 +9,7 @@ use axhal::{
 };
 use axmm::kernel_aspace;
 use axns::{AxNamespace, AxNamespaceIf};
-use axtask::{TaskExtRef, TaskInner, current, WaitQueue};
+use axtask::{TaskExtRef, TaskInner, WaitQueue, current};
 use core::cell::RefCell;
 use core::time::Duration;
 use memory_addr::VirtAddrRange;
@@ -90,15 +90,7 @@ impl AxNamespaceIf for AxNamespaceImpl {
 
 impl Drop for TaskExt {
     fn drop(&mut self) {
-        if !cfg!(target_arch = "aarch64") && !cfg!(target_arch = "loongarch64") {
-            // See [`crate::new_user_aspace`]
-            let kernel = kernel_aspace().lock();
-            self.thread_data
-                .process_data
-                .addr_space
-                .lock()
-                .clear_mappings(VirtAddrRange::from_start_size(kernel.base(), kernel.size()));
-        }
+        trace!("TaskExt drop.");
     }
 }
 
@@ -165,6 +157,7 @@ pub fn create_user_task(name: String, uctx: UspaceContext) -> TaskInner {
             // TODO: user UserPtr wrapper to check it
             // however, UserPtr is not defined in current crate
             let addr: *mut u32 = addr as _;
+            info!("set_child_tid={:#x}", addr.addr());
             if !addr.is_null() {
                 unsafe { addr.write(current_thread().get_tid()) };
             }

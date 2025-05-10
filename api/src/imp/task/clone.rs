@@ -197,6 +197,7 @@ pub fn sys_clone_impl(
     }
 
     if clone_flags.contains(CloneFlags::CHILD_SETTID) {
+        debug!("CLONE_CHILD_SETTID {:?}", addr_child_tid);
         thread_data
             .addr_set_child_tid
             .store(addr_child_tid, Ordering::Relaxed);
