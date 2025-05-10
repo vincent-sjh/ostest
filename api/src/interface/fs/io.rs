@@ -1,4 +1,4 @@
-use crate::imp::fs::path::resolve_path_from_fd;
+use crate::imp::utils::path::resolve_path_from_fd;
 use crate::imp::fs::sys_truncate_impl;
 use crate::interface::fs::UserStat;
 use crate::ptr::{UserInPtr, UserOutPtr};

@@ -1,5 +1,5 @@
 use crate::imp::fs::fs::open_file_like;
-use crate::imp::fs::path::resolve_path_with_parent;
+use crate::imp::utils::path::resolve_path_with_parent;
 use arceos_posix_api::ctypes;
 use axerrno::LinuxResult;
 

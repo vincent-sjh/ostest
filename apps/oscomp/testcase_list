@@ -2,10 +2,10 @@
 # setup the environment
 /musl/busybox mkdir -p /bin
 /musl/busybox cp /musl/busybox /bin/busybox
+# TODO: link busybox to /bin
 busybox cp /musl/busybox /bin/ls
 busybox rm -rf /musl/ltp
 busybox rm -rf /glibc/ltp
-# TODO: link busybox to /bin
 busybox mkdir -p /lib
 
 # ============ test cases compiled with musl ============

@@ -9,7 +9,8 @@ use starry_api::imp::sys::*;
 use starry_api::imp::task::signal::*;
 use starry_api::imp::task::*;
 use starry_api::imp::utils::*;
-use starry_api::interface::fs::io::{sys_ftruncate, sys_truncate};
+use starry_api::interface::fs::io::*;
+use starry_api::interface::fs::path::*;
 use starry_api::interface::task::*;
 use starry_api::*;
 use starry_core::task::{time_stat_from_kernel_to_user, time_stat_from_user_to_kernel};
@@ -162,6 +163,19 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg3().into(),
         ),
         Sysno::readv => sys_readv(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
+        Sysno::renameat => sys_renameat(
+            tf.arg0() as _,
+            tf.arg1().into(),
+            tf.arg2() as _,
+            tf.arg3().into(),
+        ),
+        Sysno::renameat2 => sys_renameat2(
+            tf.arg0() as _,
+            tf.arg1().into(),
+            tf.arg2() as _,
+            tf.arg3().into(),
+            tf.arg4() as _,
+        ),
         Sysno::rt_sigaction => sys_rt_sigaction(
             tf.arg0() as _,
             tf.arg1().into(),

@@ -6,7 +6,7 @@ use alloc::vec::Vec;
 use axerrno::LinuxResult;
 use core::ffi::c_char;
 use syscall_trace::syscall_trace;
-use crate::imp::fs::path::resolve_path;
+use crate::imp::utils::path::resolve_path;
 
 fn get_string_array(array: UserConstPtr<usize>) -> LinuxResult<Vec<String>> {
     let string_ptrs = array.get_as_null_terminated()?;
