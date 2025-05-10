@@ -1,7 +1,6 @@
 #/musl/basic_testcode.sh
 #/glibc/basic_testcode.sh
 /musl/busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
-/musl/busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
 cd /musl/basic/ && ./run-all.sh
 /musl/busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 /glibc/busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
