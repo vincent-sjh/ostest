@@ -68,7 +68,6 @@ jobs:
           cat loongarch64_output.txt >> output.txt
           cat aarch64_output.txt >> output.txt
           cat x86_64_output.txt >> output.txt
-          cat output.txt
           
       - name: Download EvaluationScript
         run: |

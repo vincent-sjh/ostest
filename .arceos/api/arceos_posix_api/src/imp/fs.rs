@@ -15,14 +15,14 @@ use crate::{ctypes, utils::char_ptr_to_str};
 // TODO: remove it to `utils`
 use core::hash::Hasher;
 
-struct SimpleHasher(u64);
+struct SimpleHasher(u32);
 impl Hasher for SimpleHasher {
     fn finish(&self) -> u64 {
-        self.0
+        self.0 as _
     }
     fn write(&mut self, bytes: &[u8]) {
         for &b in bytes {
-            self.0 = self.0.wrapping_mul(31).wrapping_add(b as u64);
+            self.0 = self.0.wrapping_mul(31).wrapping_add(b as u32);
         }
     }
 }
@@ -141,6 +141,9 @@ fn flags_to_options(flags: c_int, _mode: ctypes::mode_t) -> OpenOptions {
     }
     if flags & ctypes::O_DIRECTORY != 0 {
         options.directory(true);
+    }
+    if flags & ctypes::O_EXCL != 0 {
+        options.create_new(true);
     }
     options
 }

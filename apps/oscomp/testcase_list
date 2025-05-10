@@ -13,9 +13,9 @@ busybox cp /musl/lib/libc.so /lib/ld-linux-riscv64-lp64.so.1
 busybox cp /musl/lib/libc.so /lib/ld-musl-riscv64.so.1
 busybox cp /musl/lib/libc.so /lib/ld-linux-loongarch-lp64d.so.1
 busybox cp /musl/lib/libc.so /lib/ld-linux-x86-64.so.2
-busybox cp /musl/lib/* /lib/
+busybox cp -v /musl/lib/* /lib/
 busybox rm -rf /lib64/
-busybox cp /lib /lib64
+busybox cp -r /lib /lib64
 busybox ls -l /lib/
 # begin test
 /musl/basic_testcode.sh
@@ -245,9 +245,9 @@ busybox ls -l /lib/
 
 # ============ test cases compiled with glibc ============
 # setup glibc libraries
-busybox cp /glibc/lib/* /lib/
+busybox cp -v /glibc/lib/* /lib/
 busybox rm -rf /lib64/
-busybox cp /lib /lib64
+busybox cp -r /lib /lib64
 busybox ls -l /lib/
 # begin test
 /glibc/basic_testcode.sh

@@ -75,7 +75,7 @@ pub fn sys_sendfile(
     ) as _)
 }
 
-pub fn sys_truncate_impl(file: File, length: isize) -> LinuxResult<isize> {
+pub fn sys_truncate_impl(file: &File, length: isize) -> LinuxResult<isize> {
     // set size to length
     file.truncate(length as u64)
         .map_err(|_| axerrno::LinuxError::EIO)?;

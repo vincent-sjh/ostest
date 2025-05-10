@@ -1,15 +1,16 @@
-use core::ffi::{c_char, c_int, c_long};
-use axerrno::{LinuxError, LinuxResult};
-use axfs::fops;
-use axfs::fops::OpenOptions;
-use syscall_trace::syscall_trace;
 use crate::imp::fs::path::resolve_path_from_fd;
 use crate::imp::fs::sys_truncate_impl;
 use crate::interface::fs::UserStat;
 use crate::ptr::{UserInPtr, UserOutPtr};
+use arceos_posix_api::{File, get_file_like};
+use axerrno::{LinuxError, LinuxResult};
+use axfs::fops;
+use axfs::fops::OpenOptions;
+use core::ffi::{c_char, c_int, c_long};
+use syscall_trace::syscall_trace;
 
 #[syscall_trace]
-pub fn sys_truncate(path: UserInPtr<c_char>, length:c_long) -> LinuxResult<isize> {
+pub fn sys_truncate(path: UserInPtr<c_char>, length: c_long) -> LinuxResult<isize> {
     // get params
     let path = path.get_as_str()?;
 
@@ -18,19 +19,12 @@ pub fn sys_truncate(path: UserInPtr<c_char>, length:c_long) -> LinuxResult<isize
     options.truncate(true);
 
     let file = fops::File::open(path, &options)?;
-    sys_truncate_impl(file, length as _)
+    sys_truncate_impl(&file, length as _)
 }
 
 #[syscall_trace]
-pub fn sys_ftruncate(fd:c_int, length:c_long) -> LinuxResult<isize> {
-    if let Ok(filepath) = resolve_path_from_fd(fd){
-        let path = filepath.as_str();
-        let mut options = OpenOptions::new();
-        options.write(true);
-
-        let file = fops::File::open(path, &options)?;
-        sys_truncate_impl(file, length as _)
-    } else{
-        return Err(LinuxError::EBADFD);
-    }
+pub fn sys_ftruncate(fd: c_int, length: c_long) -> LinuxResult<isize> {
+    let file_like = get_file_like(fd)?.into_any();
+    let api_file = file_like.downcast_ref::<File>().ok_or(LinuxError::EINVAL)?;
+    sys_truncate_impl(&api_file.inner().lock(), length as _)
 }
