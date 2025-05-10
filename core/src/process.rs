@@ -1,4 +1,4 @@
-use crate::task::{WaitQueueWrapper, current_process};
+use crate::task::{current_process, WaitQueueWrapper};
 use alloc::collections::BTreeMap;
 use alloc::string::String;
 use alloc::sync::{Arc, Weak};
@@ -86,11 +86,13 @@ impl Drop for ProcessData {
     fn drop(&mut self) {
         trace!("process data drop: process={:?}", self.command_line.lock());
         // TODO: prevent memory leak
-        // See [`crate::new_user_aspace`]
-        let kernel = kernel_aspace().lock();
-        self.addr_space
-            .lock()
-            .clear_mappings(VirtAddrRange::from_start_size(kernel.base(), kernel.size()));
+        if !cfg!(target_arch = "aarch64") && !cfg!(target_arch = "loongarch64") {
+            // See [`crate::new_user_aspace`]
+            let kernel = kernel_aspace().lock();
+            self.addr_space
+                .lock()
+                .clear_mappings(VirtAddrRange::from_start_size(kernel.base(), kernel.size()));
+        }
     }
 }
 
