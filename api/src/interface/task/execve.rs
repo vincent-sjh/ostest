@@ -39,7 +39,7 @@ pub fn sys_execve(
     } else {
         let abs_path = resolve_path(path)?;
         let mut new_args = vec![abs_path.to_string()];
-        new_args.extend(args);
+        new_args.extend(args[1..].iter().cloned());
         sys_execve_impl(abs_path.to_string(), new_args, envs)
     }
 }
