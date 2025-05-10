@@ -4,8 +4,6 @@
 /musl/busybox cp /musl/busybox /bin/busybox
 # TODO: link busybox to /bin
 busybox cp /musl/busybox /bin/ls
-busybox rm -rf /musl/ltp
-busybox rm -rf /glibc/ltp
 busybox mkdir -p /lib
 
 # ============ test cases compiled with musl ============

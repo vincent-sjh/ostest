@@ -11,6 +11,7 @@ use starry_api::imp::task::*;
 use starry_api::imp::utils::*;
 use starry_api::interface::fs::io::*;
 use starry_api::interface::fs::path::*;
+use starry_api::interface::fs::*;
 use starry_api::interface::task::*;
 use starry_api::*;
 use starry_core::task::{time_stat_from_kernel_to_user, time_stat_from_user_to_kernel};
@@ -63,7 +64,6 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         Sysno::pipe2 => sys_pipe2(tf.arg0().into(), tf.arg1() as _),
         Sysno::close => sys_close(tf.arg0() as _),
         Sysno::chdir => sys_chdir(tf.arg0().into()),
-        Sysno::mkdirat => sys_mkdirat(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         Sysno::execve => sys_execve(tf.arg0().into(), tf.arg1().into(), tf.arg2().into()),
         Sysno::openat => sys_openat(
             tf.arg0() as _,
@@ -81,7 +81,6 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg3().into(),
             tf.arg4() as _,
         ),
-        Sysno::unlinkat => sys_unlinkat(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         Sysno::uname => sys_uname(tf.arg0().into()),
         Sysno::fstat => interface::fs::sys_fstat(tf.arg0() as _, tf.arg1().into()),
         Sysno::mount => sys_mount(
@@ -139,7 +138,10 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         Sysno::kill => sys_kill(tf.arg0() as _, tf.arg1() as _),
         Sysno::lseek => sys_lseek(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
         #[cfg(target_arch = "x86_64")]
-        Sysno::lstat => interface::fs::sys_lstat(tf.arg0().into(), tf.arg1().into()),
+        Sysno::lstat => sys_lstat(tf.arg0().into(), tf.arg1().into()),
+        #[cfg(target_arch = "x86_64")]
+        Sysno::mkdir => sys_mkdir(tf.arg0().into(), tf.arg1() as _),
+        Sysno::mkdirat => sys_mkdirat(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         #[cfg(target_arch = "x86_64")]
         Sysno::pipe => sys_pipe(tf.arg0().into()),
         #[cfg(target_arch = "x86_64")]
@@ -163,6 +165,8 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg3().into(),
         ),
         Sysno::readv => sys_readv(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
+        #[cfg(target_arch = "x86_64")]
+        Sysno::rename => sys_rename(tf.arg0().into(), tf.arg1().into()),
         Sysno::renameat => sys_renameat(
             tf.arg0() as _,
             tf.arg1().into(),
@@ -176,6 +180,8 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg3().into(),
             tf.arg4() as _,
         ),
+        #[cfg(target_arch = "x86_64")]
+        Sysno::rmdir => sys_rmdir(tf.arg0().into()),
         Sysno::rt_sigaction => sys_rt_sigaction(
             tf.arg0() as _,
             tf.arg1().into(),
@@ -224,6 +230,7 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         Sysno::tkill => sys_tkill(tf.arg0() as _, tf.arg1() as _),
         #[cfg(target_arch = "x86_64")]
         Sysno::unlink => sys_unlink(tf.arg0().into()),
+        Sysno::unlinkat => sys_unlinkat(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         Sysno::utimensat => sys_utimensat(
             tf.arg0() as _,
             tf.arg1().into(),

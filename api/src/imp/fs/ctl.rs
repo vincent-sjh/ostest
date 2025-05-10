@@ -32,24 +32,6 @@ pub fn sys_chdir(path: UserConstPtr<c_char>) -> LinuxResult<isize> {
     })
 }
 
-pub fn sys_mkdirat(dirfd: i32, path: UserConstPtr<c_char>, mode: u32) -> LinuxResult<isize> {
-    let path = path.get_as_str()?;
-
-    if !path.starts_with("/") && dirfd != AT_FDCWD as i32 {
-        warn!("unsupported.");
-        return Err(LinuxError::EINVAL);
-    }
-
-    if mode != 0 {
-        info!("directory mode not supported.");
-    }
-
-    axfs::api::create_dir(path).map(|_| 0).map_err(|err| {
-        warn!("Failed to create directory {path}: {err:?}");
-        err.into()
-    })
-}
-
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 struct DirEnt {
@@ -196,49 +178,6 @@ pub fn sys_linkat(
         .map_err(|err| err.into())
 }
 
-/// remove link of specific file (can be used to delete file)
-/// dir_fd: the directory of link to be removed
-/// path: the name of link to be removed
-/// flags: can be 0 or AT_REMOVEDIR
-/// return 0 when success, else return -1
-pub fn sys_unlinkat(dir_fd: isize, path: UserConstPtr<c_char>, flags: usize) -> LinuxResult<isize> {
-    let path = path.get_as_null_terminated()?;
-
-    const AT_REMOVEDIR: usize = 0x200;
-
-    arceos_posix_api::handle_file_path(dir_fd, Some(path.as_ptr() as _), false)
-        .inspect_err(|e| warn!("unlinkat error: {:?}", e))
-        .and_then(|path| {
-            if flags == AT_REMOVEDIR {
-                axfs::api::remove_dir(path.as_str())
-                    .inspect_err(|e| warn!("unlinkat error: {:?}", e))
-                    .map(|_| 0)
-            } else {
-                axfs::api::metadata(path.as_str()).and_then(|metadata| {
-                    if metadata.is_dir() {
-                        Err(AxError::IsADirectory)
-                    } else {
-                        debug!("unlink file: {:?}", path);
-                        arceos_posix_api::HARDLINK_MANAGER
-                            .remove_link(&path)
-                            .ok_or_else(|| {
-                                debug!("unlink file error");
-                                AxError::NotFound
-                            })
-                            .map(|_| 0)
-                    }
-                })
-            }
-        })
-        .map_err(|err| err.into())
-}
-
 pub fn sys_getcwd(buf: UserPtr<c_char>, size: usize) -> LinuxResult<isize> {
     Ok(arceos_posix_api::sys_getcwd(buf.get_as_null_terminated()?.as_ptr() as _, size) as _)
-}
-
-// TODO: [stub]
-pub fn sys_unlink(_path: UserConstPtr<c_char>) -> LinuxResult<isize> {
-    warn!("[sys_unlink] not implemented yet");
-    Ok(0)
 }
