@@ -54,7 +54,7 @@ BLK ?= n
 NET ?= n
 GRAPHIC ?= n
 BUS ?= pci
-MEM ?= 8G
+MEM ?= 128M
 ACCEL ?=
 
 DISK_IMG ?= disk.img

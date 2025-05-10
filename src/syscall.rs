@@ -226,6 +226,7 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         Sysno::ftruncate => sys_ftruncate(tf.arg0() as _, tf.arg1() as _),
         Sysno::sched_getaffinity => stub_unimplemented(syscall_num),
         Sysno::sched_setaffinity => stub_unimplemented(syscall_num),
+        Sysno::syslog => stub_bypass(syscall_num),
         _ => stub_unimplemented(syscall_num),
     };
     let ans = result.unwrap_or_else(|err| -err.code() as _);

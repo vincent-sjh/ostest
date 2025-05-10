@@ -6,6 +6,7 @@ use alloc::vec::Vec;
 use axerrno::LinuxResult;
 use core::ffi::c_char;
 use syscall_trace::syscall_trace;
+use crate::imp::fs::path::resolve_path;
 
 fn get_string_array(array: UserConstPtr<usize>) -> LinuxResult<Vec<String>> {
     let string_ptrs = array.get_as_null_terminated()?;
@@ -36,6 +37,9 @@ pub fn sys_execve(
         new_args.extend(args);
         sys_execve_impl(BUSYBOX.to_string(), new_args, envs)
     } else {
-        sys_execve_impl(path.to_string(), args, envs)
+        let abs_path = resolve_path(path)?;
+        let mut new_args = vec![abs_path.to_string()];
+        new_args.extend(args);
+        sys_execve_impl(abs_path.to_string(), new_args, envs)
     }
 }
