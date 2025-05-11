@@ -9,3 +9,4 @@ axruntime = { path = "%AX_ROOT%/modules/axruntime" }
 axns = { path = "%AX_ROOT%/modules/axns" }
 axfs = { path = "%AX_ROOT%/modules/axfs" }
 axconfig = { path = "%AX_ROOT%/modules/axconfig" }
+axalloc = { path = "%AX_ROOT%/modules/axalloc" }

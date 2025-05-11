@@ -1,12 +1,10 @@
 use crate::ptr::{PtrWrapper, UserOutPtr};
 use alloc::{sync::Arc, vec::Vec};
 use axerrno::{LinuxError, LinuxResult};
-use axtask::yield_now;
 use bitflags::bitflags;
 use linux_raw_sys::general::{
     __WALL, __WCLONE, __WNOTHREAD, WCONTINUED, WEXITED, WNOHANG, WNOWAIT, WUNTRACED,
 };
-use starry_core::process::get_process_data;
 use starry_core::task::{current_process, current_process_data};
 use syscall_trace::syscall_trace;
 use undefined_process::Pid;

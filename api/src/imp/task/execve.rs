@@ -1,5 +1,4 @@
-use alloc::string::{String, ToString};
-use alloc::sync::Arc;
+use alloc::string::String;
 use alloc::vec::Vec;
 use axerrno::{AxError, LinuxResult};
 use axhal::arch::UspaceContext;
@@ -8,7 +7,7 @@ use starry_core::mm;
 use starry_core::mm::map_trampoline;
 use starry_core::task::{current_process, current_process_data};
 
-pub fn sys_execve_impl(path: String, args: Vec<String>, mut envs: Vec<String>) -> LinuxResult<isize> {
+pub fn sys_execve_impl(path: String, args: Vec<String>, envs: Vec<String>) -> LinuxResult<isize> {
     // we need to wrap the function in a closure
     // `enter_uspace` will terminate the function, so the variables will not be dropped
     let uctx = {

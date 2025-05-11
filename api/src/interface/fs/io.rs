@@ -1,7 +1,5 @@
-use crate::imp::utils::path::resolve_path_from_fd;
 use crate::imp::fs::sys_truncate_impl;
-use crate::interface::fs::UserStat;
-use crate::ptr::{UserInPtr, UserOutPtr};
+use crate::ptr::UserInPtr;
 use arceos_posix_api::{File, get_file_like};
 use axerrno::{LinuxError, LinuxResult};
 use axfs::fops;

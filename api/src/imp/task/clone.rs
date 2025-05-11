@@ -11,7 +11,7 @@ use core::sync::atomic::Ordering;
 use linux_raw_sys::general::*;
 use spin::Mutex;
 use starry_core::mm::copy_from_kernel;
-use starry_core::process::{ProcessData, ThreadData, create_thread_data, get_process_data};
+use starry_core::process::{ProcessData, create_thread_data, get_process_data};
 use starry_core::task::{
     TaskExt, create_user_task, current_process, current_process_data, read_trapframe_from_kstack,
 };
@@ -197,7 +197,6 @@ pub fn sys_clone_impl(
     }
 
     if clone_flags.contains(CloneFlags::CHILD_SETTID) {
-        debug!("CLONE_CHILD_SETTID {:?}", addr_child_tid);
         thread_data
             .addr_set_child_tid
             .store(addr_child_tid, Ordering::Relaxed);

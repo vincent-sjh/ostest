@@ -12,6 +12,7 @@ mod syscall;
 use alloc::string::{String, ToString};
 use alloc::vec;
 use alloc::vec::Vec;
+use axalloc::global_allocator;
 use starry_core::entry::run_user_app;
 
 #[unsafe(no_mangle)]
@@ -21,7 +22,14 @@ fn main() {
         .split(',')
         .filter(|&x| !x.is_empty());
 
+    let allocator = global_allocator();
+
     for testcase in testcases {
+        error!(
+            "memory usage: {} KiB, available: {} KiB",
+            allocator.used_bytes() / 1024,
+            allocator.available_bytes() / 1024
+        );
         let testcase = testcase.trim();
         if testcase.is_empty() {
             continue;

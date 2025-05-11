@@ -48,7 +48,8 @@ pub fn sys_exit_impl(exit_code: i32, exit_group: bool) -> ! {
             if let Some(parent) = process.get_parent() {
                 if let Some(parent_data) = get_process_data(parent.get_pid()) {
                     let signal = parent_data.exit_signal.unwrap_or(Signo::SIGCHLD);
-                    let _ = send_signal_process(parent.get_pid(), SignalInfo::new(signal, SI_KERNEL));
+                    let _ =
+                        send_signal_process(parent.get_pid(), SignalInfo::new(signal, SI_KERNEL));
                     parent_data.child_exit_wq.notify_all(false)
                 }
             }

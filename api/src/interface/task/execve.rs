@@ -1,4 +1,5 @@
 use crate::imp::task::sys_execve_impl;
+use crate::imp::utils::path::resolve_path;
 use crate::ptr::{UserConstPtr, UserInPtr};
 use alloc::string::{String, ToString};
 use alloc::vec;
@@ -6,7 +7,6 @@ use alloc::vec::Vec;
 use axerrno::LinuxResult;
 use core::ffi::c_char;
 use syscall_trace::syscall_trace;
-use crate::imp::utils::path::resolve_path;
 
 fn get_string_array(array: UserConstPtr<usize>) -> LinuxResult<Vec<String>> {
     let string_ptrs = array.get_as_null_terminated()?;

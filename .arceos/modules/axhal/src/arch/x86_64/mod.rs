@@ -123,8 +123,6 @@ pub fn read_thread_pointer() -> usize {
 #[inline]
 pub unsafe fn write_thread_pointer(fs_base: usize) {
     unsafe { msr::wrmsr(msr::IA32_FS_BASE, fs_base as u64) }
-    let actual_fs_base = msr::rdmsr(msr::IA32_FS_BASE);
-    assert_eq!(fs_base as u64, actual_fs_base);
 }
 
 /// Initializes CPU states on the current CPU.

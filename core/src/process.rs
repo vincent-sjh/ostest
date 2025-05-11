@@ -1,4 +1,4 @@
-use crate::task::{current_process, WaitQueueWrapper};
+use crate::task::{WaitQueueWrapper, current_process};
 use alloc::collections::BTreeMap;
 use alloc::string::String;
 use alloc::sync::{Arc, Weak};

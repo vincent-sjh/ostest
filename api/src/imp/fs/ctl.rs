@@ -1,7 +1,6 @@
 use core::ffi::{c_char, c_void};
 
-use arceos_posix_api::AT_FDCWD;
-use axerrno::{AxError, LinuxError, LinuxResult};
+use axerrno::{LinuxError, LinuxResult};
 use axfs::fops::DirEntry;
 use macro_rules_attribute::apply;
 

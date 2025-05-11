@@ -1,11 +1,10 @@
-use alloc::sync::Arc;
 use core::ffi::{c_char, c_void};
 
+use crate::ptr::{PtrWrapper, UserConstPtr, UserPtr};
 use arceos_posix_api::ctypes::off_t;
 use arceos_posix_api::{self as api, ctypes::mode_t};
 use axerrno::LinuxResult;
 use axfs::fops::File;
-use crate::ptr::{PtrWrapper, UserConstPtr, UserPtr};
 
 pub fn sys_read(fd: i32, buf: UserPtr<c_void>, count: usize) -> LinuxResult<isize> {
     let buf = buf.get_as_bytes(count)?;
