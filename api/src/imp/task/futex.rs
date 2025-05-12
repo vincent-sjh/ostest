@@ -40,7 +40,7 @@ pub fn sys_futex(
                 .clone();
 
             if !timeout.is_null() {
-                wq.wait_timeout(timespec_to_timevalue(*timeout.get_as_ref()?));
+                wq.wait_timeout(timespec_to_timevalue(*timeout.get_as_ref()?), false);
             } else {
                 wq.wait();
             }
@@ -90,6 +90,6 @@ pub fn sys_futex(
         _ => {
             warn!("[sys_futex] unknown command: {}", command);
             Err(LinuxError::ENOSYS)
-        },
+        }
     }
 }

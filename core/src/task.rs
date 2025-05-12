@@ -177,7 +177,7 @@ impl Default for WaitQueueWrapper {
 impl axsignal::api::WaitQueue for WaitQueueWrapper {
     fn wait_timeout(&self, timeout: Option<Duration>) -> bool {
         if let Some(timeout) = timeout {
-            self.0.wait_timeout(timeout)
+            self.0.wait_timeout(timeout, false)
         } else {
             self.0.wait();
             true

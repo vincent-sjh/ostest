@@ -60,7 +60,7 @@ pub fn sys_unlink_impl(dir_fd: i32, path: &str, flags: UnlinkFlags) -> LinuxResu
     option.read(true);
     let file = axfs::fops::File::open(&path, &option)?;
     let node = file.get_node();
-    if Arc::strong_count(node) > 1 && path.as_str().starts_with("/tmp") {
+    if Arc::strong_count(node) > 1 && path.as_str().starts_with("/tmp/tmpfile") {
         // FIXME: currently, the way we check if the file is opened is not accurate
         info!("[sys_unlink_impl] file is opened, cannot unlink");
         return Err(LinuxError::EBUSY);
