@@ -5,6 +5,7 @@
 # TODO: link busybox to /bin
 busybox cp /musl/busybox /bin/ls
 busybox mkdir -p /lib
+busybox cp /glibc/lib/dlopen_dso.so /glibc
 busybox rm -rf /musl/ltp
 busybox rm -rf /glibc/ltp
 
@@ -374,7 +375,7 @@ busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 /glibc/runtest.exe -w entry-dynamic.exe clocale_mbfuncs
 /glibc/runtest.exe -w entry-dynamic.exe clock_gettime
 /glibc/runtest.exe -w entry-dynamic.exe dirname
-/glibc/runtest.exe -w entry-dynamic.exe dlopen
+cd /glibc && /glibc/runtest.exe -w entry-dynamic.exe dlopen
 /glibc/runtest.exe -w entry-dynamic.exe env
 /glibc/runtest.exe -w entry-dynamic.exe fdopen
 /glibc/runtest.exe -w entry-dynamic.exe fnmatch

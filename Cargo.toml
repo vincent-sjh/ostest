@@ -81,6 +81,7 @@ linkme.workspace = true
 
 starry-core.workspace = true
 starry-api.workspace = true
+arceos_posix_api.workspace = true
 
 syscalls = { git = "https://github.com/jasonwhite/syscalls.git", rev = "92624de", default-features = false }
 

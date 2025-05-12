@@ -46,7 +46,7 @@ fn main() {
 
         let envs = vec![
             "PATH=/bin".to_string(),
-            "LD_LIBRARY_PATH=/lib/".to_string(),
+            "LD_LIBRARY_PATH=/lib:/lib64".to_string(),
             // "LD_DEBUG=all".to_string(),
         ];
 
