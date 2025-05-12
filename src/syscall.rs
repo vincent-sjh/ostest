@@ -165,6 +165,23 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg3().into(),
         ),
         Sysno::readv => sys_readv(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
+        #[cfg(target_arch = "x86_64")]
+        Sysno::rename => sys_rename(tf.arg0().into(), tf.arg1().into()),
+        Sysno::renameat => sys_renameat(
+            tf.arg0() as _,
+            tf.arg1().into(),
+            tf.arg2() as _,
+            tf.arg3().into(),
+        ),
+        Sysno::renameat2 => sys_renameat2(
+            tf.arg0() as _,
+            tf.arg1().into(),
+            tf.arg2() as _,
+            tf.arg3().into(),
+            tf.arg4() as _,
+        ),
+        #[cfg(target_arch = "x86_64")]
+        Sysno::rmdir => sys_rmdir(tf.arg0().into()),
         Sysno::rt_sigaction => sys_rt_sigaction(
             tf.arg0() as _,
             tf.arg1().into(),

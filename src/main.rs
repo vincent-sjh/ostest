@@ -26,9 +26,11 @@ fn main() {
 
     for testcase in testcases {
         error!(
-            "memory usage: {} KiB, available: {} KiB",
+            "memory statistic: used: [{} KiB, {} pages], available: [{} KiB, {} pages]",
             allocator.used_bytes() / 1024,
-            allocator.available_bytes() / 1024
+            allocator.used_pages(),
+            allocator.available_bytes() / 1024,
+            allocator.available_pages()
         );
         let testcase = testcase.trim();
         if testcase.is_empty() {

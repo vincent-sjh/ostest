@@ -180,7 +180,10 @@ impl AddrSpace {
                                     return Err(AxError::NoMemory);
                                 }
                             }
-                            Err(_) => return Err(AxError::BadAddress),
+                            Err(_) => {
+                                error!("Bad Address at {}:{}:{}", module_path!(), file!(), line!());
+                                return Err(AxError::BadAddress);
+                            }
                         };
                     }
                 }
@@ -267,7 +270,11 @@ impl AddrSpace {
         for vaddr in PageIter4K::new(start.align_down_4k(), end_align_up)
             .expect("Failed to create page iterator")
         {
-            let (mut paddr, _, _) = pt.query(vaddr).map_err(|_| AxError::BadAddress)?;
+            let (mut paddr, _, _) = pt.query(vaddr).map_err(|e| {
+                error!("Paging Error: {}:{}:{}", module_path!(), file!(), line!());
+                error!("{:?}", e);
+                AxError::BadAddress
+            })?;
 
             let mut copy_size = (size - cnt).min(PAGE_SIZE_4K);
 
@@ -406,7 +413,10 @@ impl AddrSpace {
                     Ok((paddr, _, _)) => paddr,
                     // If the page is not mapped, skip it.
                     Err(PagingError::NotMapped) => continue,
-                    Err(_) => return Err(AxError::BadAddress),
+                    Err(_) => {
+                        error!("Bad Address at {}:{}:{}", module_path!(), file!(), line!());
+                        return Err(AxError::BadAddress);
+                    }
                 };
                 let new_addr = match new_aspace.pt.query(vaddr) {
                     Ok((paddr, _, _)) => paddr,
@@ -417,10 +427,16 @@ impl AddrSpace {
                         }
                         match new_aspace.pt.query(vaddr) {
                             Ok((paddr, _, _)) => paddr,
-                            Err(_) => return Err(AxError::BadAddress),
+                            Err(_) => {
+                                error!("Bad Address at {}:{}:{}", module_path!(), file!(), line!());
+                                return Err(AxError::BadAddress);
+                            }
                         }
                     }
-                    Err(_) => return Err(AxError::BadAddress),
+                    Err(_) => {
+                        error!("Bad Address at {}:{}:{}", module_path!(), file!(), line!());
+                        return Err(AxError::BadAddress);
+                    }
                 };
                 unsafe {
                     core::ptr::copy_nonoverlapping(

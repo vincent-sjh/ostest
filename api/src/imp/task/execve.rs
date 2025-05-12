@@ -1,5 +1,6 @@
 use alloc::string::String;
 use alloc::vec::Vec;
+use axalloc::global_allocator;
 use axerrno::{AxError, LinuxResult};
 use axhal::arch::UspaceContext;
 use axtask::current;
@@ -8,6 +9,14 @@ use starry_core::mm::map_trampoline;
 use starry_core::task::{current_process, current_process_data};
 
 pub fn sys_execve_impl(path: String, args: Vec<String>, envs: Vec<String>) -> LinuxResult<isize> {
+    let allocator = global_allocator();
+    error!(
+        "memory statistic: used: [{} KiB, {} pages], available: [{} KiB, {} pages]",
+        allocator.used_bytes() / 1024,
+        allocator.used_pages(),
+        allocator.available_bytes() / 1024,
+        allocator.available_pages()
+    );
     // we need to wrap the function in a closure
     // `enter_uspace` will terminate the function, so the variables will not be dropped
     let uctx = {
