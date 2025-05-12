@@ -150,7 +150,7 @@ impl File {
     fn access_node(&self, cap: Cap) -> AxResult<&VfsNodeRef> {
         self.node.access_or_err(cap, AxError::PermissionDenied)
     }
-    
+
     pub fn get_node(&self) -> &VfsNodeRef {
         unsafe { self.node.access_unchecked() }
     }

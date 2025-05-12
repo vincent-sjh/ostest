@@ -22,7 +22,7 @@ busybox cp -r /lib /lib64
 busybox ls -l /lib/
 # begin test
 busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
-/musl/basic/run-all.sh
+cd /musl/basic/ && ./run-all.sh
 /musl/basic/sleep
 busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 # begin libc test
@@ -257,7 +257,7 @@ busybox cp -r /lib /lib64
 busybox ls -l /lib/
 # begin test
 busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
-/glibc/basic/run-all.sh
+cd /glibc/basic/ && ./run-all.sh
 /glibc/basic/sleep
 busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 # begin glibc test
