@@ -19,7 +19,10 @@ busybox rm -rf /lib64/
 busybox cp -r /lib /lib64
 busybox ls -l /lib/
 # begin test
-/musl/basic_testcode.sh
+/musl/busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
+/musl/basic/run-all.sh
+/musl/basic/sleep
+/musl/busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 # begin libc test
 /musl/busybox echo "#### OS COMP TEST GROUP START libctest-musl ####"
 /musl/runtest.exe -w entry-static.exe argv
@@ -251,7 +254,10 @@ busybox rm -rf /lib64/
 busybox cp -r /lib /lib64
 busybox ls -l /lib/
 # begin test
-/glibc/basic_testcode.sh
+/glibc/busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
+/glibc/basic/run-all.sh
+/glibc/basic/sleep
+/glibc/busybox echo "#### OS COMP TEST GROUP END basic-glibc ####"
 # begin glibc test
 /glibc/busybox echo "#### OS COMP TEST GROUP START libctest-glibc ####"
 /glibc/runtest.exe -w entry-static.exe argv
