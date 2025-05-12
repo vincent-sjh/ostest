@@ -87,6 +87,9 @@ pub fn sys_futex(
             }
             Ok(count)
         }
-        _ => Err(LinuxError::ENOSYS),
+        _ => {
+            warn!("[sys_futex] unknown command: {}", command);
+            Err(LinuxError::ENOSYS)
+        },
     }
 }
