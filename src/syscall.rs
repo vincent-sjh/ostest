@@ -16,6 +16,7 @@ use starry_api::interface::task::*;
 use starry_api::*;
 use starry_core::task::{time_stat_from_kernel_to_user, time_stat_from_user_to_kernel};
 use syscalls::Sysno;
+use starry_api::interface::task::resource::*;
 
 #[register_trap_handler(SYSCALL)]
 fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
@@ -35,7 +36,7 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         Sysno::ioctl => sys_ioctl(tf.arg0() as _, tf.arg1() as _, tf.arg2().into()),
         Sysno::writev => sys_writev(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         Sysno::sched_yield => sys_sched_yield(),
-        // Sysno::nanosleep => sys_nanosleep(tf.arg0().into(), tf.arg1().into()),
+        Sysno::nanosleep => sys_nanosleep(tf.arg0().into(), tf.arg1().into()),
         Sysno::getpid => sys_getpid(),
         Sysno::getppid => sys_getppid(),
         Sysno::exit => sys_exit(tf.arg0() as _),
@@ -163,6 +164,14 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg1() as _,
             tf.arg2().into(),
             tf.arg3().into(),
+        ),
+        Sysno::setrlimit => sys_setrlimit(
+            tf.arg0() as _,
+            tf.arg1().into(),
+        ),
+        Sysno::getrlimit => sys_getrlimit(
+            tf.arg0() as _,
+            tf.arg1().into(),
         ),
         Sysno::readv => sys_readv(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         #[cfg(target_arch = "x86_64")]

@@ -7,12 +7,10 @@ use axhal::{
     arch::{TrapFrame, UspaceContext},
     time::{NANOS_PER_MICROS, NANOS_PER_SEC, monotonic_time_nanos},
 };
-use axmm::kernel_aspace;
 use axns::{AxNamespace, AxNamespaceIf};
 use axtask::{TaskExtRef, TaskInner, WaitQueue, current};
 use core::cell::RefCell;
 use core::time::Duration;
-use memory_addr::VirtAddrRange;
 use spin::Once;
 use undefined_process::process::Process;
 use undefined_process::thread::Thread;

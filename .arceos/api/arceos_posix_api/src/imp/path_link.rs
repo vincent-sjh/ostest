@@ -302,7 +302,7 @@ pub fn handle_file_path(
     let path = match path_addr {
         Some(addr) => {
             if addr.is_null() {
-                axlog::error!("路径地址为空");
+                axlog::warn!("路径地址为空");
                 return Err(AxError::BadAddress);
             }
             crate::utils::char_ptr_to_str(addr as *const _)

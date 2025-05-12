@@ -9,3 +9,4 @@ pub mod entry;
 pub mod mm;
 pub mod process;
 pub mod task;
+pub mod resource;

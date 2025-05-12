@@ -1,6 +1,6 @@
 use crate::ptr::UserInPtr;
 use crate::{
-    ptr::{PtrWrapper, UserConstPtr, UserPtr},
+    ptr::{PtrWrapper, UserPtr},
     syscall_instrument,
 };
 use axerrno::LinuxResult;
@@ -102,13 +102,4 @@ pub fn sys_arch_prctl(code: i32, addr: UserPtr<u64>, tf: &mut TrapFrame) -> Linu
 }
 
 // TODO: [stub] The method signature is not correct yet
-#[apply(syscall_instrument)]
-pub fn sys_prlimit64(
-    _pid: i32,
-    _resource: i32,
-    _new_limit: UserConstPtr<usize>,
-    _old_limit: UserPtr<usize>,
-) -> LinuxResult<isize> {
-    warn!("[sys_prlimit64] Not implemented yet");
-    Ok(0)
-}
+

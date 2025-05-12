@@ -1,4 +1,5 @@
-use crate::task::{WaitQueueWrapper, current_process};
+use crate::resource::ResourceLimits;
+use crate::task::WaitQueueWrapper;
 use alloc::collections::BTreeMap;
 use alloc::string::String;
 use alloc::sync::{Arc, Weak};
@@ -25,7 +26,8 @@ pub struct ProcessData {
     heap_bottom: AtomicUsize,
     /// The user heap top
     heap_top: AtomicUsize,
-    // TODO: resource limits
+    /// resource limits
+    pub resource_limits: Arc<Mutex<ResourceLimits>>,
     /// The child exit wait queue
     pub child_exit_wq: WaitQueue,
     /// The exit signal of the thread
@@ -48,8 +50,8 @@ impl ProcessData {
             addr_space,
             heap_bottom: AtomicUsize::new(axconfig::plat::USER_HEAP_BASE),
             heap_top: AtomicUsize::new(axconfig::plat::USER_HEAP_BASE),
+            resource_limits: Arc::new(Mutex::new(ResourceLimits::new())),
             futex_table: Mutex::new(BTreeMap::new()),
-            // rlim: RwLock::default(),
             child_exit_wq: WaitQueue::new(),
             exit_signal,
             signal: Arc::new(ProcessSignalManager::new(

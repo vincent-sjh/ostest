@@ -2,7 +2,7 @@ use crate::ptr::{PtrWrapper, UserInPtr};
 use crate::utils::time::timespec_to_timevalue;
 use alloc::sync::Arc;
 use axerrno::{LinuxError, LinuxResult};
-use axtask::{WaitQueue, current};
+use axtask::WaitQueue;
 use linux_raw_sys::general::{
     FUTEX_CMD_MASK, FUTEX_CMP_REQUEUE, FUTEX_REQUEUE, FUTEX_WAIT, FUTEX_WAKE, timespec,
 };
