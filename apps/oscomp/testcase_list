@@ -5,6 +5,8 @@
 # TODO: link busybox to /bin
 busybox cp /musl/busybox /bin/ls
 busybox mkdir -p /lib
+busybox rm -rf /musl/ltp
+busybox rm -glibc /musl/ltp
 
 # ============ test cases compiled with musl ============
 # setup musl libraries
