@@ -12,11 +12,12 @@ use starry_api::imp::utils::*;
 use starry_api::interface::fs::io::*;
 use starry_api::interface::fs::path::*;
 use starry_api::interface::fs::*;
+use starry_api::interface::task::resource::*;
 use starry_api::interface::task::*;
+use starry_api::interface::user::identity::*;
 use starry_api::*;
 use starry_core::task::{time_stat_from_kernel_to_user, time_stat_from_user_to_kernel};
 use syscalls::Sysno;
-use starry_api::interface::task::resource::*;
 
 #[register_trap_handler(SYSCALL)]
 fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
@@ -106,7 +107,7 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg2().into(),
             tf.arg3() as _,
         ),
-        Sysno::statx => interface::fs::sys_statx(
+        Sysno::statx => sys_statx(
             tf.arg0() as _,
             tf.arg1().into(),
             tf.arg2() as _,
@@ -121,7 +122,11 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         Sysno::arch_prctl => sys_arch_prctl(tf.arg0() as _, tf.arg1().into(), tf),
         Sysno::set_tid_address => sys_set_tid_address(tf.arg0().into()),
         Sysno::clock_gettime => sys_clock_gettime(tf.arg0() as _, tf.arg1().into()),
+        #[cfg(target_arch = "x86_64")]
+        Sysno::dup2 => sys_dup3(tf.arg0() as _, tf.arg1() as _),
         Sysno::exit_group => sys_exit_group(tf.arg0() as _),
+        #[cfg(target_arch = "x86_64")]
+        Sysno::fork => sys_fork(),
         Sysno::futex => sys_futex(
             tf.arg0().into(),
             tf.arg1() as _,
@@ -130,12 +135,11 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg4().into(),
             tf.arg5() as _,
         ),
-        Sysno::getuid => sys_getuid(),
-        #[cfg(target_arch = "x86_64")]
-        Sysno::dup2 => sys_dup3(tf.arg0() as _, tf.arg1() as _),
-        #[cfg(target_arch = "x86_64")]
-        Sysno::fork => sys_fork(),
+        Sysno::getegid => sys_getegid(),
+        Sysno::geteuid => sys_geteuid(),
+        Sysno::getgid => sys_getgid(),
         Sysno::gettid => sys_gettid(),
+        Sysno::getuid => sys_getuid(),
         Sysno::kill => sys_kill(tf.arg0() as _, tf.arg1() as _),
         Sysno::lseek => sys_lseek(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
         #[cfg(target_arch = "x86_64")]
@@ -165,14 +169,8 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg2().into(),
             tf.arg3().into(),
         ),
-        Sysno::setrlimit => sys_setrlimit(
-            tf.arg0() as _,
-            tf.arg1().into(),
-        ),
-        Sysno::getrlimit => sys_getrlimit(
-            tf.arg0() as _,
-            tf.arg1().into(),
-        ),
+        Sysno::setrlimit => sys_setrlimit(tf.arg0() as _, tf.arg1().into()),
+        Sysno::getrlimit => sys_getrlimit(tf.arg0() as _, tf.arg1().into()),
         Sysno::readv => sys_readv(tf.arg0() as _, tf.arg1().into(), tf.arg2() as _),
         #[cfg(target_arch = "x86_64")]
         Sysno::rename => sys_rename(tf.arg0().into(), tf.arg1().into()),

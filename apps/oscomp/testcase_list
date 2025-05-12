@@ -5,6 +5,8 @@
 # TODO: link busybox to /bin
 busybox cp /musl/busybox /bin/ls
 busybox mkdir -p /lib
+busybox rm -rf /musl/ltp
+busybox rm -rf /glibc/ltp
 
 # ============ test cases compiled with musl ============
 # setup musl libraries
@@ -19,7 +21,10 @@ busybox rm -rf /lib64/
 busybox cp -r /lib /lib64
 busybox ls -l /lib/
 # begin test
-/musl/basic_testcode.sh
+busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
+/musl/basic/run-all.sh
+/musl/basic/sleep
+busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 # begin libc test
 /musl/busybox echo "#### OS COMP TEST GROUP START libctest-musl ####"
 /musl/runtest.exe -w entry-static.exe argv
@@ -251,7 +256,10 @@ busybox rm -rf /lib64/
 busybox cp -r /lib /lib64
 busybox ls -l /lib/
 # begin test
-/glibc/basic_testcode.sh
+busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
+/glibc/basic/run-all.sh
+/glibc/basic/sleep
+busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 # begin glibc test
 /glibc/busybox echo "#### OS COMP TEST GROUP START libctest-glibc ####"
 /glibc/runtest.exe -w entry-static.exe argv

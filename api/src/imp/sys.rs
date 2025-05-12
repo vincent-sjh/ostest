@@ -2,10 +2,6 @@ use axerrno::LinuxResult;
 
 use crate::ptr::{PtrWrapper, UserPtr};
 
-pub fn sys_getuid() -> LinuxResult<isize> {
-    Ok(0)
-}
-
 #[repr(C)]
 pub struct UtsName {
     /// sysname

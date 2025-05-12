@@ -1,7 +1,6 @@
 use crate::ptr::{PtrWrapper, UserConstPtr, UserPtr};
 use arceos_posix_api as api;
 use axerrno::LinuxResult;
-use starry_core::task::current_process_data;
 
 pub fn sys_sched_yield() -> LinuxResult<isize> {
     Ok(api::sys_sched_yield() as _)
