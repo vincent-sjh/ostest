@@ -16,6 +16,7 @@ use starry_api::interface::task::*;
 use starry_api::*;
 use starry_core::task::{time_stat_from_kernel_to_user, time_stat_from_user_to_kernel};
 use syscalls::Sysno;
+use starry_api::imp::net::{sys_accept, sys_bind, sys_connect, sys_getpeername, sys_getsockname, sys_listen, sys_recvfrom, sys_sendto, sys_setsockopt, sys_shutdown, sys_socket};
 use starry_api::interface::task::resource::*;
 
 #[register_trap_handler(SYSCALL)]
@@ -246,6 +247,36 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg2().into(),
             tf.arg3() as _,
         ),
+        Sysno::socket => sys_socket(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
+        Sysno::bind => sys_bind(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
+        Sysno::getsockname => sys_getsockname(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
+        Sysno::setsockopt => sys_setsockopt(
+            tf.arg0() as _,
+            tf.arg1() as _,
+            tf.arg2() as _,
+            tf.arg3() as _,
+            tf.arg4() as _,
+        ),
+        Sysno::sendto => sys_sendto(
+            tf.arg0() as _,
+            tf.arg1() as _,
+            tf.arg2() as _,
+            tf.arg3() as _,
+            tf.arg4() as _,
+            tf.arg5() as _,
+        ),
+        Sysno::recvfrom => sys_recvfrom(
+            tf.arg0() as _,
+            tf.arg1() as _,
+            tf.arg2() as _,
+            tf.arg3() as _,
+            tf.arg4() as _,
+            tf.arg5() as _,
+        ),
+        Sysno::shutdown => sys_shutdown(tf.arg0() as _, tf.arg1() as _),
+        Sysno::listen => sys_listen(tf.arg0() as _, tf.arg1() as _),
+        Sysno::accept => sys_accept(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
+        Sysno::connect => sys_connect(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
         #[cfg(target_arch = "x86_64")]
         Sysno::access => stub_bypass(syscall_num),
         Sysno::faccessat => stub_bypass(syscall_num),

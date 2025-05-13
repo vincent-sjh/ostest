@@ -1,11 +1,31 @@
-#/musl/basic_testcode.sh
-#/glibc/basic_testcode.sh
+# ============ init code for oscomp test ============
+# setup the environment
+/musl/busybox mkdir -p /bin
+/musl/busybox cp /musl/busybox /bin/busybox
+# TODO: link busybox to /bin
+busybox cp /musl/busybox /bin/ls
+busybox mkdir -p /lib
+busybox rm -rf /musl/ltp
+busybox rm -rf /glibc/ltp
+
+# ============ test cases compiled with musl ============
+# setup musl libraries
+# TODO: use symlink instead of cp
+busybox cp /musl/lib/libc.so /lib/ld-linux-aarch64.so.1
+busybox cp /musl/lib/libc.so /lib/ld-linux-riscv64-lp64.so.1
+busybox cp /musl/lib/libc.so /lib/ld-musl-riscv64.so.1
+busybox cp /musl/lib/libc.so /lib/ld-linux-loongarch-lp64d.so.1
+busybox cp /musl/lib/libc.so /lib/ld-linux-x86-64.so.2
+busybox cp -v /musl/lib/* /lib/
+busybox rm -rf /lib64/
+busybox cp -r /lib /lib64
+busybox ls -l /lib/
+# begin test
 /musl/busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
 cd /musl/basic/ && ./run-all.sh
+/musl/basic/sleep
 /musl/busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
-/glibc/busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
-cd /glibc/basic/ && ./run-all.sh
-/glibc/busybox echo "#### OS COMP TEST GROUP END basic-glibc ####"
+# begin libc test
 /musl/busybox echo "#### OS COMP TEST GROUP START libctest-musl ####"
 /musl/runtest.exe -w entry-static.exe argv
 /musl/runtest.exe -w entry-static.exe basename
@@ -225,6 +245,22 @@ cd /glibc/basic/ && ./run-all.sh
 /musl/runtest.exe -w entry-dynamic.exe wcsncpy_read_overflow
 /musl/runtest.exe -w entry-dynamic.exe wcsstr_false_negative
 /musl/busybox echo "#### OS COMP TEST GROUP END libctest-musl ####"
+# end libc test
+/musl/busybox_testcode.sh
+/musl/lua_testcode.sh
+
+# ============ test cases compiled with glibc ============
+# setup glibc libraries
+busybox cp -v /glibc/lib/* /lib/
+busybox rm -rf /lib64/
+busybox cp -r /lib /lib64
+busybox ls -l /lib/
+# begin test
+/glibc/busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
+cd /musl/basic/ && ./run-all.sh
+/glibc/basic/sleep
+/glibc/busybox echo "#### OS COMP TEST GROUP END basic-glibc ####"
+# begin glibc test
 /glibc/busybox echo "#### OS COMP TEST GROUP START libctest-glibc ####"
 /glibc/runtest.exe -w entry-static.exe argv
 /glibc/runtest.exe -w entry-static.exe basename
@@ -444,7 +480,6 @@ cd /glibc/basic/ && ./run-all.sh
 /glibc/runtest.exe -w entry-dynamic.exe wcsncpy_read_overflow
 /glibc/runtest.exe -w entry-dynamic.exe wcsstr_false_negative
 /glibc/busybox echo "#### OS COMP TEST GROUP END libctest-glibc ####"
-/musl/busybox_testcode.sh
+# end glibc test
 /glibc/busybox_testcode.sh
-/musl/lua_testcode.sh
 /glibc/lua_testcode.sh

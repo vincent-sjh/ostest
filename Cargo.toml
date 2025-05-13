@@ -33,13 +33,15 @@ axhal = { git = "https://github.com/oscomp/arceos.git", features = ["uspace"] }
 axlog = { git = "https://github.com/oscomp/arceos.git" }
 axalloc = { git = "https://github.com/oscomp/arceos.git" }
 axmm = { git = "https://github.com/oscomp/arceos.git" }
+axnet = { git = "https://github.com/oscomp/arceos.git" }
 axns = { git = "https://github.com/oscomp/arceos.git", features = [
     "thread-local",
 ] }
 axsync = { git = "https://github.com/oscomp/arceos.git" }
 axtask = { git = "https://github.com/oscomp/arceos.git" }
 axsignal = { git = "https://github.com/Starry-OS/axsignal.git", rev = "7352c08" }
-
+# Other crates
+axio = "0.1"
 axerrno = "0.1"
 bitflags = "2.6"
 linkme = "0.3"
@@ -75,6 +77,7 @@ axhal.workspace = true
 axlog.workspace = true
 axtask.workspace = true
 axalloc.workspace = true
+arceos_posix_api.workspace = true
 
 axerrno.workspace = true
 linkme.workspace = true
