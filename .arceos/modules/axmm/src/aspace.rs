@@ -270,11 +270,7 @@ impl AddrSpace {
         for vaddr in PageIter4K::new(start.align_down_4k(), end_align_up)
             .expect("Failed to create page iterator")
         {
-            let (mut paddr, _, _) = pt.query(vaddr).map_err(|e| {
-                error!("Paging Error: {}:{}:{}", module_path!(), file!(), line!());
-                error!("{:?}", e);
-                AxError::BadAddress
-            })?;
+            let (mut paddr, _, _) = pt.query(vaddr).map_err(|_| AxError::BadAddress)?;
 
             let mut copy_size = (size - cnt).min(PAGE_SIZE_4K);
 

@@ -1,0 +1,76 @@
+Set AX_ROOT (ArceOS directory) to /home/dragon/os/oscomp-test-eternalcomet/.arceos
+make[1]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
+[93;1mwarning[0m: disk image "disk.img" already exists!
+make[1]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
+make[1]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
+[37maxconfig-gen[0m [90mconfigs/defconfig.toml configs/platforms/x86_64-qemu-q35.toml /home/dragon/os/oscomp-test-eternalcomet/configs/x86_64.toml -w smp=1 -w arch=x86_64 -w platform=x86_64-qemu-q35 -o "/home/dragon/os/oscomp-test-eternalcomet/.axconfig.toml"[0m
+make[1]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
+cp /home/dragon/os/oscomp-test-eternalcomet/sdcard-x86_64-basic.img /home/dragon/os/oscomp-test-eternalcomet/.arceos/disk.img
+make AX_TESTCASE=oscomp BLK=y NET=y FEATURES=fp_simd,lwext4_rs LOG=off run
+make[1]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet'
+Set AX_ROOT (ArceOS directory) to /home/dragon/os/oscomp-test-eternalcomet/.arceos
+make[2]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
+[93;1mwarning[0m: disk image "disk.img" already exists!
+make[2]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
+make[2]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
+[37maxconfig-gen[0m [90mconfigs/defconfig.toml configs/platforms/x86_64-qemu-q35.toml /home/dragon/os/oscomp-test-eternalcomet/configs/x86_64.toml -w smp=1 -w arch=x86_64 -w platform=x86_64-qemu-q35 -o "/home/dragon/os/oscomp-test-eternalcomet/.axconfig.toml" -c "/home/dragon/os/oscomp-test-eternalcomet/.axconfig.toml"[0m
+    [92;1mBuilding[0m App: oscomp-test-eternalcomet, Arch: x86_64, Platform: x86_64-qemu-q35, App type: rust
+[37mcargo -C /home/dragon/os/oscomp-test-eternalcomet build[0m [90m-Z unstable-options --target x86_64-unknown-none --target-dir /home/dragon/os/oscomp-test-eternalcomet/target --release  --features "axfeat/log-level-off axfeat/fp_simd axfeat/lwext4_rs"[0m
+[37mrust-objcopy --binary-architecture=x86_64[0m [90m/home/dragon/os/oscomp-test-eternalcomet/oscomp-test-eternalcomet_x86_64-qemu-q35.elf --strip-all -O binary /home/dragon/os/oscomp-test-eternalcomet/oscomp-test-eternalcomet_x86_64-qemu-q35.bin[0m
+    [96;1mRunning[0m on qemu...
+[37mqemu-system-x86_64[0m [90m-m 128M -smp 1 -machine q35 -kernel /home/dragon/os/oscomp-test-eternalcomet/oscomp-test-eternalcomet_x86_64-qemu-q35.elf -device virtio-blk-pci,drive=disk0 -drive id=disk0,if=none,format=raw,file=disk.img -device virtio-net-pci,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:5555,hostfwd=udp::5555-:5555 -nographic[0m
+c[?7l[2J[0mSeaBIOS (version 1.16.3-debian-1.16.3-2)
+
+
+iPXE (https://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+06FCAB40+06F0AB40 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from ROM..
+       d8888                            .d88888b.   .d8888b.
+      d88888                           d88P" "Y88b d88P  Y88b
+     d88P888                           888     888 Y88b.
+    d88P 888 888d888  .d8888b  .d88b.  888     888  "Y888b.
+   d88P  888 888P"   d88P"    d8P  Y8b 888     888     "Y88b.
+  d88P   888 888     888      88888888 888     888       "888
+ d8888888888 888     Y88b.    Y8b.     Y88b. .d88P Y88b  d88P
+d88P     888 888      "Y8888P  "Y8888   "Y88888P"   "Y8888P"
+
+arch = x86_64
+platform = x86_64-qemu-q35
+target = x86_64-unknown-none
+build_mode = release
+log_level = off
+smp = 1
+
+'/glibc/lib/ld-linux-x86-64.so.2' -> '/lib/ld-linux-x86-64.so.2'
+'/glibc/lib/dlopen_dso.so' -> '/lib/dlopen_dso.so'
+'/glibc/lib/ld-linux-x86-64.so.2' -> '/lib/ld-linux-x86-64.so.2'
+'/glibc/lib/libc.so.6' -> '/lib/libc.so.6'
+'/glibc/lib/libm.so.6' -> '/lib/libm.so.6'
+'/glibc/lib/tls_align_dso.so' -> '/lib/tls_align_dso.so'
+'/glibc/lib/tls_get_new-dtv_dso.so' -> '/lib/tls_get_new-dtv_dso.so'
+'/glibc/lib/tls_init_dso.so' -> '/lib/tls_init_dso.so'
+'/lib/./ld-linux-x86-64.so.2' -> '/lib64/./ld-linux-x86-64.so.2'
+'/lib/./dlopen_dso.so' -> '/lib64/./dlopen_dso.so'
+'/lib/./libc.so.6' -> '/lib64/./libc.so.6'
+'/lib/./libm.so.6' -> '/lib64/./libm.so.6'
+'/lib/./tls_align_dso.so' -> '/lib64/./tls_align_dso.so'
+'/lib/./tls_get_new-dtv_dso.so' -> '/lib64/./tls_get_new-dtv_dso.so'
+'/lib/./tls_init_dso.so' -> '/lib64/./tls_init_dso.so'
+'/lib/.' -> '/lib64/.'
+total 3035
+-rw-rw-rw-    1 1000     1000         13920 Jan  1 00:00 [0;0mdlopen_dso.so[m
+-rw-rw-rw-    1 1000     1000        215000 Jan  1 00:00 [0;0mld-linux-x86-64.so.2[m
+-rw-rw-rw-    1 1000     1000       1922136 Jan  1 00:00 [0;0mlibc.so.6[m
+-rw-rw-rw-    1 1000     1000        911904 Jan  1 00:00 [0;0mlibm.so.6[m
+-rw-rw-rw-    1 1000     1000         14296 Jan  1 00:00 [0;0mtls_align_dso.so[m
+-rw-rw-rw-    1 1000     1000         14296 Jan  1 00:00 [0;0mtls_get_new-dtv_dso.so[m
+-rw-rw-rw-    1 1000     1000         14232 Jan  1 00:00 [0;0mtls_init_dso.so[m
+========== START entry-dynamic.exe tls_get_new_dtv ==========
+The futex facility returned an unexpected error code.
+Pass!
+========== END entry-dynamic.exe tls_get_new_dtv ==========
+QEMU: Terminated
+make[2]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
+make[1]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet'
