@@ -21,12 +21,12 @@ busybox cp -v /musl/lib/* /lib/
 busybox cp -r /lib/. /lib64/
 busybox ls -l /lib64/
 # begin test
-# busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
-# /musl/basic_testcode.sh
-# busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
-# /musl/libctest_testcode.sh
-# /musl/busybox_testcode.sh
-# /musl/lua_testcode.sh
+busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
+/musl/basic_testcode.sh
+busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
+/musl/libctest_testcode.sh
+/musl/busybox_testcode.sh
+/musl/lua_testcode.sh
 
 # ============ test cases compiled with glibc ============
 # setup glibc libraries
