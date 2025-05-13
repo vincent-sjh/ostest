@@ -46,5 +46,6 @@ busybox rm /glibc/basic/test_close.txt
 busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
 /glibc/basic_testcode.sh
 busybox echo "#### OS COMP TEST GROUP END basic-glibc ####"
+/glibc/libctest_testcode.sh
 /glibc/busybox_testcode.sh
 /glibc/lua_testcode.sh
