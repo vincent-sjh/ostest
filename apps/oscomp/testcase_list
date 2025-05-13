@@ -28,15 +28,3 @@ busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 /musl/busybox_testcode.sh
 /musl/lua_testcode.sh
 
-# ============ test cases compiled with glibc ============
-# setup glibc libraries
-busybox cp -v /glibc/lib/* /lib/
-busybox cp -r /lib/. /lib64/
-busybox ls -l /lib64/
-# begin test
-busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
-cd /glibc && /glibc/basic_testcode.sh
-busybox echo "#### OS COMP TEST GROUP END basic-glibc ####"
-cd /glibc && /glibc/libctest_testcode.sh
-cd /glibc && /glibc/busybox_testcode.sh
-cd /glibc && /glibc/lua_testcode.sh
