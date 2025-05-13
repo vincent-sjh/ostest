@@ -108,11 +108,11 @@ impl RootDirectory {
 
         // Find the filesystem that has the longest mounted path match
         // TODO: more efficient, e.g. trie
-        let path = path.to_string() + "/";
+        let path_cmp = path.to_string() + "/";
         for (i, mp) in self.mounts.read().iter().enumerate() {
             // skip the first '/'
             let prefix = mp.path[1..].to_string() + "/";
-            if path.starts_with(&prefix) && mp.path.len() - 1 > max_len {
+            if path_cmp.starts_with(&prefix) && mp.path.len() - 1 > max_len {
                 max_len = mp.path.len() - 1;
                 idx = i;
             }
@@ -236,8 +236,7 @@ pub(crate) fn lookup(dir: Option<&VfsNodeRef>, path: &str) -> AxResult<VfsNodeRe
     if path.is_empty() {
         return ax_err!(NotFound);
     }
-    let parent = parent_node_of(dir, path);
-    let node = parent.lookup(path)?;
+    let node = parent_node_of(dir, path).lookup(path)?;
     if path.ends_with('/') && !node.get_attr()?.is_dir() {
         ax_err!(NotADirectory)
     } else {
