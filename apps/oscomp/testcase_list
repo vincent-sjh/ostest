@@ -9,6 +9,7 @@ busybox mkdir -p /lib64
 busybox cp /musl/lib/dlopen_dso.so /musl
 busybox cp /glibc/lib/dlopen_dso.so /glibc
 busybox cp -v /glibc/lib/ld-linux-* /lib/
+busybox cp /lib/ld-linux-riscv64-lp64d.so.1 /lib/ld-linux-riscv64-lp64.so.1
 
 # ============ test cases compiled with musl ============
 # setup musl libraries
