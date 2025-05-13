@@ -8,6 +8,7 @@ pub mod imp;
 pub mod interface;
 pub mod ptr;
 pub mod utils;
+mod sockaddr;
 
 macro_rules! syscall_instrument {(
     $( #[$attr:meta] )*

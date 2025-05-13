@@ -10,8 +10,9 @@ use axerrno::{LinuxError, LinuxResult};
 use axio::PollState;
 use axnet::{TcpSocket, UdpSocket};
 use axsync::Mutex;
+use num_enum::TryFromPrimitive;
 
-#[derive(Debug)]
+#[derive(TryFromPrimitive, Debug)]
 #[repr(u8)]
 #[allow(non_camel_case_types)]
 pub enum SocketOptionLevel {
@@ -19,20 +20,6 @@ pub enum SocketOptionLevel {
     Socket = 1,
     Tcp = 6,
     IPv6 = 41,
-}
-
-impl TryFrom<u8> for SocketOptionLevel {
-    type Error = LinuxError;
-
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
-        match value {
-            0 => Ok(SocketOptionLevel::IP),
-            1 => Ok(SocketOptionLevel::Socket),
-            6 => Ok(SocketOptionLevel::Tcp),
-            41 => Ok(SocketOptionLevel::IPv6),
-            _ => Err(LinuxError::EINVAL),
-        }
-    }
 }
 
 pub enum Socket {
