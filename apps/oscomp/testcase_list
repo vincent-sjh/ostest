@@ -21,10 +21,30 @@ busybox cp -v /musl/lib/* /lib/
 busybox cp -r /lib/. /lib64/
 busybox ls -l /lib64/
 # begin test
-busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
-/musl/basic_testcode.sh
-busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
-/musl/libctest_testcode.sh
-/musl/busybox_testcode.sh
-/musl/lua_testcode.sh
+# busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
+# /musl/basic_testcode.sh
+# busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
+# /musl/libctest_testcode.sh
+# /musl/busybox_testcode.sh
+# /musl/lua_testcode.sh
 
+# ============ test cases compiled with glibc ============
+# setup glibc libraries
+busybox cp -v /glibc/lib/* /lib/
+busybox cp -r /lib/. /lib64/
+busybox ls -l /lib64/
+
+# cd /glibc && /glibc/runtest.exe -w entry-dynamic.exe tls_get_new_dtv
+busybox rm -r /glibc/basic/test_mkdir
+busybox rm -r /glibc/basic/test_chdir
+busybox rm /glibc/basic/mnt/test_openat
+busybox rm /glibc/basic/test_mmap.txt
+busybox rm /glibc/basic/test_close.txt
+
+# begin test
+busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
+cd /glibc && /glibc/basic_testcode.sh
+busybox echo "#### OS COMP TEST GROUP END basic-glibc ####"
+# /glibc/libctest_testcode.sh
+cd /glibc && /glibc/busybox_testcode.sh
+cd /glibc && /glibc/lua_testcode.sh
