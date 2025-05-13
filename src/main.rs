@@ -37,9 +37,9 @@ fn main() {
             continue;
         }
         // sh mode
-        // let args = vec!["/musl/busybox", "sh", "-c", testcase];
+        let args = vec!["/musl/busybox", "sh", "-c", testcase];
         // direct mode
-        let args = testcase.split(" ");
+        // let args = testcase.split(" ");
         let args: Vec<String> = args.into_iter().map(String::from).collect();
 
         info!("[task manager] Running user task: {}", testcase);

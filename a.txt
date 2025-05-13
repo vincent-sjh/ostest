@@ -3,19 +3,9 @@ make[1]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
 [93;1mwarning[0m: disk image "disk.img" already exists!
 make[1]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
 make[1]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
-[37maxconfig-gen[0m [90mconfigs/defconfig.toml configs/platforms/x86_64-qemu-q35.toml /home/dragon/os/oscomp-test-eternalcomet/configs/x86_64.toml -w smp=1 -w arch=x86_64 -w platform=x86_64-qemu-q35 -o "/home/dragon/os/oscomp-test-eternalcomet/.axconfig.toml"[0m
-make[1]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
-cp /home/dragon/os/oscomp-test-eternalcomet/sdcard-x86_64-basic.img /home/dragon/os/oscomp-test-eternalcomet/.arceos/disk.img
-make AX_TESTCASE=oscomp BLK=y NET=y FEATURES=fp_simd,lwext4_rs LOG=off run
-make[1]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet'
-Set AX_ROOT (ArceOS directory) to /home/dragon/os/oscomp-test-eternalcomet/.arceos
-make[2]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
-[93;1mwarning[0m: disk image "disk.img" already exists!
-make[2]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
-make[2]: Entering directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
 [37maxconfig-gen[0m [90mconfigs/defconfig.toml configs/platforms/x86_64-qemu-q35.toml /home/dragon/os/oscomp-test-eternalcomet/configs/x86_64.toml -w smp=1 -w arch=x86_64 -w platform=x86_64-qemu-q35 -o "/home/dragon/os/oscomp-test-eternalcomet/.axconfig.toml" -c "/home/dragon/os/oscomp-test-eternalcomet/.axconfig.toml"[0m
     [92;1mBuilding[0m App: oscomp-test-eternalcomet, Arch: x86_64, Platform: x86_64-qemu-q35, App type: rust
-[37mcargo -C /home/dragon/os/oscomp-test-eternalcomet build[0m [90m-Z unstable-options --target x86_64-unknown-none --target-dir /home/dragon/os/oscomp-test-eternalcomet/target --release  --features "axfeat/log-level-off axfeat/fp_simd axfeat/lwext4_rs"[0m
+[37mcargo -C /home/dragon/os/oscomp-test-eternalcomet build[0m [90m-Z unstable-options --target x86_64-unknown-none --target-dir /home/dragon/os/oscomp-test-eternalcomet/target --release  --features "axfeat/log-level-debug axfeat/fp_simd axfeat/lwext4_rs"[0m
 [37mrust-objcopy --binary-architecture=x86_64[0m [90m/home/dragon/os/oscomp-test-eternalcomet/oscomp-test-eternalcomet_x86_64-qemu-q35.elf --strip-all -O binary /home/dragon/os/oscomp-test-eternalcomet/oscomp-test-eternalcomet_x86_64-qemu-q35.bin[0m
     [96;1mRunning[0m on qemu...
 [37mqemu-system-x86_64[0m [90m-m 128M -smp 1 -machine q35 -kernel /home/dragon/os/oscomp-test-eternalcomet/oscomp-test-eternalcomet_x86_64-qemu-q35.elf -device virtio-blk-pci,drive=disk0 -drive id=disk0,if=none,format=raw,file=disk.img -device virtio-net-pci,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:5555,hostfwd=udp::5555-:5555 -nographic[0m
@@ -40,2008 +30,352 @@ arch = x86_64
 platform = x86_64-qemu-q35
 target = x86_64-unknown-none
 build_mode = release
-log_level = off
+log_level = debug
 smp = 1
 
-'/glibc/lib/ld-linux-x86-64.so.2' -> '/lib/ld-linux-x86-64.so.2'
-'/musl/lib/dlopen_dso.so' -> '/lib/dlopen_dso.so'
-'/musl/lib/libc.so' -> '/lib/libc.so'
-'/musl/lib/tls_align_dso.so' -> '/lib/tls_align_dso.so'
-'/musl/lib/tls_get_new-dtv_dso.so' -> '/lib/tls_get_new-dtv_dso.so'
-'/musl/lib/tls_init_dso.so' -> '/lib/tls_init_dso.so'
-total 3952
--rw-rw-rw-    1 1000     1000          5784 Jan  1 00:00 [0;0mdlopen_dso.so[m
--rw-rw-rw-    1 1000     1000        215000 Jan  1 00:00 [0;0mld-linux-x86-64.so.2[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mld-musl-aarch64.so.1[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mld-musl-loongarch64.so.1[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mld-musl-riscv64.so.1[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mld-musl-x86_64.so.1[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mlibc.so[m
--rw-rw-rw-    1 1000     1000          6000 Jan  1 00:00 [0;0mtls_align_dso.so[m
--rw-rw-rw-    1 1000     1000          6000 Jan  1 00:00 [0;0mtls_get_new-dtv_dso.so[m
--rw-rw-rw-    1 1000     1000          5936 Jan  1 00:00 [0;0mtls_init_dso.so[m
-#### OS COMP TEST GROUP START basic-musl ####
-#### OS COMP TEST GROUP START basic-musl-musl-musl ####
-Testing brk :
-========== START test_brk ==========
-Before alloc,heap pos: 1073741824
-After alloc,heap pos: 1073741888
-Alloc again,heap pos: 1073741952
-========== END test_brk ==========
-Testing chdir :
-========== START test_chdir ==========
-chdir ret: 0
-  current working dir : /musl/basic/test_chdir/
-========== END test_chdir ==========
-Testing clone :
-========== START test_clone ==========
-  Child says successfully!
-clone process successfully.
-pid:30
-========== END test_clone ==========
-Testing close :
-========== START test_close ==========
-  close 3 success.
-========== END test_close ==========
-Testing dup2 :
-========== START test_dup2 ==========
-  from fd 100
-========== END test_dup2 ==========
-Testing dup :
-========== START test_dup ==========
-  new fd is 3.
-========== END test_dup ==========
-Testing execve :
-========== START test_execve ==========
-  I am test_echo.
-execve success.
-========== END main ==========
-Testing exit :
-========== START test_exit ==========
-exit OK.
-========== END test_exit ==========
-Testing fork :
-========== START test_fork ==========
-  child process.
-  parent process. wstatus:0
-========== END test_fork ==========
-Testing fstat :
-========== START test_fstat ==========
-fstat ret: 0
-fstat: dev: 0, inode: 1505092561, mode: 33279, nlink: 1, size: 52, atime: 0, mtime: 0, ctime: 0
-========== END test_fstat ==========
-Testing getcwd :
-========== START test_getcwd ==========
-getcwd: /musl/basic/ successfully!
-========== END test_getcwd ==========
-Testing getdents :
-========== START test_getdents ==========
-open fd:3
-getdents fd:505
-getdents success.
-.
-
-========== END test_getdents ==========
-Testing getpid :
-========== START test_getpid ==========
-getpid success.
-pid = 42
-========== END test_getpid ==========
-Testing getppid :
-========== START test_getppid ==========
-  getppid success. ppid : 26
-========== END test_getppid ==========
-Testing gettimeofday :
-========== START test_gettimeofday ==========
-gettimeofday success.
-start:15211, end:15265
-interval: 54
-========== END test_gettimeofday ==========
-Testing mkdir_ :
-========== START test_mkdir ==========
-mkdir ret: 0
-  mkdir success.
-========== END test_mkdir ==========
-Testing mmap :
-========== START test_mmap ==========
-file len: 27
-mmap content:   Hello, mmap successfully!
-========== END test_mmap ==========
-Testing mount :
-========== START test_mount ==========
-Mounting dev:/dev/vda2 to ./mnt
-mount return: 0
-mount successfully
-umount return: 0
-========== END test_mount ==========
-Testing munmap :
-========== START test_munmap ==========
-file len: 27
-munmap return: 0
-munmap successfully!
-========== END test_munmap ==========
-Testing openat :
-========== START test_openat ==========
-open dir fd: 3
-openat fd: 4
-openat success.
-========== END test_openat ==========
-Testing open :
-========== START test_open ==========
-Hi, this is a text file.
-syscalls testing success!
-
-========== END test_open ==========
-Testing pipe :
-========== START test_pipe ==========
-cpid: 52
-cpid: 0
-  Write to pipe successfully.
-
-========== END test_pipe ==========
-Testing read :
-========== START test_read ==========
-Hi, this is a text file.
-syscalls testing success!
-
-========== END test_read ==========
-Testing sleep :
-========== START test_sleep ==========
-sleep success.
-========== END test_sleep ==========
-Testing times :
-========== START test_times ==========
-mytimes success
-{tms_utime:17297846, tms_stime:9549, tms_cutime:17297846, tms_cstime:9549}
-========== END test_times ==========
-Testing umount :
-========== START test_umount ==========
-Mounting dev:/dev/vda2 to ./mnt
-mount return: 0
-umount success.
-return: 0
-========== END test_umount ==========
-Testing uname :
-========== START test_uname ==========
-Uname: Starry Starry - machine[0] 10.0.0 10.0.0 10.0.0 https://github.com/BattiestStone4/Starry-On-ArceOS
-========== END test_uname ==========
-Testing unlink :
-========== START test_unlink ==========
-  unlink success!
-========== END test_unlink ==========
-Testing wait :
-========== START test_wait ==========
-This is child process
-wait child success.
-wstatus: 0
-========== END test_wait ==========
-Testing waitpid :
-========== START test_waitpid ==========
-This is child process
-waitpid successfully.
-wstatus: 3
-========== END test_waitpid ==========
-Testing write :
-========== START test_write ==========
-Hello operating system contest.
-========== END test_write ==========
-Testing yield :
-========== START test_yield ==========
-  I am child process: 65. iteration 0.
-  I am child process: 66. iteration 1.
-  I am child process: 67. iteration 2.
-  I am child process: 65. iteration 0.
-  I am child process: 66. iteration 1.
-  I am child process: 67. iteration 2.
-  I am child process: 65. iteration 0.
-  I am child process: 66. iteration 1.
-  I am child process: 67. iteration 2.
-  I am child process: 65. iteration 0.
-  I am child process: 66. iteration 1.
-  I am child process: 67. iteration 2.
-  I am child process: 65. iteration 0.
-  I am child process: 66. iteration 1.
-  I am child process: 67. iteration 2.
-========== END test_yield ==========
-#### OS COMP TEST GROUP END basic-musl-musl-musl ####
-#### OS COMP TEST GROUP END basic-musl ####
-#### OS COMP TEST GROUP START libctest-musl ####
-========== START entry-static.exe argv ==========
-Pass!
-========== END entry-static.exe argv ==========
-========== START entry-static.exe basename ==========
-Pass!
-========== END entry-static.exe basename ==========
-========== START entry-static.exe clocale_mbfuncs ==========
-Pass!
-========== END entry-static.exe clocale_mbfuncs ==========
-========== START entry-static.exe clock_gettime ==========
-Pass!
-========== END entry-static.exe clock_gettime ==========
-========== START entry-static.exe dirname ==========
-Pass!
-========== END entry-static.exe dirname ==========
-========== START entry-static.exe env ==========
-Pass!
-========== END entry-static.exe env ==========
-========== START entry-static.exe fdopen ==========
-Pass!
-========== END entry-static.exe fdopen ==========
-========== START entry-static.exe fnmatch ==========
-Pass!
-========== END entry-static.exe fnmatch ==========
-========== START entry-static.exe fscanf ==========
-Pass!
-========== END entry-static.exe fscanf ==========
-========== START entry-static.exe fwscanf ==========
-Pass!
-========== END entry-static.exe fwscanf ==========
-========== START entry-static.exe iconv_open ==========
-Pass!
-========== END entry-static.exe iconv_open ==========
-========== START entry-static.exe inet_pton ==========
-Pass!
-========== END entry-static.exe inet_pton ==========
-========== START entry-static.exe mbc ==========
-Pass!
-========== END entry-static.exe mbc ==========
-========== START entry-static.exe memstream ==========
-Pass!
-========== END entry-static.exe memstream ==========
-========== START entry-static.exe pthread_cancel_points ==========
-FAIL pthread_cancel_points [status 1]
-========== END entry-static.exe pthread_cancel_points ==========
-========== START entry-static.exe pthread_cancel ==========
-Pass!
-========== END entry-static.exe pthread_cancel ==========
-========== START entry-static.exe pthread_cond ==========
-Pass!
-========== END entry-static.exe pthread_cond ==========
-========== START entry-static.exe pthread_tsd ==========
-Pass!
-========== END entry-static.exe pthread_tsd ==========
-========== START entry-static.exe qsort ==========
-Pass!
-========== END entry-static.exe qsort ==========
-========== START entry-static.exe random ==========
-Pass!
-========== END entry-static.exe random ==========
-========== START entry-static.exe search_hsearch ==========
-Pass!
-========== END entry-static.exe search_hsearch ==========
-========== START entry-static.exe search_insque ==========
-Pass!
-========== END entry-static.exe search_insque ==========
-========== START entry-static.exe search_lsearch ==========
-Pass!
-========== END entry-static.exe search_lsearch ==========
-========== START entry-static.exe search_tsearch ==========
-Pass!
-========== END entry-static.exe search_tsearch ==========
-========== START entry-static.exe setjmp ==========
-Pass!
-========== END entry-static.exe setjmp ==========
-========== START entry-static.exe snprintf ==========
-Pass!
-========== END entry-static.exe snprintf ==========
-========== START entry-static.exe socket ==========
-src/functional/socket.c:20: (s=socket(2, 2, 17))>=0 failed: errno = Function not implemented
-src/functional/socket.c:21: bind(s, (void *)&sa, sizeof sa)==0 failed: errno = Function not implemented
-src/functional/socket.c:22: getsockname(s, (void *)&sa, (socklen_t[]){sizeof sa})==0 failed: errno = Function not implemented
-src/functional/socket.c:24: setsockopt(s, 1, 20, &(struct timeval){.tv_usec=1}, sizeof(struct timeval))==0 failed: errno = Function not implemented
-src/functional/socket.c:27: (c=socket(2, 2, 17))>=0 failed: errno = Function not implemented
-src/functional/socket.c:29: sendto(c, "x", 1, 0, (void *)&sa, sizeof sa)==1 failed: errno = Function not implemented
-src/functional/socket.c:30: recvfrom(s, buf, sizeof buf, 0, (void *)&sa, (socklen_t[]){sizeof sa})==1 failed: errno = Function not implemented
-src/functional/socket.c:31: buf[0]=='x' failed: ' '
-src/functional/socket.c:38: (s=socket(2, 1|02000000, 6))>=0 failed: errno = Function not implemented
-src/functional/socket.c:39: fcntl(s, F_GETFD)&FD_CLOEXEC failed: SOCK_CLOEXEC did not work
-src/functional/socket.c:40: bind(s, (void *)&sa, sizeof sa)==0 failed: errno = Function not implemented
-src/functional/socket.c:41: getsockname(s, (void *)&sa, (socklen_t[]){sizeof sa})==0 failed: errno = Function not implemented
-src/functional/socket.c:44: listen(s, 1)==0 failed: errno = Function not implemented
-src/functional/socket.c:46: (c=socket(2, 1|04000, 6))>=0 failed: errno = Function not implemented
-src/functional/socket.c:47: fcntl(c, F_GETFL)&O_NONBLOCK failed: SOCK_NONBLOCK did not work
-src/functional/socket.c:49: connect(c, (void *)&sa, sizeof sa)==0 || (*__errno_location())==115 failed: errno = Function not implemented
-src/functional/socket.c:51: (t=accept(s, (void *)&sa, &(socklen_t){sizeof sa}))>=0 failed: errno = Function not implemented
-FAIL socket [status 1]
-========== END entry-static.exe socket ==========
-========== START entry-static.exe sscanf ==========
-Pass!
-========== END entry-static.exe sscanf ==========
-========== START entry-static.exe sscanf_long ==========
-Pass!
-========== END entry-static.exe sscanf_long ==========
-========== START entry-static.exe stat ==========
-Pass!
-========== END entry-static.exe stat ==========
-========== START entry-static.exe strftime ==========
-Pass!
-========== END entry-static.exe strftime ==========
-========== START entry-static.exe string ==========
-Pass!
-========== END entry-static.exe string ==========
-========== START entry-static.exe string_memcpy ==========
-Pass!
-========== END entry-static.exe string_memcpy ==========
-========== START entry-static.exe string_memmem ==========
-Pass!
-========== END entry-static.exe string_memmem ==========
-========== START entry-static.exe string_memset ==========
-Pass!
-========== END entry-static.exe string_memset ==========
-========== START entry-static.exe string_strchr ==========
-Pass!
-========== END entry-static.exe string_strchr ==========
-========== START entry-static.exe string_strcspn ==========
-Pass!
-========== END entry-static.exe string_strcspn ==========
-========== START entry-static.exe string_strstr ==========
-Pass!
-========== END entry-static.exe string_strstr ==========
-========== START entry-static.exe strptime ==========
-Pass!
-========== END entry-static.exe strptime ==========
-========== START entry-static.exe strtod ==========
-Pass!
-========== END entry-static.exe strtod ==========
-========== START entry-static.exe strtod_simple ==========
-Pass!
-========== END entry-static.exe strtod_simple ==========
-========== START entry-static.exe strtof ==========
-Pass!
-========== END entry-static.exe strtof ==========
-========== START entry-static.exe strtol ==========
-Pass!
-========== END entry-static.exe strtol ==========
-========== START entry-static.exe strtold ==========
-Pass!
-========== END entry-static.exe strtold ==========
-========== START entry-static.exe swprintf ==========
-Pass!
-========== END entry-static.exe swprintf ==========
-========== START entry-static.exe tgmath ==========
-Pass!
-========== END entry-static.exe tgmath ==========
-========== START entry-static.exe time ==========
-Pass!
-========== END entry-static.exe time ==========
-========== START entry-static.exe tls_align ==========
-Pass!
-========== END entry-static.exe tls_align ==========
-========== START entry-static.exe udiv ==========
-Pass!
-========== END entry-static.exe udiv ==========
-========== START entry-static.exe ungetc ==========
-Pass!
-========== END entry-static.exe ungetc ==========
-========== START entry-static.exe utime ==========
-src/functional/utime.c:47: st.st_atim.tv_sec >= t failed: 0
-src/functional/utime.c:55: st.st_mtim.tv_sec >= t failed: 0
-src/functional/utime.c:59: st.st_atim.tv_sec >= t failed: 0
-src/functional/utime.c:60: st.st_mtim.tv_sec >= t failed: 0
-src/functional/utime.c:65: st.st_atim.tv_sec == 1LL<<32 failed: 0
-src/functional/utime.c:66: st.st_mtim.tv_sec == 1LL<<32 failed: 0
-FAIL utime [status 1]
-========== END entry-static.exe utime ==========
-========== START entry-static.exe wcsstr ==========
-Pass!
-========== END entry-static.exe wcsstr ==========
-========== START entry-static.exe wcstol ==========
-Pass!
-========== END entry-static.exe wcstol ==========
-========== START entry-static.exe daemon_failure ==========
-Pass!
-========== END entry-static.exe daemon_failure ==========
-========== START entry-static.exe dn_expand_empty ==========
-Pass!
-========== END entry-static.exe dn_expand_empty ==========
-========== START entry-static.exe dn_expand_ptr_0 ==========
-Pass!
-========== END entry-static.exe dn_expand_ptr_0 ==========
-========== START entry-static.exe fflush_exit ==========
-Pass!
-========== END entry-static.exe fflush_exit ==========
-========== START entry-static.exe fgets_eof ==========
-Pass!
-========== END entry-static.exe fgets_eof ==========
-========== START entry-static.exe fgetwc_buffering ==========
-Pass!
-========== END entry-static.exe fgetwc_buffering ==========
-========== START entry-static.exe fpclassify_invalid_ld80 ==========
-Pass!
-========== END entry-static.exe fpclassify_invalid_ld80 ==========
-========== START entry-static.exe ftello_unflushed_append ==========
-Pass!
-========== END entry-static.exe ftello_unflushed_append ==========
-========== START entry-static.exe getpwnam_r_crash ==========
-Pass!
-========== END entry-static.exe getpwnam_r_crash ==========
-========== START entry-static.exe getpwnam_r_errno ==========
-Pass!
-========== END entry-static.exe getpwnam_r_errno ==========
-========== START entry-static.exe iconv_roundtrips ==========
-Pass!
-========== END entry-static.exe iconv_roundtrips ==========
-========== START entry-static.exe inet_ntop_v4mapped ==========
-Pass!
-========== END entry-static.exe inet_ntop_v4mapped ==========
-========== START entry-static.exe inet_pton_empty_last_field ==========
-Pass!
-========== END entry-static.exe inet_pton_empty_last_field ==========
-========== START entry-static.exe iswspace_null ==========
-Pass!
-========== END entry-static.exe iswspace_null ==========
-========== START entry-static.exe lrand48_signextend ==========
-Pass!
-========== END entry-static.exe lrand48_signextend ==========
-========== START entry-static.exe lseek_large ==========
-Pass!
-========== END entry-static.exe lseek_large ==========
-========== START entry-static.exe malloc_0 ==========
-Pass!
-========== END entry-static.exe malloc_0 ==========
-========== START entry-static.exe mbsrtowcs_overflow ==========
-Pass!
-========== END entry-static.exe mbsrtowcs_overflow ==========
-========== START entry-static.exe memmem_oob_read ==========
-Pass!
-========== END entry-static.exe memmem_oob_read ==========
-========== START entry-static.exe memmem_oob ==========
-Pass!
-========== END entry-static.exe memmem_oob ==========
-========== START entry-static.exe mkdtemp_failure ==========
-Pass!
-========== END entry-static.exe mkdtemp_failure ==========
-========== START entry-static.exe mkstemp_failure ==========
-Pass!
-========== END entry-static.exe mkstemp_failure ==========
-========== START entry-static.exe printf_1e9_oob ==========
-Pass!
-========== END entry-static.exe printf_1e9_oob ==========
-========== START entry-static.exe printf_fmt_g_round ==========
-Pass!
-========== END entry-static.exe printf_fmt_g_round ==========
-========== START entry-static.exe printf_fmt_g_zeros ==========
-Pass!
-========== END entry-static.exe printf_fmt_g_zeros ==========
-========== START entry-static.exe printf_fmt_n ==========
-Pass!
-========== END entry-static.exe printf_fmt_n ==========
-========== START entry-static.exe pthread_robust_detach ==========
-src/regression/pthread-robust-detach.c:33: pthread_mutexattr_setrobust(&mtx_a, 1) failed: (pshared==0) got 38 "Function not implemented" want 0 "No error information"
-FAIL pthread_robust_detach [status 1]
-========== END entry-static.exe pthread_robust_detach ==========
-========== START entry-static.exe pthread_cancel_sem_wait ==========
-Pass!
-========== END entry-static.exe pthread_cancel_sem_wait ==========
-========== START entry-static.exe pthread_cond_smasher ==========
-Pass!
-========== END entry-static.exe pthread_cond_smasher ==========
-========== START entry-static.exe pthread_condattr_setclock ==========
-Pass!
-========== END entry-static.exe pthread_condattr_setclock ==========
-========== START entry-static.exe pthread_exit_cancel ==========
-Pass!
-========== END entry-static.exe pthread_exit_cancel ==========
-========== START entry-static.exe pthread_once_deadlock ==========
-Pass!
-========== END entry-static.exe pthread_once_deadlock ==========
-========== START entry-static.exe pthread_rwlock_ebusy ==========
-Pass!
-========== END entry-static.exe pthread_rwlock_ebusy ==========
-========== START entry-static.exe putenv_doublefree ==========
-Pass!
-========== END entry-static.exe putenv_doublefree ==========
-========== START entry-static.exe regex_backref_0 ==========
-Pass!
-========== END entry-static.exe regex_backref_0 ==========
-========== START entry-static.exe regex_bracket_icase ==========
-Pass!
-========== END entry-static.exe regex_bracket_icase ==========
-========== START entry-static.exe regex_ere_backref ==========
-Pass!
-========== END entry-static.exe regex_ere_backref ==========
-========== START entry-static.exe regex_escaped_high_byte ==========
-Pass!
-========== END entry-static.exe regex_escaped_high_byte ==========
-========== START entry-static.exe regex_negated_range ==========
-Pass!
-========== END entry-static.exe regex_negated_range ==========
-========== START entry-static.exe regexec_nosub ==========
-Pass!
-========== END entry-static.exe regexec_nosub ==========
-========== START entry-static.exe rewind_clear_error ==========
-Pass!
-========== END entry-static.exe rewind_clear_error ==========
-========== START entry-static.exe rlimit_open_files ==========
-Pass!
-========== END entry-static.exe rlimit_open_files ==========
-========== START entry-static.exe scanf_bytes_consumed ==========
-Pass!
-========== END entry-static.exe scanf_bytes_consumed ==========
-========== START entry-static.exe scanf_match_literal_eof ==========
-Pass!
-========== END entry-static.exe scanf_match_literal_eof ==========
-========== START entry-static.exe scanf_nullbyte_char ==========
-Pass!
-========== END entry-static.exe scanf_nullbyte_char ==========
-========== START entry-static.exe setvbuf_unget ==========
-Pass!
-========== END entry-static.exe setvbuf_unget ==========
-========== START entry-static.exe sigprocmask_internal ==========
-Pass!
-========== END entry-static.exe sigprocmask_internal ==========
-========== START entry-static.exe sscanf_eof ==========
-Pass!
-========== END entry-static.exe sscanf_eof ==========
-========== START entry-static.exe statvfs ==========
-Pass!
-========== END entry-static.exe statvfs ==========
-========== START entry-static.exe strverscmp ==========
-Pass!
-========== END entry-static.exe strverscmp ==========
-========== START entry-static.exe syscall_sign_extend ==========
-Pass!
-========== END entry-static.exe syscall_sign_extend ==========
-========== START entry-static.exe uselocale_0 ==========
-Pass!
-========== END entry-static.exe uselocale_0 ==========
-========== START entry-static.exe wcsncpy_read_overflow ==========
-Pass!
-========== END entry-static.exe wcsncpy_read_overflow ==========
-========== START entry-static.exe wcsstr_false_negative ==========
-Pass!
-========== END entry-static.exe wcsstr_false_negative ==========
-========== START entry-dynamic.exe argv ==========
-Pass!
-========== END entry-dynamic.exe argv ==========
-========== START entry-dynamic.exe basename ==========
-Pass!
-========== END entry-dynamic.exe basename ==========
-========== START entry-dynamic.exe clocale_mbfuncs ==========
-Pass!
-========== END entry-dynamic.exe clocale_mbfuncs ==========
-========== START entry-dynamic.exe clock_gettime ==========
-Pass!
-========== END entry-dynamic.exe clock_gettime ==========
-========== START entry-dynamic.exe dirname ==========
-Pass!
-========== END entry-dynamic.exe dirname ==========
-========== START entry-dynamic.exe dlopen ==========
-Pass!
-========== END entry-dynamic.exe dlopen ==========
-========== START entry-dynamic.exe env ==========
-Pass!
-========== END entry-dynamic.exe env ==========
-========== START entry-dynamic.exe fdopen ==========
-Pass!
-========== END entry-dynamic.exe fdopen ==========
-========== START entry-dynamic.exe fnmatch ==========
-Pass!
-========== END entry-dynamic.exe fnmatch ==========
-========== START entry-dynamic.exe fscanf ==========
-Pass!
-========== END entry-dynamic.exe fscanf ==========
-========== START entry-dynamic.exe fwscanf ==========
-Pass!
-========== END entry-dynamic.exe fwscanf ==========
-========== START entry-dynamic.exe iconv_open ==========
-Pass!
-========== END entry-dynamic.exe iconv_open ==========
-========== START entry-dynamic.exe inet_pton ==========
-Pass!
-========== END entry-dynamic.exe inet_pton ==========
-========== START entry-dynamic.exe mbc ==========
-Pass!
-========== END entry-dynamic.exe mbc ==========
-========== START entry-dynamic.exe memstream ==========
-Pass!
-========== END entry-dynamic.exe memstream ==========
-========== START entry-dynamic.exe pthread_cancel_points ==========
-FAIL pthread_cancel_points [status 1]
-========== END entry-dynamic.exe pthread_cancel_points ==========
-========== START entry-dynamic.exe pthread_cancel ==========
-Pass!
-========== END entry-dynamic.exe pthread_cancel ==========
-========== START entry-dynamic.exe pthread_cond ==========
-Pass!
-========== END entry-dynamic.exe pthread_cond ==========
-========== START entry-dynamic.exe pthread_tsd ==========
-Pass!
-========== END entry-dynamic.exe pthread_tsd ==========
-========== START entry-dynamic.exe qsort ==========
-Pass!
-========== END entry-dynamic.exe qsort ==========
-========== START entry-dynamic.exe random ==========
-Pass!
-========== END entry-dynamic.exe random ==========
-========== START entry-dynamic.exe search_hsearch ==========
-Pass!
-========== END entry-dynamic.exe search_hsearch ==========
-========== START entry-dynamic.exe search_insque ==========
-Pass!
-========== END entry-dynamic.exe search_insque ==========
-========== START entry-dynamic.exe search_lsearch ==========
-Pass!
-========== END entry-dynamic.exe search_lsearch ==========
-========== START entry-dynamic.exe search_tsearch ==========
-Pass!
-========== END entry-dynamic.exe search_tsearch ==========
-========== START entry-dynamic.exe sem_init ==========
-Pass!
-========== END entry-dynamic.exe sem_init ==========
-========== START entry-dynamic.exe setjmp ==========
-Pass!
-========== END entry-dynamic.exe setjmp ==========
-========== START entry-dynamic.exe snprintf ==========
-Pass!
-========== END entry-dynamic.exe snprintf ==========
-========== START entry-dynamic.exe socket ==========
-src/functional/socket.c:20: (s=socket(2, 2, 17))>=0 failed: errno = Function not implemented
-src/functional/socket.c:21: bind(s, (void *)&sa, sizeof sa)==0 failed: errno = Function not implemented
-src/functional/socket.c:22: getsockname(s, (void *)&sa, (socklen_t[]){sizeof sa})==0 failed: errno = Function not implemented
-src/functional/socket.c:24: setsockopt(s, 1, 20, &(struct timeval){.tv_usec=1}, sizeof(struct timeval))==0 failed: errno = Function not implemented
-src/functional/socket.c:27: (c=socket(2, 2, 17))>=0 failed: errno = Function not implemented
-src/functional/socket.c:29: sendto(c, "x", 1, 0, (void *)&sa, sizeof sa)==1 failed: errno = Function not implemented
-src/functional/socket.c:30: recvfrom(s, buf, sizeof buf, 0, (void *)&sa, (socklen_t[]){sizeof sa})==1 failed: errno = Function not implemented
-src/functional/socket.c:31: buf[0]=='x' failed: ' '
-src/functional/socket.c:38: (s=socket(2, 1|02000000, 6))>=0 failed: errno = Function not implemented
-src/functional/socket.c:39: fcntl(s, F_GETFD)&FD_CLOEXEC failed: SOCK_CLOEXEC did not work
-src/functional/socket.c:40: bind(s, (void *)&sa, sizeof sa)==0 failed: errno = Function not implemented
-src/functional/socket.c:41: getsockname(s, (void *)&sa, (socklen_t[]){sizeof sa})==0 failed: errno = Function not implemented
-src/functional/socket.c:44: listen(s, 1)==0 failed: errno = Function not implemented
-src/functional/socket.c:46: (c=socket(2, 1|04000, 6))>=0 failed: errno = Function not implemented
-src/functional/socket.c:47: fcntl(c, F_GETFL)&O_NONBLOCK failed: SOCK_NONBLOCK did not work
-src/functional/socket.c:49: connect(c, (void *)&sa, sizeof sa)==0 || (*__errno_location())==115 failed: errno = Function not implemented
-src/functional/socket.c:51: (t=accept(s, (void *)&sa, &(socklen_t){sizeof sa}))>=0 failed: errno = Function not implemented
-FAIL socket [status 1]
-========== END entry-dynamic.exe socket ==========
-========== START entry-dynamic.exe sscanf ==========
-Pass!
-========== END entry-dynamic.exe sscanf ==========
-========== START entry-dynamic.exe sscanf_long ==========
-Pass!
-========== END entry-dynamic.exe sscanf_long ==========
-========== START entry-dynamic.exe stat ==========
-Pass!
-========== END entry-dynamic.exe stat ==========
-========== START entry-dynamic.exe strftime ==========
-Pass!
-========== END entry-dynamic.exe strftime ==========
-========== START entry-dynamic.exe string ==========
-Pass!
-========== END entry-dynamic.exe string ==========
-========== START entry-dynamic.exe string_memcpy ==========
-Pass!
-========== END entry-dynamic.exe string_memcpy ==========
-========== START entry-dynamic.exe string_memmem ==========
-Pass!
-========== END entry-dynamic.exe string_memmem ==========
-========== START entry-dynamic.exe string_memset ==========
-Pass!
-========== END entry-dynamic.exe string_memset ==========
-========== START entry-dynamic.exe string_strchr ==========
-Pass!
-========== END entry-dynamic.exe string_strchr ==========
-========== START entry-dynamic.exe string_strcspn ==========
-Pass!
-========== END entry-dynamic.exe string_strcspn ==========
-========== START entry-dynamic.exe string_strstr ==========
-Pass!
-========== END entry-dynamic.exe string_strstr ==========
-========== START entry-dynamic.exe strptime ==========
-Pass!
-========== END entry-dynamic.exe strptime ==========
-========== START entry-dynamic.exe strtod ==========
-Pass!
-========== END entry-dynamic.exe strtod ==========
-========== START entry-dynamic.exe strtod_simple ==========
-Pass!
-========== END entry-dynamic.exe strtod_simple ==========
-========== START entry-dynamic.exe strtof ==========
-Pass!
-========== END entry-dynamic.exe strtof ==========
-========== START entry-dynamic.exe strtol ==========
-Pass!
-========== END entry-dynamic.exe strtol ==========
-========== START entry-dynamic.exe strtold ==========
-Pass!
-========== END entry-dynamic.exe strtold ==========
-========== START entry-dynamic.exe swprintf ==========
-Pass!
-========== END entry-dynamic.exe swprintf ==========
-========== START entry-dynamic.exe tgmath ==========
-Pass!
-========== END entry-dynamic.exe tgmath ==========
-========== START entry-dynamic.exe time ==========
-Pass!
-========== END entry-dynamic.exe time ==========
-========== START entry-dynamic.exe tls_init ==========
-Pass!
-========== END entry-dynamic.exe tls_init ==========
-========== START entry-dynamic.exe tls_local_exec ==========
-Pass!
-========== END entry-dynamic.exe tls_local_exec ==========
-========== START entry-dynamic.exe udiv ==========
-Pass!
-========== END entry-dynamic.exe udiv ==========
-========== START entry-dynamic.exe ungetc ==========
-Pass!
-========== END entry-dynamic.exe ungetc ==========
-========== START entry-dynamic.exe utime ==========
-src/functional/utime.c:47: st.st_atim.tv_sec >= t failed: 0
-src/functional/utime.c:55: st.st_mtim.tv_sec >= t failed: 0
-src/functional/utime.c:59: st.st_atim.tv_sec >= t failed: 0
-src/functional/utime.c:60: st.st_mtim.tv_sec >= t failed: 0
-src/functional/utime.c:65: st.st_atim.tv_sec == 1LL<<32 failed: 0
-src/functional/utime.c:66: st.st_mtim.tv_sec == 1LL<<32 failed: 0
-FAIL utime [status 1]
-========== END entry-dynamic.exe utime ==========
-========== START entry-dynamic.exe wcsstr ==========
-Pass!
-========== END entry-dynamic.exe wcsstr ==========
-========== START entry-dynamic.exe wcstol ==========
-Pass!
-========== END entry-dynamic.exe wcstol ==========
-========== START entry-dynamic.exe daemon_failure ==========
-Pass!
-========== END entry-dynamic.exe daemon_failure ==========
-========== START entry-dynamic.exe dn_expand_empty ==========
-Pass!
-========== END entry-dynamic.exe dn_expand_empty ==========
-========== START entry-dynamic.exe dn_expand_ptr_0 ==========
-Pass!
-========== END entry-dynamic.exe dn_expand_ptr_0 ==========
-========== START entry-dynamic.exe fflush_exit ==========
-Pass!
-========== END entry-dynamic.exe fflush_exit ==========
-========== START entry-dynamic.exe fgets_eof ==========
-Pass!
-========== END entry-dynamic.exe fgets_eof ==========
-========== START entry-dynamic.exe fgetwc_buffering ==========
-Pass!
-========== END entry-dynamic.exe fgetwc_buffering ==========
-========== START entry-dynamic.exe fpclassify_invalid_ld80 ==========
-Pass!
-========== END entry-dynamic.exe fpclassify_invalid_ld80 ==========
-========== START entry-dynamic.exe ftello_unflushed_append ==========
-Pass!
-========== END entry-dynamic.exe ftello_unflushed_append ==========
-========== START entry-dynamic.exe getpwnam_r_crash ==========
-Pass!
-========== END entry-dynamic.exe getpwnam_r_crash ==========
-========== START entry-dynamic.exe getpwnam_r_errno ==========
-Pass!
-========== END entry-dynamic.exe getpwnam_r_errno ==========
-========== START entry-dynamic.exe iconv_roundtrips ==========
-Pass!
-========== END entry-dynamic.exe iconv_roundtrips ==========
-========== START entry-dynamic.exe inet_ntop_v4mapped ==========
-Pass!
-========== END entry-dynamic.exe inet_ntop_v4mapped ==========
-========== START entry-dynamic.exe inet_pton_empty_last_field ==========
-Pass!
-========== END entry-dynamic.exe inet_pton_empty_last_field ==========
-========== START entry-dynamic.exe iswspace_null ==========
-Pass!
-========== END entry-dynamic.exe iswspace_null ==========
-========== START entry-dynamic.exe lrand48_signextend ==========
-Pass!
-========== END entry-dynamic.exe lrand48_signextend ==========
-========== START entry-dynamic.exe lseek_large ==========
-Pass!
-========== END entry-dynamic.exe lseek_large ==========
-========== START entry-dynamic.exe malloc_0 ==========
-Pass!
-========== END entry-dynamic.exe malloc_0 ==========
-========== START entry-dynamic.exe mbsrtowcs_overflow ==========
-Pass!
-========== END entry-dynamic.exe mbsrtowcs_overflow ==========
-========== START entry-dynamic.exe memmem_oob_read ==========
-Pass!
-========== END entry-dynamic.exe memmem_oob_read ==========
-========== START entry-dynamic.exe memmem_oob ==========
-Pass!
-========== END entry-dynamic.exe memmem_oob ==========
-========== START entry-dynamic.exe mkdtemp_failure ==========
-Pass!
-========== END entry-dynamic.exe mkdtemp_failure ==========
-========== START entry-dynamic.exe mkstemp_failure ==========
-Pass!
-========== END entry-dynamic.exe mkstemp_failure ==========
-========== START entry-dynamic.exe printf_1e9_oob ==========
-Pass!
-========== END entry-dynamic.exe printf_1e9_oob ==========
-========== START entry-dynamic.exe printf_fmt_g_round ==========
-Pass!
-========== END entry-dynamic.exe printf_fmt_g_round ==========
-========== START entry-dynamic.exe printf_fmt_g_zeros ==========
-Pass!
-========== END entry-dynamic.exe printf_fmt_g_zeros ==========
-========== START entry-dynamic.exe printf_fmt_n ==========
-Pass!
-========== END entry-dynamic.exe printf_fmt_n ==========
-========== START entry-dynamic.exe pthread_robust_detach ==========
-src/regression/pthread-robust-detach.c:33: pthread_mutexattr_setrobust(&mtx_a, 1) failed: (pshared==0) got 38 "Function not implemented" want 0 "No error information"
-FAIL pthread_robust_detach [status 1]
-========== END entry-dynamic.exe pthread_robust_detach ==========
-========== START entry-dynamic.exe pthread_cond_smasher ==========
-Pass!
-========== END entry-dynamic.exe pthread_cond_smasher ==========
-========== START entry-dynamic.exe pthread_condattr_setclock ==========
-Pass!
-========== END entry-dynamic.exe pthread_condattr_setclock ==========
-========== START entry-dynamic.exe pthread_exit_cancel ==========
-Pass!
-========== END entry-dynamic.exe pthread_exit_cancel ==========
-========== START entry-dynamic.exe pthread_once_deadlock ==========
-Pass!
-========== END entry-dynamic.exe pthread_once_deadlock ==========
-========== START entry-dynamic.exe pthread_rwlock_ebusy ==========
-Pass!
-========== END entry-dynamic.exe pthread_rwlock_ebusy ==========
-========== START entry-dynamic.exe putenv_doublefree ==========
-Pass!
-========== END entry-dynamic.exe putenv_doublefree ==========
-========== START entry-dynamic.exe regex_backref_0 ==========
-Pass!
-========== END entry-dynamic.exe regex_backref_0 ==========
-========== START entry-dynamic.exe regex_bracket_icase ==========
-Pass!
-========== END entry-dynamic.exe regex_bracket_icase ==========
-========== START entry-dynamic.exe regex_ere_backref ==========
-Pass!
-========== END entry-dynamic.exe regex_ere_backref ==========
-========== START entry-dynamic.exe regex_escaped_high_byte ==========
-Pass!
-========== END entry-dynamic.exe regex_escaped_high_byte ==========
-========== START entry-dynamic.exe regex_negated_range ==========
-Pass!
-========== END entry-dynamic.exe regex_negated_range ==========
-========== START entry-dynamic.exe regexec_nosub ==========
-Pass!
-========== END entry-dynamic.exe regexec_nosub ==========
-========== START entry-dynamic.exe rewind_clear_error ==========
-Pass!
-========== END entry-dynamic.exe rewind_clear_error ==========
-========== START entry-dynamic.exe rlimit_open_files ==========
-Pass!
-========== END entry-dynamic.exe rlimit_open_files ==========
-========== START entry-dynamic.exe scanf_bytes_consumed ==========
-Pass!
-========== END entry-dynamic.exe scanf_bytes_consumed ==========
-========== START entry-dynamic.exe scanf_match_literal_eof ==========
-Pass!
-========== END entry-dynamic.exe scanf_match_literal_eof ==========
-========== START entry-dynamic.exe scanf_nullbyte_char ==========
-Pass!
-========== END entry-dynamic.exe scanf_nullbyte_char ==========
-========== START entry-dynamic.exe setvbuf_unget ==========
-Pass!
-========== END entry-dynamic.exe setvbuf_unget ==========
-========== START entry-dynamic.exe sigprocmask_internal ==========
-Pass!
-========== END entry-dynamic.exe sigprocmask_internal ==========
-========== START entry-dynamic.exe sscanf_eof ==========
-Pass!
-========== END entry-dynamic.exe sscanf_eof ==========
-========== START entry-dynamic.exe statvfs ==========
-Pass!
-========== END entry-dynamic.exe statvfs ==========
-========== START entry-dynamic.exe strverscmp ==========
-Pass!
-========== END entry-dynamic.exe strverscmp ==========
-========== START entry-dynamic.exe syscall_sign_extend ==========
-Pass!
-========== END entry-dynamic.exe syscall_sign_extend ==========
-========== START entry-dynamic.exe tls_get_new_dtv ==========
-Pass!
-========== END entry-dynamic.exe tls_get_new_dtv ==========
-========== START entry-dynamic.exe uselocale_0 ==========
-Pass!
-========== END entry-dynamic.exe uselocale_0 ==========
-========== START entry-dynamic.exe wcsncpy_read_overflow ==========
-Pass!
-========== END entry-dynamic.exe wcsncpy_read_overflow ==========
-========== START entry-dynamic.exe wcsstr_false_negative ==========
-Pass!
-========== END entry-dynamic.exe wcsstr_false_negative ==========
-#### OS COMP TEST GROUP END libctest-musl ####
-#### OS COMP TEST GROUP START busybox-musl-musl-musl ####
-#### independent command test
-testcase busybox echo "#### independent command test" success
-testcase busybox ash -c exit success
-testcase busybox sh -c exit success
-bbb
-testcase busybox basename /aaa/bbb success
-    January 1970
-Su Mo Tu We Th Fr Sa
-             1  2  3
- 4  5  6  7  8  9 10
-11 12 13 14 15 16 17
-18 19 20 21 22 23 24
-25 26 27 28 29 30 31
-                     
-testcase busybox cal success
-[H[Jtestcase busybox clear success
-Thu Jan  1 00:01:04 UTC 1970
-testcase busybox date success
-Filesystem           1K-blocks      Used Available Use% Mounted on
-testcase busybox df success
-/aaa
-testcase busybox dirname /aaa/bbb success
-testcase busybox dmesg success
-0	./basic/mnt
-0	./basic/test_chdir
-0	./basic/test_mkdir
-1395	./basic
-768	./lib
-7765	.
-testcase busybox du success
-2
-testcase busybox expr 1 + 1 success
-testcase busybox false success
-testcase busybox true success
-/bin/ls
-testcase busybox which ls success
-Starry
-testcase busybox uname success
- 00:01:06 up 0 min,  0 users,  load average: 0.00, 0.00, 0.00
-testcase busybox uptime success
-abcntestcase busybox printf "abcn" success
-PID   USER     TIME  COMMAND
-testcase busybox ps success
-/musl/
-testcase busybox pwd success
-              total        used        free      shared  buff/cache   available
-Mem:              0           0           0           0           0           0
--/+ buffers/cache:            0           0
-Swap:             0           0           0
-testcase busybox free success
-Sun Dec 31 00:00:00 1899  0.000000 seconds
-testcase busybox hwclock success
-sh: sleep: not found
-testcase busybox sh -c 'sleep 5' & ./busybox kill $! success
-[1;32marithoh[m                 [1;32miozone_testcode.sh[m      [1;32mloop_o[m
-[1;34mbasic[m                   [1;32miperf3[m                  [1;32mlooper[m
-[1;32mbasic_testcode.sh[m       [1;32miperf_testcode.sh[m       [1;32mltp_testcode.sh[m
-[1;32mbusy[m                    [1;32mlat_cmd[m                 [1;32mlua[m
-[1;32mbusybox[m                 [1;32mlat_connect[m             [1;32mlua_testcode.sh[m
-[1;32mbusybox_cmd.txt[m         [1;32mlat_ctx[m                 [1;32mmax_min.lua[m
-[1;32mbusybox_testcode.sh[m     [1;32mlat_dram_page[m           [1;32mmemsize[m
-[1;32mbw_file_rd[m              [1;32mlat_fcntl[m               [1;32mmhz[m
-[1;32mbw_mem[m                  [1;32mlat_fifo[m                [1;32mmsleep[m
-[1;32mbw_mmap_rd[m              [1;32mlat_fs[m                  [1;32mmulti.sh[m
-[1;32mbw_pipe[m                 [1;32mlat_http[m                [1;32mnetperf[m
-[1;32mbw_tcp[m                  [1;32mlat_mem_rd[m              [1;32mnetperf_testcode.sh[m
-[1;32mbw_unix[m                 [1;32mlat_mmap[m                [1;32mnetserver[m
-[1;32mcache[m                   [1;32mlat_ops[m                 [1;32mpar_mem[m
-[1;32mclock[m                   [1;32mlat_pagefault[m           [1;32mpar_ops[m
-[1;32mcontext1[m                [1;32mlat_pipe[m                [1;32mpipe[m
-[1;32mcyclictest[m              [1;32mlat_pmake[m               [1;32mrandom.lua[m
-[1;32mcyclictest_testcode.sh[m  [1;32mlat_proc[m                [1;32mregister[m
-[1;32mdate.lua[m                [1;32mlat_rand[m                [1;32mremove.lua[m
-[1;32mdhry2[m                   [1;32mlat_rpc[m                 [1;32mrhttp[m
-[1;32mdhry2reg[m                [1;32mlat_select[m              [1;32mround_num.lua[m
-[1;32mdisk[m                    [1;32mlat_sem[m                 [1;32mrun-dynamic.sh[m
-[0;0mdlopen_dso.so[m           [1;32mlat_sig[m                 [1;32mrun-static.sh[m
-[1;32mdouble[m                  [1;32mlat_syscall[m             [1;32mruntest.exe[m
-[1;32menough[m                  [1;32mlat_tcp[m                 [1;32mseek[m
-[1;32mentry-dynamic.exe[m       [1;32mlat_udp[m                 [1;32mshort[m
-[1;32mentry-static.exe[m        [1;32mlat_unix[m                [1;32msin30.lua[m
-[1;32mexecl[m                   [1;32mlat_unix_connect[m        [1;32msort.lua[m
-[1;32mfile_io.lua[m             [1;32mlat_usleep[m              [1;32mspawn[m
-[1;32mfloat[m                   [1;34mlib[m                     [1;32mstream[m
-[1;32mflushdisk[m               [1;32mlibc-bench[m              [1;32mstrings.lua[m
-[1;32mfstime[m                  [1;32mlibcbench_testcode.sh[m   [1;32msyscall[m
-[1;32mgetopt[m                  [1;32mlibctest_testcode.sh[m    [1;32mtest.sh[m
-[1;32mgfx-x11[m                 [1;32mline[m                    [1;32mtiming_o[m
-[1;32mhackbench[m               [1;32mlmbench[m                 [1;32mtlb[m
-[1;32mhanoi[m                   [1;32mlmbench_all[m             [1;32mtst.sh[m
-[1;32mhello[m                   [1;32mlmbench_testcode.sh[m     [1;32munixbench.logo[m
-[1;32mindex.base[m              [1;32mlmdd[m                    [1;32munixbench_testcode.sh[m
-[1;32mint[m                     [1;32mlmhttp[m                  [1;32mwhetstone-double[m
-[1;32miozone[m                  [1;32mlong[m
-testcase busybox ls success
-testcase busybox sleep 1 success
-#### file opration test
-testcase busybox echo "#### file opration test" success
-testcase busybox touch test.txt success
-testcase busybox echo "hello world" > test.txt success
-hello world
-testcase busybox cat test.txt success
-l
-testcase busybox cut -c 3 test.txt success
-0000000 062550 066154 020157 067567 066162 005144
-0000014
-testcase busybox od test.txt success
-hello world
-testcase busybox head test.txt success
-hello world
-testcase busybox tail test.txt success
-00000000  68 65 6c 6c 6f 20 77 6f  72 6c 64 0a              |hello world.|
-0000000c
-testcase busybox hexdump -C test.txt success
-6f5902ac237024bdd0c176cb93063dc4  test.txt
-testcase busybox md5sum test.txt success
-testcase busybox echo "ccccccc" >> test.txt success
-testcase busybox echo "bbbbbbb" >> test.txt success
-testcase busybox echo "aaaaaaa" >> test.txt success
-testcase busybox echo "2222222" >> test.txt success
-testcase busybox echo "1111111" >> test.txt success
-testcase busybox echo "bbbbbbb" >> test.txt success
-1111111
-2222222
-aaaaaaa
-bbbbbbb
-ccccccc
-hello world
-testcase busybox sort test.txt | ./busybox uniq success
-  File: test.txt
-  Size: 60        	Blocks: 1          IO Block: 512    regular file
-Device: 0h/0d	Inode: 1871649683  Links: 1
-Access: (0666/-rw-rw-rw-)  Uid: ( 1000/ UNKNOWN)   Gid: ( 1000/ UNKNOWN)
-Access: 1970-01-01 00:00:00.000000000 +0000
-Modify: 1970-01-01 00:00:00.000000000 +0000
-Change: 1970-01-01 00:00:00.000000000 +0000
-testcase busybox stat test.txt success
-hello world
-ccccccc
-bbbbbbb
-aaaaaaa
-2222222
-1111111
-bbbbbbb
-testcase busybox strings test.txt success
-        7         8        60 test.txt
-testcase busybox wc test.txt success
-testcase busybox [ -f test.txt ] success
-hello world
-ccccccc
-bbbbbbb
-aaaaaaa
-2222222
-1111111
-bbbbbbb
-testcase busybox more test.txt success
-testcase busybox rm test.txt success
-testcase busybox mkdir test_dir success
-testcase busybox mv test_dir test success
-testcase busybox rmdir test success
-echo "hello world" > test.txt
-grep hello busybox_cmd.txt
-testcase busybox grep hello busybox_cmd.txt success
-testcase busybox cp busybox_cmd.txt busybox_cmd.bak success
-testcase busybox rm busybox_cmd.bak success
-./busybox_cmd.txt
-testcase busybox find -name "busybox_cmd.txt" success
-#### OS COMP TEST GROUP END busybox-musl-musl-musl ####
-#### OS COMP TEST GROUP START lua-musl-musl-musl ####
-testcase lua date.lua success
-testcase lua file_io.lua success
-testcase lua max_min.lua success
-testcase lua random.lua success
-testcase lua remove.lua success
-testcase lua round_num.lua success
-testcase lua sin30.lua success
-testcase lua sort.lua success
-testcase lua strings.lua success
-#### OS COMP TEST GROUP END lua-musl-musl-musl ####
-'/glibc/lib/dlopen_dso.so' -> '/lib/dlopen_dso.so'
-'/glibc/lib/ld-linux-x86-64.so.2' -> '/lib/ld-linux-x86-64.so.2'
-'/glibc/lib/libc.so.6' -> '/lib/libc.so.6'
-'/glibc/lib/libm.so.6' -> '/lib/libm.so.6'
-'/glibc/lib/tls_align_dso.so' -> '/lib/tls_align_dso.so'
-'/glibc/lib/tls_get_new-dtv_dso.so' -> '/lib/tls_get_new-dtv_dso.so'
-'/glibc/lib/tls_init_dso.so' -> '/lib/tls_init_dso.so'
-total 6752
--rw-rw-rw-    1 1000     1000         13920 Jan  1 00:00 [0;0mdlopen_dso.so[m
--rw-rw-rw-    1 1000     1000        215000 Jan  1 00:00 [0;0mld-linux-x86-64.so.2[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mld-musl-aarch64.so.1[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mld-musl-loongarch64.so.1[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mld-musl-riscv64.so.1[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mld-musl-x86_64.so.1[m
--rw-rw-rw-    1 1000     1000        761152 Jan  1 00:00 [0;0mlibc.so[m
--rw-rw-rw-    1 1000     1000       1922136 Jan  1 00:00 [0;0mlibc.so.6[m
--rw-rw-rw-    1 1000     1000        911904 Jan  1 00:00 [0;0mlibm.so.6[m
--rw-rw-rw-    1 1000     1000         14296 Jan  1 00:00 [0;0mtls_align_dso.so[m
--rw-rw-rw-    1 1000     1000         14296 Jan  1 00:00 [0;0mtls_get_new-dtv_dso.so[m
--rw-rw-rw-    1 1000     1000         14232 Jan  1 00:00 [0;0mtls_init_dso.so[m
-#### OS COMP TEST GROUP START basic-glibc ####
-#### OS COMP TEST GROUP START basic-glibc-glibc-glibc ####
-Testing brk :
-========== START test_brk ==========
-Before alloc,heap pos: 1073741824
-After alloc,heap pos: 1073741888
-Alloc again,heap pos: 1073741952
-========== END test_brk ==========
-Testing chdir :
-========== START test_chdir ==========
-chdir ret: -13
-
- --- Assert Fatal ! ---
-Testing clone :
-========== START test_clone ==========
-  Child says successfully!
-clone process successfully.
-pid:713
-========== END test_clone ==========
-Testing close :
-========== START test_close ==========
-
- --- Assert Fatal ! ---
-Testing dup2 :
-========== START test_dup2 ==========
-  from fd 100
-========== END test_dup2 ==========
-Testing dup :
-========== START test_dup ==========
-  new fd is 3.
-========== END test_dup ==========
-Testing execve :
-========== START test_execve ==========
-  I am test_echo.
-execve success.
-========== END main ==========
-Testing exit :
-========== START test_exit ==========
-exit OK.
-========== END test_exit ==========
-Testing fork :
-========== START test_fork ==========
-  child process.
-  parent process. wstatus:0
-========== END test_fork ==========
-Testing fstat :
-========== START test_fstat ==========
-fstat ret: 0
-fstat: dev: 0, inode: 1406963081, mode: 33279, nlink: 1, size: 52, atime: 0, mtime: 0, ctime: 0
-========== END test_fstat ==========
-Testing getcwd :
-========== START test_getcwd ==========
-getcwd: /glibc/basic/ successfully!
-========== END test_getcwd ==========
-Testing getdents :
-========== START test_getdents ==========
-open fd:3
-getdents fd:509
-getdents success.
-.
-
-========== END test_getdents ==========
-Testing getpid :
-========== START test_getpid ==========
-getpid success.
-pid = 725
-========== END test_getpid ==========
-Testing getppid :
-========== START test_getppid ==========
-  getppid success. ppid : 709
-========== END test_getppid ==========
-Testing gettimeofday :
-========== START test_gettimeofday ==========
-gettimeofday success.
-start:92420, end:92473
-interval: 53
-========== END test_gettimeofday ==========
-Testing mkdir_ :
-========== START test_mkdir ==========
-mkdir ret: -17
-  mkdir success.
-========== END test_mkdir ==========
-Testing mmap :
-========== START test_mmap ==========
-file len: 0
-mmap content: Testing mount :
-========== START test_mount ==========
-Mounting dev:/dev/vda2 to ./mnt
-mount return: 0
-mount successfully
-umount return: 0
-========== END test_mount ==========
-Testing munmap :
-========== START test_munmap ==========
-file len: 0
-munmap return: -22
-
- --- Assert Fatal ! ---
-Testing openat :
-========== START test_openat ==========
-open dir fd: 3
-openat fd: 4
-openat success.
-========== END test_openat ==========
-Testing open :
-========== START test_open ==========
-Hi, this is a text file.
-syscalls testing success!
-
-========== END test_open ==========
-Testing pipe :
-========== START test_pipe ==========
-cpid: 735
-cpid: 0
-  Write to pipe successfully.
-
-========== END test_pipe ==========
-Testing read :
-========== START test_read ==========
-Hi, this is a text file.
-syscalls testing success!
-
-========== END test_read ==========
-Testing sleep :
-========== START test_sleep ==========
-sleep success.
-========== END test_sleep ==========
-Testing times :
-========== START test_times ==========
-mytimes success
-{tms_utime:94561353, tms_stime:12950, tms_cutime:94561353, tms_cstime:12950}
-========== END test_times ==========
-Testing umount :
-========== START test_umount ==========
-Mounting dev:/dev/vda2 to ./mnt
-mount return: 0
-umount success.
-return: 0
-========== END test_umount ==========
-Testing uname :
-========== START test_uname ==========
-Uname: Starry Starry - machine[0] 10.0.0 10.0.0 10.0.0 https://github.com/BattiestStone4/Starry-On-ArceOS
-========== END test_uname ==========
-Testing unlink :
-========== START test_unlink ==========
-  unlink success!
-========== END test_unlink ==========
-Testing wait :
-========== START test_wait ==========
-This is child process
-wait child success.
-wstatus: 0
-========== END test_wait ==========
-Testing waitpid :
-========== START test_waitpid ==========
-This is child process
-waitpid successfully.
-wstatus: 3
-========== END test_waitpid ==========
-Testing write :
-========== START test_write ==========
-Hello operating system contest.
-========== END test_write ==========
-Testing yield :
-========== START test_yield ==========
-  I am child process: 748. iteration 0.
-  I am child process: 749. iteration 1.
-  I am child process: 750. iteration 2.
-  I am child process: 748. iteration 0.
-  I am child process: 749. iteration 1.
-  I am child process: 750. iteration 2.
-  I am child process: 748. iteration 0.
-  I am child process: 749. iteration 1.
-  I am child process: 750. iteration 2.
-  I am child process: 748. iteration 0.
-  I am child process: 749. iteration 1.
-  I am child process: 750. iteration 2.
-  I am child process: 748. iteration 0.
-  I am child process: 749. iteration 1.
-  I am child process: 750. iteration 2.
-========== END test_yield ==========
-#### OS COMP TEST GROUP END basic-glibc-glibc-glibc ####
-#### OS COMP TEST GROUP END basic-glibc ####
-#### OS COMP TEST GROUP START libctest-glibc ####
-========== START entry-static.exe argv ==========
-Pass!
-========== END entry-static.exe argv ==========
-========== START entry-static.exe basename ==========
-Pass!
-========== END entry-static.exe basename ==========
-========== START entry-static.exe clocale_mbfuncs ==========
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 80 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 80 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 81 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 81 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 82 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 82 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 83 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 83 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 84 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 84 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 85 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 85 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 86 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 86 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 87 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 87 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 88 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 88 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 89 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 89 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 8a to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 8a to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 8b to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 8b to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 8c to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 8c to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 8d to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 8d to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 8e to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 8e to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 8f to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 8f to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 90 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 90 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 91 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 91 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 92 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 92 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 93 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 93 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 94 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 94 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 95 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 95 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 96 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 96 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 97 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 97 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 98 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 98 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 99 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 99 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 9a to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 9a to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 9b to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 9b to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 9c to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 9c to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 9d to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 9d to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 9e to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 9e to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte 9f to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte 9f to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a0 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a0 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a1 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a1 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a2 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a2 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a3 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a3 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a4 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a4 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a5 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a5 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a6 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a6 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a7 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a7 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a8 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a8 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte a9 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte a9 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte aa to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte aa to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ab to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ab to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ac to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ac to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ad to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ad to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ae to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ae to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte af to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte af to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b0 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b0 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b1 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b1 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b2 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b2 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b3 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b3 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b4 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b4 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b5 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b5 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b6 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b6 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b7 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b7 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b8 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b8 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte b9 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte b9 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ba to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ba to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte bb to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte bb to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte bc to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte bc to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte bd to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte bd to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte be to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte be to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte bf to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte bf to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c0 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c0 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c1 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c1 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c2 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c2 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c3 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c3 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c4 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c4 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c5 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c5 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c6 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c6 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c7 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c7 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c8 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c8 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte c9 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte c9 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ca to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ca to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte cb to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte cb to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte cc to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte cc to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte cd to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte cd to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ce to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ce to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte cf to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte cf to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d0 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d0 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d1 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d1 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d2 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d2 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d3 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d3 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d4 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d4 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d5 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d5 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d6 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d6 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d7 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d7 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d8 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d8 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte d9 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte d9 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte da to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte da to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte db to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte db to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte dc to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte dc to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte dd to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte dd to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte de to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte de to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte df to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte df to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e0 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e0 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e1 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e1 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e2 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e2 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e3 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e3 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e4 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e4 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e5 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e5 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e6 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e6 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e7 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e7 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e8 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e8 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte e9 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte e9 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ea to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ea to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte eb to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte eb to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ec to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ec to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ed to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ed to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ee to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ee to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ef to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ef to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f0 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f0 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f1 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f1 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f2 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f2 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f3 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f3 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f4 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f4 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f5 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f5 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f6 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f6 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f7 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f7 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f8 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f8 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte f9 to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte f9 to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte fa to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte fa to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte fb to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte fb to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte fc to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte fc to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte fd to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte fd to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte fe to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte fe to wchar_t
-src/functional/clocale_mbfuncs.c:28: mbrtowc failed to convert byte ff to wchar_t
-src/functional/clocale_mbfuncs.c:30: btowc failed to convert byte ff to wchar_t
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0000
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0001
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0002
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0003
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0004
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0005
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0006
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0007
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0008
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0009
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e000a
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e000b
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e000c
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e000d
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e000e
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e000f
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0010
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0011
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0012
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0013
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0014
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0015
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0016
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0017
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0018
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0019
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e001a
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e001b
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e001c
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e001d
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e001e
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e001f
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0020
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0021
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0022
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0023
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0024
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0025
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0026
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0027
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0028
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0029
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e002a
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e002b
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e002c
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e002d
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e002e
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e002f
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0030
-src/functional/clocale_mbfuncs.c:52: wcrtomb accepted non-image wchar_t e0031
-src/functional/clocale_mbfuncs.c:55: additional 128 non-image errors (not printed)
-src/functional/clocale_mbfuncs.c:60: wcsrtombs returned -1, expected 255
-src/functional/clocale_mbfuncs.c:62: mbsrtowcs returned 127, expected 255
-src/functional/clocale_mbfuncs.c:64: wcsrtombs/mbsrtowcs round trip failed
-FAIL clocale_mbfuncs [status 1]
-========== END entry-static.exe clocale_mbfuncs ==========
-========== START entry-static.exe clock_gettime ==========
-src/functional/clock_gettime.c:12: clock_gettime(CLOCK_REALTIME, &ts) == 0 && errno == 0 failed: Cannot allocate memory
-FAIL clock_gettime [status 1]
-========== END entry-static.exe clock_gettime ==========
-========== START entry-static.exe dirname ==========
-Pass!
-========== END entry-static.exe dirname ==========
-========== START entry-static.exe env ==========
-Pass!
-========== END entry-static.exe env ==========
-========== START entry-static.exe fdopen ==========
-Pass!
-========== END entry-static.exe fdopen ==========
-========== START entry-static.exe fnmatch ==========
-src/functional/fnmatch.c:156: fnmatch("[[?*\]", "\", 0) failed, got 1 want 0
-src/functional/fnmatch.c:156: fnmatch("[]?*\]", "]", 0) failed, got 1 want 0
-src/functional/fnmatch.c:156: fnmatch("*[![:digit:]]*/[![:d-d]", "a/b", FNM_PATHNAME) failed, got 0 want -1
-src/functional/fnmatch.c:156: fnmatch("*[![:digit:]]*/[[:d-d]", "a/[", FNM_PATHNAME) failed, got 0 want -1
-src/functional/fnmatch.c:156: fnmatch("\", "\", 0) failed, got 1 want 0
-FAIL fnmatch [status 1]
-========== END entry-static.exe fnmatch ==========
-========== START entry-static.exe fscanf ==========
-src/functional/fscanf.c:52: fscanf(f, "ld %5i%2i", &x, &y) failed (got 2 fields, expected 1)
-src/functional/fscanf.c:59: !!(f=writetemp("      42")) failed (failed to make temp file)
-src/functional/fscanf.c:70: !!(f=writetemp("[abc123]....x")) failed (failed to make temp file)
-src/functional/fscanf.c:84: !!(f=writetemp("0x1p 12")) failed (failed to make temp file)
-src/functional/fscanf.c:108: !!(f=writetemp("0x.1p4    012")) failed (failed to make temp file)
-src/functional/fscanf.c:121: !!(f=writetemp("0xx")) failed (failed to make temp file)
-FAIL fscanf [status 1]
-========== END entry-static.exe fscanf ==========
-========== START entry-static.exe fwscanf ==========
-src/functional/fwscanf.c:42: !!(f=writetemp("      42")) failed (failed to make temp file)
-src/functional/fwscanf.c:53: !!(f=writetemp("[abc123]....x")) failed (failed to make temp file)
-src/functional/fwscanf.c:67: !!(f=writetemp("0x1p 12")) failed (failed to make temp file)
-src/functional/fwscanf.c:91: !!(f=writetemp("0x.1p4    012")) failed (failed to make temp file)
-src/functional/fwscanf.c:104: !!(f=writetemp("0xx")) failed (failed to make temp file)
-FAIL fwscanf [status 1]
-========== END entry-static.exe fwscanf ==========
-========== START entry-static.exe iconv_open ==========
-Pass!
-========== END entry-static.exe iconv_open ==========
-========== START entry-static.exe inet_pton ==========
-Pass!
-========== END entry-static.exe inet_pton ==========
-========== START entry-static.exe mbc ==========
-src/functional/mbc.c:44: cannot set UTF-8 locale for test (codeset=ANSI_X3.4-1968)
-FAIL mbc [status 83]
-========== END entry-static.exe mbc ==========
-========== START entry-static.exe memstream ==========
-Pass!
-========== END entry-static.exe memstream ==========
-========== START entry-static.exe pthread_cancel_points ==========
-The futex facility returned an unexpected error code.
-FAIL pthread_cancel_points [status 137]
-========== END entry-static.exe pthread_cancel_points ==========
-========== START entry-static.exe pthread_cancel ==========
-The futex facility returned an unexpected error code.
-FAIL pthread_cancel [status 137]
-========== END entry-static.exe pthread_cancel ==========
-========== START entry-static.exe pthread_cond ==========
-The futex facility returned an unexpected error code.
-FAIL pthread_cond [status 137]
-========== END entry-static.exe pthread_cond ==========
-========== START entry-static.exe pthread_tsd ==========
-The futex facility returned an unexpected error code.
-Pass!
-========== END entry-static.exe pthread_tsd ==========
-========== START entry-static.exe qsort ==========
-Pass!
-========== END entry-static.exe qsort ==========
-========== START entry-static.exe random ==========
-Pass!
-========== END entry-static.exe random ==========
-========== START entry-static.exe search_hsearch ==========
-Pass!
-========== END entry-static.exe search_hsearch ==========
-========== START entry-static.exe search_insque ==========
-Pass!
-========== END entry-static.exe search_insque ==========
-========== START entry-static.exe search_lsearch ==========
-Pass!
-========== END entry-static.exe search_lsearch ==========
-========== START entry-static.exe search_tsearch ==========
-Pass!
-========== END entry-static.exe search_tsearch ==========
-========== START entry-static.exe setjmp ==========
-Pass!
-========== END entry-static.exe setjmp ==========
-========== START entry-static.exe snprintf ==========
-Pass!
-========== END entry-static.exe snprintf ==========
-========== START entry-static.exe socket ==========
-src/functional/socket.c:20: (s=socket(2, SOCK_DGRAM, IPPROTO_UDP))>=0 failed: errno = Function not implemented
-src/functional/socket.c:21: bind(s, (void *)&sa, sizeof sa)==0 failed: errno = Function not implemented
-src/functional/socket.c:22: getsockname(s, (void *)&sa, (socklen_t[]){sizeof sa})==0 failed: errno = Function not implemented
-src/functional/socket.c:24: setsockopt(s, 1, 20, &(struct timeval){.tv_usec=1}, sizeof(struct timeval))==0 failed: errno = Function not implemented
-src/functional/socket.c:27: (c=socket(2, SOCK_DGRAM, IPPROTO_UDP))>=0 failed: errno = Function not implemented
-src/functional/socket.c:29: sendto(c, "x", 1, 0, (void *)&sa, sizeof sa)==1 failed: errno = Function not implemented
-src/functional/socket.c:30: recvfrom(s, buf, sizeof buf, 0, (void *)&sa, (socklen_t[]){sizeof sa})==1 failed: errno = Function not implemented
-src/functional/socket.c:31: buf[0]=='x' failed: ' '
-src/functional/socket.c:38: (s=socket(2, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_TCP))>=0 failed: errno = Function not implemented
-src/functional/socket.c:39: fcntl(s, F_GETFD)&FD_CLOEXEC failed: SOCK_CLOEXEC did not work
-src/functional/socket.c:40: bind(s, (void *)&sa, sizeof sa)==0 failed: errno = Function not implemented
-src/functional/socket.c:41: getsockname(s, (void *)&sa, (socklen_t[]){sizeof sa})==0 failed: errno = Function not implemented
-src/functional/socket.c:44: listen(s, 1)==0 failed: errno = Function not implemented
-src/functional/socket.c:46: (c=socket(2, SOCK_STREAM|SOCK_NONBLOCK, IPPROTO_TCP))>=0 failed: errno = Function not implemented
-src/functional/socket.c:47: fcntl(c, F_GETFL)&O_NONBLOCK failed: SOCK_NONBLOCK did not work
-src/functional/socket.c:49: connect(c, (void *)&sa, sizeof sa)==0 || (*__errno_location ())==115 failed: errno = Function not implemented
-src/functional/socket.c:51: (t=accept(s, (void *)&sa, &(socklen_t){sizeof sa}))>=0 failed: errno = Function not implemented
-FAIL socket [status 1]
-========== END entry-static.exe socket ==========
-========== START entry-static.exe sscanf ==========
-src/functional/sscanf.c:39: sscanf("hello, world\n", "%8c%8c", a, b) failed (2 fields, expected 1)
-src/functional/sscanf.c:66: sscanf(" 0x12 0x34", "%5i%2i", &x, &y) failed (got 2 fields, expected 1)
-src/functional/sscanf.c:83: sscanf("10e", "%lf", &d) failed (got 1 fields, expected no match (0))
-FAIL sscanf [status 1]
-========== END entry-static.exe sscanf ==========
-========== START entry-static.exe sscanf_long ==========
-Pass!
-========== END entry-static.exe sscanf_long ==========
-========== START entry-static.exe stat ==========
-src/functional/stat.c:22: st.st_ctime<=t failed: 0 > -1
-src/functional/stat.c:23: st.st_mtime<=t failed: 0 > -1
-src/functional/stat.c:24: st.st_atime<=t failed: 0 > -1
-FAIL stat [status 1]
-========== END entry-static.exe stat ==========
-========== START entry-static.exe strftime ==========
-src/functional/strftime.c:14: "%c": expected "Mon Jan  5 05:17:53 +10009", got "Mon Jan  5 05:17:53 10009"
-src/functional/strftime.c:14: "%c": expected "Wed Feb 23 12:00:00 0000", got "Wed Feb 23 12:00:00 0"
-src/functional/strftime.c:14: "%+3C": expected "+20", got "%+3C"
-src/functional/strftime.c:14: "%C": expected "00", got "0"
-src/functional/strftime.c:14: "%+10F": expected "2016-01-03", got "%+10F"
-src/functional/strftime.c:14: "%+11F": expected "+2016-01-03", got "%+11F"
-src/functional/strftime.c:14: "%F": expected "+10009-01-05", got "10009-01-05"
-src/functional/strftime.c:14: "%F": expected "0000-02-23", got "0-02-23"
-src/functional/strftime.c:14: "%011F": expected "-0123-01-01", got "0-123-01-01"
-src/functional/strftime.c:14: "%+5G": expected "+2015", got "%+5G"
-src/functional/strftime.c:14: "%+4Y": expected "2016", got "%+4Y"
-src/functional/strftime.c:14: "%+5Y": expected "+2016", got "%+5Y"
-src/functional/strftime.c:14: "%Y": expected "+10009", got "10009"
-src/functional/strftime.c:14: "%Y": expected "0000", got "0"
-src/functional/strftime.c:14: "%+5Y": expected "+0000", got "%+5Y"
-src/functional/strftime.c:14: "%+4Y": expected "-123", got "%+4Y"
-src/functional/strftime.c:14: "%+5Y": expected "-0123", got "%+5Y"
-src/functional/strftime.c:14: "%Y": expected "+2147485547", got "-2147481749"
-src/functional/strftime.c:14: "%011Y": expected "02147485547", got "-2147481749"
-FAIL strftime [status 1]
-========== END entry-static.exe strftime ==========
-========== START entry-static.exe string ==========
-Pass!
-========== END entry-static.exe string ==========
-========== START entry-static.exe string_memcpy ==========
-Pass!
-========== END entry-static.exe string_memcpy ==========
-========== START entry-static.exe string_memmem ==========
-Pass!
-========== END entry-static.exe string_memmem ==========
-========== START entry-static.exe string_memset ==========
-Pass!
-========== END entry-static.exe string_memset ==========
-========== START entry-static.exe string_strchr ==========
-Pass!
-========== END entry-static.exe string_strchr ==========
-========== START entry-static.exe string_strcspn ==========
-Pass!
-========== END entry-static.exe string_strcspn ==========
-========== START entry-static.exe string_strstr ==========
-Pass!
-========== END entry-static.exe string_strstr ==========
-========== START entry-static.exe strptime ==========
-Pass!
-========== END entry-static.exe strptime ==========
-========== START entry-static.exe strtod ==========
-Pass!
-========== END entry-static.exe strtod ==========
-========== START entry-static.exe strtod_simple ==========
-Pass!
-========== END entry-static.exe strtod_simple ==========
-========== START entry-static.exe strtof ==========
-Pass!
-========== END entry-static.exe strtof ==========
-========== START entry-static.exe strtol ==========
-src/functional/strtol.c:130: strtol(s="123", &c, 37) failed (wrong final position -5389852 != 0)
-FAIL strtol [status 1]
-========== END entry-static.exe strtol ==========
-========== START entry-static.exe strtold ==========
-Pass!
-========== END entry-static.exe strtold ==========
-========== START entry-static.exe swprintf ==========
-src/functional/swprintf.c:113: strcmp(nl_langinfo(CODESET), "UTF-8") failed (no UTF-8 locale; tests might fail)
-src/functional/swprintf.c:121: swprintf(b, 3, L"%s", "\xc3\x80!") failed (-1 != 2)
-src/functional/swprintf.c:122: b[0] failed (wrong character 0 != c0)
-src/functional/swprintf.c:123: swprintf(b, 2, L"%.1s", "\xc3\x80!") failed (-1 != 1)
-src/functional/swprintf.c:124: b[0] failed (wrong character 0 != c0)
-src/functional/swprintf.c:128: [123xxxxx] != [123] (incorrect output)
-FAIL swprintf [status 1]
-========== END entry-static.exe swprintf ==========
-========== START entry-static.exe tgmath ==========
-Pass!
-========== END entry-static.exe tgmath ==========
-========== START entry-static.exe time ==========
-Pass!
-========== END entry-static.exe time ==========
-========== START entry-static.exe tls_align ==========
-Pass!
-========== END entry-static.exe tls_align ==========
-========== START entry-static.exe udiv ==========
-Pass!
-========== END entry-static.exe udiv ==========
-========== START entry-static.exe ungetc ==========
-src/functional/ungetc.c:22: !(f = tmpfile()) failed (failed to create temp file 1!=0 (Invalid argument))
-FAIL ungetc [status 1]
-========== END entry-static.exe ungetc ==========
-========== START entry-static.exe utime ==========
-src/functional/utime.c:26: f = tmpfile() failed: FAIL utime [status 1]
-========== END entry-static.exe utime ==========
-========== START entry-static.exe wcsstr ==========
-Pass!
-========== END entry-static.exe wcsstr ==========
-========== START entry-static.exe wcstol ==========
-src/functional/wcstol.c:86: wcstol(s=L"123", &c, 37) failed (wrong final position -1353935 != 0)
-FAIL wcstol [status 1]
-========== END entry-static.exe wcstol ==========
-========== START entry-static.exe daemon_failure ==========
-src/regression/daemon-failure.c:52: daemon should have failed with 24 [EMFILE] got 38 [Function not implemented]
-src/regression/daemon-failure.c:54: daemon forked despite failure: ppid is 868, pid is 869, old pid is 868
-src/regression/daemon-failure.c:73: child failed
-FAIL daemon_failure [status 1]
-========== END entry-static.exe daemon_failure ==========
-========== START entry-static.exe dn_expand_empty ==========
-src/regression/dn_expand-empty.c:16: dn_expand("", name, 1) returned -1, wanted 1
-src/regression/dn_expand-empty.c:18: dn_expand("", name, 1) failed: got ".X" name, wanted ""
-FAIL dn_expand_empty [status 1]
-========== END entry-static.exe dn_expand_empty ==========
-========== START entry-static.exe dn_expand_ptr_0 ==========
-src/regression/dn_expand-ptr-0.c:26: dn_expand("\xc0\2", name, 1) returned -1, wanted 2
-src/regression/dn_expand-ptr-0.c:28: dn_expand("\xc0\2", name, 1) failed: got ".XXX" name, wanted ""
-FAIL dn_expand_ptr_0 [status 1]
-========== END entry-static.exe dn_expand_ptr_0 ==========
-========== START entry-static.exe fflush_exit ==========
-Pass!
-========== END entry-static.exe fflush_exit ==========
-========== START entry-static.exe fgets_eof ==========
-Pass!
-========== END entry-static.exe fgets_eof ==========
-========== START entry-static.exe fgetwc_buffering ==========
-src/common/utf8.c:18: cannot set UTF-8 locale for test (codeset=ANSI_X3.4-1968)
-src/regression/fgetwc-buffering.c:28: wanted 0x800, got 0xffffffff
-src/regression/fgetwc-buffering.c:35: wanted errno==0, got 84 (Invalid or incomplete multibyte or wide character)
-src/regression/fgetwc-buffering.c:36: feof(stdin)!=0 failed
-src/regression/fgetwc-buffering.c:37: ferror(stdin)==0 failed
-FAIL fgetwc_buffering [status 1]
-========== END entry-static.exe fgetwc_buffering ==========
-========== START entry-static.exe fpclassify_invalid_ld80 ==========
-src/regression/fpclassify-invalid-ld80.c:51: snprintf("%La", zero with msb set) failed: got "0x8p-16385" want "0x1p-16382"
-src/regression/fpclassify-invalid-ld80.c:53: snprintf("%La", subnormal with msb set) failed: got "0x8.000000000000001p-16385" want "0x1.0000000000000002p-16382"
-FAIL fpclassify_invalid_ld80 [status 1]
-========== END entry-static.exe fpclassify_invalid_ld80 ==========
-========== START entry-static.exe ftello_unflushed_append ==========
-src/regression/ftello-unflushed-append.c:29: f = fdopen(fd, "a") failed (errno: Invalid argument)
-FAIL ftello_unflushed_append [status 1]
-========== END entry-static.exe ftello_unflushed_append ==========
-========== START entry-static.exe getpwnam_r_crash ==========
-Pass!
-========== END entry-static.exe getpwnam_r_crash ==========
-========== START entry-static.exe getpwnam_r_errno ==========
-Pass!
-========== END entry-static.exe getpwnam_r_errno ==========
-========== START entry-static.exe iconv_roundtrips ==========
-Pass!
-========== END entry-static.exe iconv_roundtrips ==========
-========== START entry-static.exe inet_ntop_v4mapped ==========
-Pass!
-========== END entry-static.exe inet_ntop_v4mapped ==========
-========== START entry-static.exe inet_pton_empty_last_field ==========
-Pass!
-========== END entry-static.exe inet_pton_empty_last_field ==========
-========== START entry-static.exe iswspace_null ==========
-Pass!
-========== END entry-static.exe iswspace_null ==========
-========== START entry-static.exe lrand48_signextend ==========
-Pass!
-========== END entry-static.exe lrand48_signextend ==========
-========== START entry-static.exe lseek_large ==========
-src/regression/lseek-large.c:19: (f = tmpfile()) != 0 failed: Invalid argument
-FAIL lseek_large [status 14]
-========== END entry-static.exe lseek_large ==========
-========== START entry-static.exe malloc_0 ==========
-Pass!
-========== END entry-static.exe malloc_0 ==========
-========== START entry-static.exe mbsrtowcs_overflow ==========
-Pass!
-========== END entry-static.exe mbsrtowcs_overflow ==========
-========== START entry-static.exe memmem_oob_read ==========
-Pass!
-========== END entry-static.exe memmem_oob_read ==========
-========== START entry-static.exe memmem_oob ==========
-Pass!
-========== END entry-static.exe memmem_oob ==========
-========== START entry-static.exe mkdtemp_failure ==========
-Pass!
-========== END entry-static.exe mkdtemp_failure ==========
-========== START entry-static.exe mkstemp_failure ==========
-Pass!
-========== END entry-static.exe mkstemp_failure ==========
-========== START entry-static.exe printf_1e9_oob ==========
-Pass!
-========== END entry-static.exe printf_1e9_oob ==========
-========== START entry-static.exe printf_fmt_g_round ==========
-Pass!
-========== END entry-static.exe printf_fmt_g_round ==========
-========== START entry-static.exe printf_fmt_g_zeros ==========
-Pass!
-========== END entry-static.exe printf_fmt_g_zeros ==========
-========== START entry-static.exe printf_fmt_n ==========
-Pass!
-========== END entry-static.exe printf_fmt_n ==========
-========== START entry-static.exe pthread_robust_detach ==========
-The futex facility returned an unexpected error code.
-Pass!
-========== END entry-static.exe pthread_robust_detach ==========
-========== START entry-static.exe pthread_cancel_sem_wait ==========
-The futex facility returned an unexpected error code.
-FAIL pthread_cancel_sem_wait [status 137]
-========== END entry-static.exe pthread_cancel_sem_wait ==========
-========== START entry-static.exe pthread_cond_smasher ==========
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-The futex facility returned an unexpected error code.
-FAIL pthread_cond_smasher [status 137]
-========== END entry-static.exe pthread_cond_smasher ==========
-========== START entry-static.exe pthread_condattr_setclock ==========
-The futex facility returned an unexpected error code.
-FAIL pthread_condattr_setclock [status 134]
-========== END entry-static.exe pthread_condattr_setclock ==========
-========== START entry-static.exe pthread_exit_cancel ==========
-The futex facility returned an unexpected error code.
-FAIL pthread_exit_cancel [status 137]
-========== END entry-static.exe pthread_exit_cancel ==========
-========== START entry-static.exe pthread_once_deadlock ==========
-The futex facility returned an unexpected error code.
-FAIL pthread_once_deadlock [status 137]
-========== END entry-static.exe pthread_once_deadlock ==========
-========== START entry-static.exe pthread_rwlock_ebusy ==========
-The futex facility returned an unexpected error code.
-Pass!
-========== END entry-static.exe pthread_rwlock_ebusy ==========
-========== START entry-static.exe putenv_doublefree ==========
-Pass!
-========== END entry-static.exe putenv_doublefree ==========
-========== START entry-static.exe regex_backref_0 ==========
-Pass!
-========== END entry-static.exe regex_backref_0 ==========
-========== START entry-static.exe regex_bracket_icase ==========
-Pass!
-========== END entry-static.exe regex_bracket_icase ==========
-========== START entry-static.exe regex_ere_backref ==========
-src/regression/regex-ere-backref.c:22: regexec(/(a)\1/ ~ "aa") returned 0 (Success), wanted REG_NOMATCH
-src/regression/regex-ere-backref.c:29: regexec(/(a)\1/ ~ "a1") returned 1 (No match), wanted 0
-FAIL regex_ere_backref [status 1]
-========== END entry-static.exe regex_ere_backref ==========
-========== START entry-static.exe regex_escaped_high_byte ==========
-src/regression/regex-escaped-high-byte.c:19: regcomp(\\\xfc) returned 0 (Success) wanted REG_BADPAT
-FAIL regex_escaped_high_byte [status 1]
-========== END entry-static.exe regex_escaped_high_byte ==========
-========== START entry-static.exe regex_negated_range ==========
-Pass!
-========== END entry-static.exe regex_negated_range ==========
-========== START entry-static.exe regexec_nosub ==========
-Pass!
-========== END entry-static.exe regexec_nosub ==========
-========== START entry-static.exe rewind_clear_error ==========
-Pass!
-========== END entry-static.exe rewind_clear_error ==========
-========== START entry-static.exe rlimit_open_files ==========
-Pass!
-========== END entry-static.exe rlimit_open_files ==========
-========== START entry-static.exe scanf_bytes_consumed ==========
-Pass!
-========== END entry-static.exe scanf_bytes_consumed ==========
-========== START entry-static.exe scanf_match_literal_eof ==========
-Pass!
-========== END entry-static.exe scanf_match_literal_eof ==========
-========== START entry-static.exe scanf_nullbyte_char ==========
-Pass!
-========== END entry-static.exe scanf_nullbyte_char ==========
-========== START entry-static.exe setvbuf_unget ==========
-make[2]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
-make[1]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet'
+[37m[  0.000866 axruntime:130] [32mLogging is enabled.[m
+[m[37m[  0.002161 axruntime:131] [32mPrimary CPU 0 started, dtb = 0x0.[m
+[m[37m[  0.002591 axruntime:133] [32mFound physcial memory regions:[m
+[m[37m[  0.002861 axruntime:135] [32m  [PA:0x200000, PA:0x292000) .text (READ | EXECUTE | RESERVED)[m
+[m[37m[  0.003198 axruntime:135] [32m  [PA:0x292000, PA:0x2ac000) .rodata (READ | RESERVED)[m
+[m[37m[  0.003305 axruntime:135] [32m  [PA:0x2ac000, PA:0x2bf000) .data .tdata .tbss .percpu (READ | WRITE | RESERVED)[m
+[m[37m[  0.003387 axruntime:135] [32m  [PA:0x2bf000, PA:0x2ff000) boot stack (READ | WRITE | RESERVED)[m
+[m[37m[  0.003437 axruntime:135] [32m  [PA:0x2ff000, PA:0x308000) .bss (READ | WRITE | RESERVED)[m
+[m[37m[  0.003505 axruntime:135] [32m  [PA:0x1000, PA:0x9f000) low memory (READ | WRITE | RESERVED)[m
+[m[37m[  0.003691 axruntime:135] [32m  [PA:0x308000, PA:0x10000000) free memory (READ | WRITE | FREE)[m
+[m[37m[  0.004128 axruntime:135] [32m  [PA:0xb0000000, PA:0xc0000000) mmio (READ | WRITE | DEVICE | RESERVED)[m
+[m[37m[  0.004205 axruntime:135] [32m  [PA:0xfe000000, PA:0xfec00000) mmio (READ | WRITE | DEVICE | RESERVED)[m
+[m[37m[  0.004434 axruntime:135] [32m  [PA:0xfec00000, PA:0xfec01000) mmio (READ | WRITE | DEVICE | RESERVED)[m
+[m[37m[  0.004528 axruntime:135] [32m  [PA:0xfed00000, PA:0xfed01000) mmio (READ | WRITE | DEVICE | RESERVED)[m
+[m[37m[  0.004735 axruntime:135] [32m  [PA:0xfee00000, PA:0xfee01000) mmio (READ | WRITE | DEVICE | RESERVED)[m
+[m[37m[  0.004827 axruntime:210] [32mInitialize global memory allocator...[m
+[m[37m[  0.004890 axruntime:211] [32m  use TLSF allocator.[m
+[m[37m[  0.005215 axalloc:212] [36minitialize global allocator at: [0xffff800000308000, 0xffff800010000000)[m
+[m[37m[  0.006293 axmm:60] [32mInitialize virtual memory management...[m
+[m[37m[  0.006757 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff800000200000, VA:0xffff800000292000) -> [PA:0x200000, PA:0x292000) READ | EXECUTE[m
+[m[37m[  0.007710 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff800000292000, VA:0xffff8000002ac000) -> [PA:0x292000, PA:0x2ac000) READ[m
+[m[37m[  0.007893 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff8000002ac000, VA:0xffff8000002bf000) -> [PA:0x2ac000, PA:0x2bf000) READ | WRITE[m
+[m[37m[  0.007979 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff8000002bf000, VA:0xffff8000002ff000) -> [PA:0x2bf000, PA:0x2ff000) READ | WRITE[m
+[m[37m[  0.008056 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff8000002ff000, VA:0xffff800000308000) -> [PA:0x2ff000, PA:0x308000) READ | WRITE[m
+[m[37m[  0.008215 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff800000001000, VA:0xffff80000009f000) -> [PA:0x1000, PA:0x9f000) READ | WRITE[m
+[m[37m[  0.008434 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff800000308000, VA:0xffff800010000000) -> [PA:0x308000, PA:0x10000000) READ | WRITE[m
+[m[37m[  0.016908 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff8000b0000000, VA:0xffff8000c0000000) -> [PA:0xb0000000, PA:0xc0000000) READ | WRITE | DEVICE[m
+[m[37m[  0.026351 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff8000fe000000, VA:0xffff8000fec00000) -> [PA:0xfe000000, PA:0xfec00000) READ | WRITE | DEVICE[m
+[m[37m[  0.026896 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff8000fec00000, VA:0xffff8000fec01000) -> [PA:0xfec00000, PA:0xfec01000) READ | WRITE | DEVICE[m
+[m[37m[  0.027367 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff8000fed00000, VA:0xffff8000fed01000) -> [PA:0xfed00000, PA:0xfed01000) READ | WRITE | DEVICE[m
+[m[37m[  0.027627 axmm::backend::linear:20] [36mmap_linear: [VA:0xffff8000fee00000, VA:0xffff8000fee01000) -> [PA:0xfee00000, PA:0xfee01000) READ | WRITE | DEVICE[m
+[m[37m[  0.028444 axmm:63] [36mkernel address space init OK: AddrSpace {
+    va_range: VA:0xffff800000000000..VA:0xfffffffffffff000,
+    page_table_root: PA:0x310000,
+    areas: [
+        MemoryArea {
+            va_range: VA:0xffff800000001000..VA:0xffff80000009f000,
+            flags: READ | WRITE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff800000200000..VA:0xffff800000292000,
+            flags: READ | EXECUTE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff800000292000..VA:0xffff8000002ac000,
+            flags: READ,
+        },
+        MemoryArea {
+            va_range: VA:0xffff8000002ac000..VA:0xffff8000002bf000,
+            flags: READ | WRITE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff8000002bf000..VA:0xffff8000002ff000,
+            flags: READ | WRITE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff8000002ff000..VA:0xffff800000308000,
+            flags: READ | WRITE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff800000308000..VA:0xffff800010000000,
+            flags: READ | WRITE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff8000b0000000..VA:0xffff8000c0000000,
+            flags: READ | WRITE | DEVICE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff8000fe000000..VA:0xffff8000fec00000,
+            flags: READ | WRITE | DEVICE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff8000fec00000..VA:0xffff8000fec01000,
+            flags: READ | WRITE | DEVICE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff8000fed00000..VA:0xffff8000fed01000,
+            flags: READ | WRITE | DEVICE,
+        },
+        MemoryArea {
+            va_range: VA:0xffff8000fee00000..VA:0xffff8000fee01000,
+            flags: READ | WRITE | DEVICE,
+        },
+    ],
+}[m
+[m[37m[  0.031466 axruntime:150] [32mInitialize platform devices...[m
+[m[37m[  0.031558 axhal::platform::x86_pc::apic:90] [32mInitialize Local APIC...[m
+[m[37m[  0.031714 axhal::platform::x86_pc::apic:108] [32mUsing xAPIC.[m
+[m[37m[  0.033697 axhal::platform::x86_pc::apic:119] [32mInitialize IO APIC...[m
+[m[37m[  0.034153 axtask::api:81] [32mInitialize scheduling...[m
+[m[37m[  0.034729 axtask::task:115] [36mnew task: Task(1, "idle")[m
+[m[37m[  0.035285 axtask::task:115] [36mnew task: Task(3, "gc")[m
+[m[37m[  0.035504 axalloc:118] [36mexpand heap memory: [0xffff80000041d000, 0xffff80000045d000)[m
+[m[37m[  0.035694 axalloc:118] [36mexpand heap memory: [0xffff80000045d000, 0xffff8000004dd000)[m
+[m[37m[  0.035907 axtask::api:87] [32m  use FIFO scheduler.[m
+[m[37m[  0.036029 axdriver:152] [32mInitialize device drivers...[m
+[m[37m[  0.036102 axdriver:153] [32m  device model: static[m
+[m[37m[  0.036387 axdriver::bus::pci:97] [36mPCI 00:00.0: 8086:29c0 (class 06.00, rev 00) Standard[m
+[m[37m[  0.037311 axdriver::bus::pci:97] [36mPCI 00:01.0: 1234:1111 (class 03.00, rev 02) Standard[m
+[m[37m[  0.037776 axdriver::bus::pci:54] [36m  BAR 0: MEM [0xfd000000, 0xfe000000) pref[m
+[m[37m[  0.038213 axdriver::bus::pci:54] [36m  BAR 2: MEM [0xfeb90000, 0xfeb91000)[m
+[m[37m[  0.038436 axdriver::bus::pci:97] [36mPCI 00:02.0: 1af4:1001 (class 01.00, rev 00) Standard[m
+[m[37m[  0.038934 axdriver::bus::pci:44] [36m  BAR 0: IO  [0xc000, 0xc080)[m
+[m[37m[  0.039438 axdriver::bus::pci:54] [36m  BAR 1: MEM [0xfeb91000, 0xfeb92000)[m
+[m[37m[  0.040722 axdriver::bus::pci:54] [36m  BAR 4: MEM [0xfe000000, 0xfe004000) 64bit pref[m
+[m[37m[  0.043514 virtio_drivers::transport:78] [36mDevice features: BlkFeature(SEG_MAX | GEOMETRY | BLK_SIZE | FLUSH | TOPOLOGY | CONFIG_WCE | DISCARD | WRITE_ZEROES | RING_INDIRECT_DESC | RING_EVENT_IDX | VERSION_1)[m
+[m[37m[  0.044042 virtio_drivers::device::blk:59] [32mconfig: 0xffff8000fe002000[m
+[m[37m[  0.044248 virtio_drivers::device::blk:64] [32mfound a block device of size 81920KB[m
+[m[37m[  0.045046 axdriver::bus::pci:104] [32mregistered a new Block device at 00:02.0: "virtio-blk"[m
+[m[37m[  0.045369 axdriver::bus::pci:97] [36mPCI 00:03.0: 1af4:1000 (class 02.00, rev 00) Standard[m
+[m[37m[  0.046635 axdriver::bus::pci:44] [36m  BAR 0: IO  [0xc0c0, 0xc0e0)[m
+[m[37m[  0.047058 axdriver::bus::pci:54] [36m  BAR 1: MEM [0xfeb92000, 0xfeb93000)[m
+[m[37m[  0.047689 axdriver::bus::pci:54] [36m  BAR 4: MEM [0xfe004000, 0xfe008000) 64bit pref[m
+[m[37m[  0.049006 virtio_drivers::transport:78] [36mDevice features: Features(CTRL_GUEST_OFFLOADS | MAC | MRG_RXBUF | STATUS | CTRL_VQ | CTRL_RX | CTRL_VLAN | CTRL_RX_EXTRA | GUEST_ANNOUNCE | CTL_MAC_ADDR | RING_INDIRECT_DESC | RING_EVENT_IDX | VERSION_1)[m
+[m[37m[  0.049341 virtio_drivers::device::net::dev_raw:30] [32mnegotiated_features Features(MAC | STATUS | RING_INDIRECT_DESC | RING_EVENT_IDX)[m
+[m[37m[  0.049575 virtio_drivers::device::net::dev_raw:37] [36mGot MAC=[52, 54, 00, 12, 34, 56], status=Status(LINK_UP)[m
+[m[37m[  0.052111 axdriver::bus::pci:104] [32mregistered a new Net device at 00:03.0: "virtio-net"[m
+[m[37m[  0.052291 axdriver::bus::pci:97] [36mPCI 00:1f.0: 8086:2918 (class 06.01, rev 02) Standard[m
+[m[37m[  0.052488 axdriver::bus::pci:97] [36mPCI 00:1f.2: 8086:2922 (class 01.06, rev 02) Standard[m
+[m[37m[  0.052852 axdriver::bus::pci:44] [36m  BAR 4: IO  [0xc0e0, 0xc100)[m
+[m[37m[  0.053162 axdriver::bus::pci:54] [36m  BAR 5: MEM [0xfeb93000, 0xfeb94000)[m
+[m[37m[  0.053237 axdriver::bus::pci:97] [36mPCI 00:1f.3: 8086:2930 (class 0c.05, rev 02) Standard[m
+[m[37m[  0.053652 axdriver::bus::pci:44] [36m  BAR 4: IO  [0x700, 0x740)[m
+[m[37m[  0.067999 axdriver:160] [36mnumber of NICs: 1[m
+[m[37m[  0.068116 axdriver:163] [36m  NIC 0: "virtio-net"[m
+[m[37m[  0.068187 axdriver:168] [36mnumber of block devices: 1[m
+[m[37m[  0.068259 axdriver:171] [36m  block device 0: "virtio-blk"[m
+[m[37m[  0.068384 axfs:42] [32mInitialize filesystems...[m
+[m[37m[  0.068482 axfs:45] [32m  use block device 0: "virtio-blk"[m
+[m[37m[  0.068616 axfs::fs::lwext4_rust:34] [32mGot Disk size:83886080, position:0[m
+[m[37m[  0.068970 lwext4_rust::blockdev:92] [32mNew an Ext4 Block Device[m
+[m[37m[  0.071514 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.071749 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.071820 lwext4_rust::ulibc:30] [32m[lwext4] "[info]  sblock features_incompatible:\n"[m
+[m[37m[  0.071981 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.072030 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.072108 lwext4_rust::ulibc:30] [32m[lwext4] "filetype\n"[m
+[m[37m[  0.072172 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.072292 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.072343 lwext4_rust::ulibc:30] [32m[lwext4] "recover\n"[m
+[m[37m[  0.072414 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.072462 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.072499 lwext4_rust::ulibc:30] [32m[lwext4] "extents\n"[m
+[m[37m[  0.072552 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.072661 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.072816 lwext4_rust::ulibc:30] [32m[lwext4] "64bit\n"[m
+[m[37m[  0.072900 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.072970 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.073030 lwext4_rust::ulibc:30] [32m[lwext4] "flex_bg\n"[m
+[m[37m[  0.073133 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.073209 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.073285 lwext4_rust::ulibc:30] [32m[lwext4] "[info]  sblock features_compatible:\n"[m
+[m[37m[  0.073411 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.073483 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.073553 lwext4_rust::ulibc:30] [32m[lwext4] "has_journal\n"[m
+[m[37m[  0.073656 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.073764 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.073850 lwext4_rust::ulibc:30] [32m[lwext4] "ext_attr\n"[m
+[m[37m[  0.073947 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.074280 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.074323 lwext4_rust::ulibc:30] [32m[lwext4] "resize_inode\n"[m
+[m[37m[  0.074383 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.074467 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.074527 lwext4_rust::ulibc:30] [32m[lwext4] "dir_index\n"[m
+[m[37m[  0.074754 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.074834 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.074964 lwext4_rust::ulibc:30] [32m[lwext4] "[info]  sblock features_read_only:\n"[m
+[m[37m[  0.075043 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.075089 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.075126 lwext4_rust::ulibc:30] [32m[lwext4] "sparse_super\n"[m
+[m[37m[  0.075181 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.075230 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.075282 lwext4_rust::ulibc:30] [32m[lwext4] "large_file\n"[m
+[m[37m[  0.075341 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.075387 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.075426 lwext4_rust::ulibc:30] [32m[lwext4] "huge_file\n"[m
+[m[37m[  0.075482 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.075516 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.075552 lwext4_rust::ulibc:30] [32m[lwext4] "dir_nlink\n"[m
+[m[37m[  0.075603 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.075653 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.075704 lwext4_rust::ulibc:30] [32m[lwext4] "extra_isize\n"[m
+[m[37m[  0.075782 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.075830 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.075868 lwext4_rust::ulibc:30] [32m[lwext4] "metadata_csum\n"[m
+[m[37m[  0.075985 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.076033 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.076070 lwext4_rust::ulibc:30] [32m[lwext4] "[warn]  last umount error: superblock fs_error flag\n"[m
+[m[37m[  0.082407 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.082476 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.082513 lwext4_rust::ulibc:30] [32m[lwext4] "Start of journal at trans id: %u\n"[m
+[m[37m[  0.084625 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.084771 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.084838 lwext4_rust::ulibc:30] [32m[lwext4] "Descriptor block: %u, trans_id: %u\n"[m
+[m[37m[  0.085015 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.085061 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.085110 lwext4_rust::ulibc:30] [32m[lwext4] "Block in block_tag: %lu\n"[m
+[m[37m[  0.085209 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.085251 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.085286 lwext4_rust::ulibc:30] [32m[lwext4] "Block in block_tag: %lu\n"[m
+[m[37m[  0.085327 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.085358 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.085390 lwext4_rust::ulibc:30] [32m[lwext4] "Block in block_tag: %lu\n"[m
+[m[37m[  0.085431 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.085464 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.085498 lwext4_rust::ulibc:30] [32m[lwext4] "Block in block_tag: %lu\n"[m
+[m[37m[  0.085538 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.085570 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.085618 lwext4_rust::ulibc:30] [32m[lwext4] "Block in block_tag: %lu\n"[m
+[m[37m[  0.085665 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.085700 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.085736 lwext4_rust::ulibc:30] [32m[lwext4] "Block in block_tag: %lu\n"[m
+[m[37m[  0.085779 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.085811 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.085846 lwext4_rust::ulibc:30] [32m[lwext4] "Block in block_tag: %lu\n"[m
+[m[37m[  0.085901 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.085948 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.085986 lwext4_rust::ulibc:30] [32m[lwext4] "Block in block_tag: %lu\n"[m
+[m[37m[  0.088366 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.088434 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.088474 lwext4_rust::ulibc:30] [32m[lwext4] "[warn]  Commit block checksum failed.Journal block: %u\n"[m
+[m[37m[  0.088576 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.088610 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.088645 lwext4_rust::ulibc:30] [32m[lwext4] "End of journal.\n"[m
+[m[37m[  0.088724 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.088771 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.088843 lwext4_rust::ulibc:30] [32m[lwext4] "Start of journal at trans id: %u\n"[m
+[m[37m[  0.088917 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.088946 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.088977 lwext4_rust::ulibc:30] [32m[lwext4] "End of journal.\n"[m
+[m[37m[  0.089031 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.089120 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.089269 lwext4_rust::ulibc:30] [32m[lwext4] "Start of journal at trans id: %u\n"[m
+[m[37m[  0.089355 lwext4_rust::ulibc:30] [32m[lwext4] "%s"[m
+[m[37m[  0.089388 lwext4_rust::ulibc:30] [32m[lwext4] "l: %d   "[m
+[m[37m[  0.089421 lwext4_rust::ulibc:30] [32m[lwext4] "End of journal.\n"[m
+[m[37m[  0.092430 lwext4_rust::blockdev:253] [32mlwext4 mount Okay[m
+[m[37m[  0.092811 lwext4_rust::blockdev:305] [32mls /                               [m
+[m[37m[  0.094946 lwext4_rust::blockdev:314] [32m  [dir] .                                                                                                                                                                                                                                                              [m
+[m[37m[  0.095194 lwext4_rust::blockdev:314] [32m  [dir] ..                                                                                                                                                                                                                                                             [m
+[m[37m[  0.095344 lwext4_rust::blockdev:314] [32m  [dir] lost+found                                                                                                                                                                                                                                                     [m
+[m[37m[  0.095500 lwext4_rust::blockdev:314] [32m  [fil] check_c                                                                                                                                                                                                                                                        [m
+[m[37m[  0.095654 lwext4_rust::blockdev:314] [32m  [fil] entry_test_c                                                                                                                                                                                                                                                   [m
+[m[37m[  0.095808 lwext4_rust::blockdev:314] [32m  [fil] helloworld_c                                                                                                                                                                                                                                                   [m
+[m[37m[  0.095964 lwext4_rust::blockdev:314] [32m  [fil] io_c                                                                                                                                                                                                                                                           [m
+[m[37m[  0.096116 lwext4_rust::blockdev:314] [32m  [fil] mmap_c                                                                                                                                                                                                                                                         [m
+[m[37m[  0.096267 lwext4_rust::blockdev:314] [32m  [fil] sleep_c                                                                                                                                                                                                                                                        [m
+[m[37m[  0.096454 lwext4_rust::blockdev:314] [32m  [fil] tmp_c                                                                                                                                                                                                                                                          [m
+[m[37m[  0.096646 lwext4_rust::blockdev:323] [32m[m
+[m[37m[  0.096795 lwext4_rust::blockdev:342] [32m********************[m
+[m[37m[  0.096860 lwext4_rust::blockdev:343] [32mext4_mount_point_stats[m
+[m[37m[  0.096927 lwext4_rust::blockdev:344] [32minodes_count = 5000[m
+[m[37m[  0.096988 lwext4_rust::blockdev:345] [32mfree_inodes_count = 4fee[m
+[m[37m[  0.097038 lwext4_rust::blockdev:346] [32mblocks_count = 5000[m
+[m[37m[  0.097108 lwext4_rust::blockdev:347] [32mfree_blocks_count = 46b3[m
+[m[37m[  0.097159 lwext4_rust::blockdev:348] [32mblock_size = 1000[m
+[m[37m[  0.097216 lwext4_rust::blockdev:349] [32mblock_group_count = 1[m
+[m[37m[  0.097280 lwext4_rust::blockdev:350] [32mblocks_per_group= 8000[m
+[m[37m[  0.097330 lwext4_rust::blockdev:351] [32minodes_per_group = 5000[m
+[m[37m[  0.097386 lwext4_rust::blockdev:354] [32mvolume_name = ""[m
+[m[37m[  0.097437 lwext4_rust::blockdev:355] [32m********************
+[m
+[m[37m[  0.097482 lwext4_rust::blockdev:362] [32m********************[m
+[m[37m[  0.097524 lwext4_rust::blockdev:363] [32mext4 blockdev stats[m
+[m[37m[  0.097571 lwext4_rust::blockdev:365] [32mbdev->bread_ctr = 8[m
+[m[37m[  0.097637 lwext4_rust::blockdev:366] [32mbdev->bwrite_ctr = 5[m
+[m[37m[  0.097698 lwext4_rust::blockdev:368] [32mbcache->ref_blocks = 3[m
+[m[37m[  0.097747 lwext4_rust::blockdev:369] [32mbcache->max_ref_blocks = 3[m
+[m[37m[  0.097795 lwext4_rust::blockdev:373] [32mbcache->lru_ctr = 28[m
+[m[37m[  0.097838 lwext4_rust::blockdev:375] [32m********************
+[m
+[m[37m[  0.099282 axfs::fs::lwext4_rust:151] [32mcreate Dir on Ext4fs: /dev[m
+[m[37m[  0.099564 axfs::fs::lwext4_rust:73] [31m[lwext4]: path should not be absolute: /dev[m
+[m[37m[  0.121283 axfs::fs::lwext4_rust:73] [31m[lwext4]: path should not be absolute: /dev[m
+[m[37m[  0.121831 axfs::fs::lwext4_rust:213] [32mGet the parent dir of /dev[m
+[m[37m[  0.122289 axfs::fs::lwext4_rust:151] [32mcreate Dir on Ext4fs: /tmp[m
+[m[37m[  0.122341 axfs::fs::lwext4_rust:73] [31m[lwext4]: path should not be absolute: /tmp[m
+[m[37m[  0.134367 axfs::fs::lwext4_rust:73] [31m[lwext4]: path should not be absolute: /tmp[m
+[m[37m[  0.134583 axfs::fs::lwext4_rust:213] [32mGet the parent dir of /tmp[m
+[m[37m[  0.134849 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: sys[m
+[m[37m[  0.135224 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: sys/net[m
+[m[37m[  0.135389 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: net[m
+[m[37m[  0.135455 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: sys/net/core[m
+[m[37m[  0.135491 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: net/core[m
+[m[37m[  0.135527 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: core[m
+[m[37m[  0.135572 axfs_ramfs::dir:121] [36mcreate File at ramfs: sys/net/core/somaxconn[m
+[m[37m[  0.135648 axfs_ramfs::dir:121] [36mcreate File at ramfs: net/core/somaxconn[m
+[m[37m[  0.135717 axfs_ramfs::dir:121] [36mcreate File at ramfs: core/somaxconn[m
+[m[37m[  0.135761 axfs_ramfs::dir:121] [36mcreate File at ramfs: somaxconn[m
+[m[37m[  0.136149 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: sys/vm[m
+[m[37m[  0.136195 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: vm[m
+[m[37m[  0.136399 axfs_ramfs::dir:121] [36mcreate File at ramfs: sys/vm/overcommit_memory[m
+[m[37m[  0.136453 axfs_ramfs::dir:121] [36mcreate File at ramfs: vm/overcommit_memory[m
+[m[37m[  0.136509 axfs_ramfs::dir:121] [36mcreate File at ramfs: overcommit_memory[m
+[m[37m[  0.136660 axfs_ramfs::dir:121] [36mcreate File at ramfs: meminfo[m
+[m[37m[  0.136800 axfs_ramfs::dir:121] [36mcreate File at ramfs: mounts[m
+[m[37m[  0.136861 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: self[m
+[m[37m[  0.136928 axfs_ramfs::dir:121] [36mcreate File at ramfs: self/stat[m
+[m[37m[  0.136977 axfs_ramfs::dir:121] [36mcreate File at ramfs: stat[m
+[m[37m[  0.137074 axfs::fs::lwext4_rust:151] [32mcreate Dir on Ext4fs: /proc[m
+[m[37m[  0.137132 axfs::fs::lwext4_rust:73] [31m[lwext4]: path should not be absolute: /proc[m
+[m[37m[  0.149204 axfs::fs::lwext4_rust:73] [31m[lwext4]: path should not be absolute: /proc[m
+[m[37m[  0.149422 axfs::fs::lwext4_rust:213] [32mGet the parent dir of /proc[m
+[m[37m[  0.149522 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: kernel[m
+[m[37m[  0.149573 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: kernel/mm[m
+[m[37m[  0.149610 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: mm[m
+[m[37m[  0.149654 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: kernel/mm/transparent_hugepage[m
+[m[37m[  0.149710 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: mm/transparent_hugepage[m
+[m[37m[  0.149750 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: transparent_hugepage[m
+[m[37m[  0.149810 axfs_ramfs::dir:121] [36mcreate File at ramfs: kernel/mm/transparent_hugepage/enabled[m
+[m[37m[  0.149856 axfs_ramfs::dir:121] [36mcreate File at ramfs: mm/transparent_hugepage/enabled[m
+[m[37m[  0.149902 axfs_ramfs::dir:121] [36mcreate File at ramfs: transparent_hugepage/enabled[m
+[m[37m[  0.149945 axfs_ramfs::dir:121] [36mcreate File at ramfs: enabled[m
+[m[37m[  0.150029 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: devices[m
+[m[37m[  0.150092 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: devices/system[m
+[m[37m[  0.150141 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: system[m
+[m[37m[  0.150190 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: devices/system/clocksource[m
+[m[37m[  0.150232 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: system/clocksource[m
+[m[37m[  0.150272 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: clocksource[m
+[m[37m[  0.150322 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: devices/system/clocksource/clocksource0[m
+[m[37m[  0.150383 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: system/clocksource/clocksource0[m
+[m[37m[  0.150427 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: clocksource/clocksource0[m
+[m[37m[  0.150469 axfs_ramfs::dir:121] [36mcreate Dir at ramfs: clocksource0[m
+[m[37m[  0.150523 axfs_ramfs::dir:121] [36mcreate File at ramfs: devices/system/clocksource/clocksource0/current_clocksource[m
+[m[37m[  0.150596 axfs_ramfs::dir:121] [36mcreate File at ramfs: system/clocksource/clocksource0/current_clocksource[m
+[m[37m[  0.150657 axfs_ramfs::dir:121] [36mcreate File at ramfs: clocksource/clocksource0/current_clocksource[m
+[m[37m[  0.150735 axfs_ramfs::dir:121] [36mcreate File at ramfs: clocksource0/current_clocksource[m
+[m[37m[  0.150784 axfs_ramfs::dir:121] [36mcreate File at ramfs: current_clocksource[m
+[m[37m[  0.150933 axfs::fs::lwext4_rust:151] [32mcreate Dir on Ext4fs: /sys[m
+[m[37m[  0.150985 axfs::fs::lwext4_rust:73] [31m[lwext4]: path should not be absolute: /sys[m
+[m[37m[  0.164554 axfs::fs::lwext4_rust:73] [31m[lwext4]: path should not be absolute: /sys[m
+[m[37m[  0.164700 axfs::fs::lwext4_rust:213] [32mGet the parent dir of /sys[m
+[m[37m[  0.164844 axfs::root:212] [32mrootfs initialized[m
+[m[37m[  0.165056 axfs::root:214] [32mtest[m
+[m[37m[  0.165200 axnet:42] [32mInitialize network subsystem...[m
+[m[37m[  0.165287 axnet:45] [32m  use NIC 0: "virtio-net"[m
+[m[37m[  0.166028 axalloc:118] [36mexpand heap memory: [0xffff8000004e3000, 0xffff8000008e3000)[m
+[m[37m[  0.168559 axnet::smoltcp_impl:332] [32mcreated net interface "eth0":[m
+[m[37m[  0.168670 axnet::smoltcp_impl:333] [32m  ether:    52-54-00-12-34-56[m
+[m[37m[  0.168868 axnet::smoltcp_impl:334] [32m  ip:       10.0.2.15/24[m
+[m[37m[  0.168964 axnet::smoltcp_impl:335] [32m  gateway:  10.0.2.2[m
+[m[37m[  0.169026 axruntime:176] [32mInitialize interrupt handlers...[m
+[m[37m[  0.170109 axruntime:188] [32mPrimary CPU 0 init OK.[m
+[m[37m[  0.172655 0:2 axtask::run_queue:357] [36mtask exit: Task(2, "main"), exit_code=0[m
+[m[37m[  0.173248 0:2 axhal::platform::x86_pc::misc:7] [32mShutting down...[m
+[mmake[1]: Leaving directory '/home/dragon/os/oscomp-test-eternalcomet/.arceos'
