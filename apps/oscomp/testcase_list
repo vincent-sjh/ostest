@@ -30,7 +30,8 @@ busybox ls -l /lib64/
 
 # ============ test cases compiled with glibc ============
 # setup glibc libraries
-busybox cp -v /glibc/lib/* /lib/
+busybox cp -v /glibc/lib/libc.so.6 /lib/
+busybox cp -v /glibc/lib/libm.so.6 /lib/
 busybox cp -r /lib/. /lib64/
 busybox ls -l /lib64/
 
@@ -43,8 +44,7 @@ busybox rm /glibc/basic/test_close.txt
 
 # begin test
 busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
-cd /glibc && /glibc/basic_testcode.sh
+/glibc/basic_testcode.sh
 busybox echo "#### OS COMP TEST GROUP END basic-glibc ####"
-# /glibc/libctest_testcode.sh
-cd /glibc && /glibc/busybox_testcode.sh
-cd /glibc && /glibc/lua_testcode.sh
+/glibc/busybox_testcode.sh
+/glibc/lua_testcode.sh
