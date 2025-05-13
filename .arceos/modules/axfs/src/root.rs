@@ -3,6 +3,7 @@
 //! TODO: it doesn't work very well if the mount points have containment relationships.
 
 use alloc::{string::String, sync::Arc, vec::Vec};
+use alloc::string::ToString;
 use axerrno::{AxError, AxResult, ax_err};
 use axfs_vfs::{VfsNodeAttr, VfsNodeOps, VfsNodeRef, VfsNodeType, VfsOps, VfsResult};
 use axns::{ResArc, def_resource};
@@ -107,16 +108,18 @@ impl RootDirectory {
 
         // Find the filesystem that has the longest mounted path match
         // TODO: more efficient, e.g. trie
+        let path = path.to_string() + "/";
         for (i, mp) in self.mounts.read().iter().enumerate() {
             // skip the first '/'
-            if path.starts_with(&mp.path[1..]) && mp.path.len() - 1 > max_len {
+            let prefix = mp.path[1..].to_string() + "/";
+            if path.starts_with(&prefix) && mp.path.len() - 1 > max_len {
                 max_len = mp.path.len() - 1;
                 idx = i;
             }
         }
 
         if max_len == 0 {
-            f(self.main_fs.clone(), path) // not matched any mount point
+            f(self.main_fs.clone(), &path) // not matched any mount point
         } else {
             f(self.mounts.read()[idx].fs.clone(), &path[max_len..]) // matched at `idx`
         }
@@ -233,7 +236,8 @@ pub(crate) fn lookup(dir: Option<&VfsNodeRef>, path: &str) -> AxResult<VfsNodeRe
     if path.is_empty() {
         return ax_err!(NotFound);
     }
-    let node = parent_node_of(dir, path).lookup(path)?;
+    let parent = parent_node_of(dir, path);
+    let node = parent.lookup(path)?;
     if path.ends_with('/') && !node.get_attr()?.is_dir() {
         ax_err!(NotADirectory)
     } else {

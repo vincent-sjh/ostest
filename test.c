@@ -1,7 +1,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <linux/time.h>
 
 int main() {
-    mode_t a;
-    ARCH_SET_FS;
+    struct timespec ts;
+    strerror();
+    clock_gettime(CLOCK_REALTIME, &ts);
 }
