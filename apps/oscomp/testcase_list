@@ -35,7 +35,7 @@ busybox cp -v /glibc/lib/libm.so.6 /lib/
 busybox cp -r /lib/. /lib64/
 busybox ls -l /lib64/
 
-# cd /glibc && /glibc/runtest.exe -w entry-dynamic.exe tls_get_new_dtv
+# remove rubbish files in basic test
 busybox rm -r /glibc/basic/test_mkdir
 busybox rm -r /glibc/basic/test_chdir
 busybox rm /glibc/basic/mnt/test_openat
