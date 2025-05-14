@@ -33,7 +33,8 @@ busybox ls -l /lib64/
 # setup glibc libraries
 busybox cp -v /glibc/lib/libc.so.6 /lib/
 busybox cp -v /glibc/lib/libm.so.6 /lib/
-busybox cp -r /lib/. /lib64/
+# under loongarch64, lwext4 will crash
+# busybox cp -r /lib/. /lib64/
 busybox ls -l /lib64/
 
 # begin test
