@@ -18,15 +18,13 @@ busybox cp /musl/lib/libc.so /lib/ld-linux-riscv64-lp64.so.1
 # TODO: use symlink instead of cp
 busybox cp /musl/lib/libc.so /lib/ld-musl-riscv64.so.1
 busybox cp /musl/lib/libc.so /lib/ld-musl-x86_64.so.1
-busybox cp /musl/lib/libc.so /lib/ld-musl-loongarch64.so.1
+busybox cp /musl/lib/libc.so /lib/ld-musl-loongarch-lp64d.so.1
 busybox cp /musl/lib/libc.so /lib/ld-musl-aarch64.so.1
 busybox cp -v /musl/lib/* /lib/
 busybox cp -r /lib/. /lib64/
 busybox ls -l /lib64/
 # begin test
-busybox echo "#### OS COMP TEST GROUP START basic-musl ####"
 /musl/basic_testcode.sh
-busybox echo "#### OS COMP TEST GROUP END basic-musl ####"
 /musl/libctest_testcode.sh
 /musl/busybox_testcode.sh
 /musl/lua_testcode.sh
@@ -38,17 +36,8 @@ busybox cp -v /glibc/lib/libm.so.6 /lib/
 busybox cp -r /lib/. /lib64/
 busybox ls -l /lib64/
 
-# remove rubbish files in basic test
-busybox rm -r /glibc/basic/test_mkdir
-busybox rm -r /glibc/basic/test_chdir
-busybox rm /glibc/basic/mnt/test_openat
-busybox rm /glibc/basic/test_mmap.txt
-busybox rm /glibc/basic/test_close.txt
-
 # begin test
-busybox echo "#### OS COMP TEST GROUP START basic-glibc ####"
 /glibc/basic_testcode.sh
-busybox echo "#### OS COMP TEST GROUP END basic-glibc ####"
 /glibc/libctest_testcode.sh
 /glibc/busybox_testcode.sh
 /glibc/lua_testcode.sh
