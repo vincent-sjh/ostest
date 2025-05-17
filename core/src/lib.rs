@@ -10,3 +10,4 @@ pub mod mm;
 pub mod process;
 pub mod task;
 pub mod resource;
+pub mod shared_memory;

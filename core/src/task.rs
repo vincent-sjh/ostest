@@ -135,6 +135,7 @@ pub fn time_stat_output() -> (usize, usize, usize, usize) {
 }
 
 pub fn create_user_task(name: String, uctx: UspaceContext) -> TaskInner {
+    let name = name.chars().take(32).collect();
     TaskInner::new(
         move || {
             let curr = current();

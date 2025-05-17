@@ -7,6 +7,7 @@ pub mod path;
 mod pipe;
 mod stat;
 pub mod status;
+pub mod poll;
 
 pub use self::ctl::*;
 pub use self::fd_ops::*;

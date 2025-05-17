@@ -52,7 +52,7 @@ pub use imp::io_mpx::{sys_epoll_create, sys_epoll_ctl, sys_epoll_wait};
 #[cfg(feature = "net")]
 pub use imp::net::*;
 #[cfg(feature = "pipe")]
-pub use imp::pipe::sys_pipe;
+pub use imp::pipe::*;
 #[cfg(feature = "multitask")]
 pub use imp::pthread::mutex::{
     sys_pthread_mutex_init, sys_pthread_mutex_lock, sys_pthread_mutex_unlock,

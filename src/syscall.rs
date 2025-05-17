@@ -12,7 +12,9 @@ use starry_api::imp::task::*;
 use starry_api::imp::utils::*;
 use starry_api::interface::fs::io::*;
 use starry_api::interface::fs::path::*;
+use starry_api::interface::fs::poll::*;
 use starry_api::interface::fs::*;
+use starry_api::interface::mm::shm::*;
 use starry_api::interface::task::resource::*;
 use starry_api::interface::task::*;
 use starry_api::interface::user::identity::*;
@@ -230,6 +232,9 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
             tf.arg2().into(),
             tf.arg3() as _,
         ),
+        Sysno::shmat => sys_shmat(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
+        Sysno::shmctl => stub_bypass(syscall_num),
+        Sysno::shmget => sys_shmget(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
         Sysno::sigaltstack => sys_sigaltstack(tf.arg0().into(), tf.arg1().into()),
         #[cfg(target_arch = "x86_64")]
         Sysno::stat => interface::fs::sys_stat(tf.arg0().into(), tf.arg1().into()),
