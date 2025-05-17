@@ -48,7 +48,7 @@ pub fn map_trampoline(aspace: &mut AddrSpace) -> AxResult {
 ///
 /// # Returns
 /// - The entry point of the user app.
-fn map_elf(uspace: &mut AddrSpace, elf: &ElfFile) -> AxResult<(VirtAddr, [AuxvEntry; 16])> {
+fn map_elf(uspace: &mut AddrSpace, elf: &ElfFile) -> AxResult<(VirtAddr, [AuxvEntry; 17])> {
     let uspace_base = uspace.base().as_usize();
     let elf_parser = ELFParser::new(
         elf,
@@ -58,29 +58,29 @@ fn map_elf(uspace: &mut AddrSpace, elf: &ElfFile) -> AxResult<(VirtAddr, [AuxvEn
     )
     .map_err(|_| AxError::InvalidData)?;
 
-    for segement in elf_parser.ph_load() {
+    for segment in elf_parser.ph_load() {
         debug!(
             "Mapping ELF segment: [{:#x?}, {:#x?}) flags: {:#x?}",
-            segement.vaddr,
-            segement.vaddr + segement.memsz as usize,
-            segement.flags
+            segment.vaddr,
+            segment.vaddr + segment.memsz as usize,
+            segment.flags
         );
-        let seg_pad = segement.vaddr.align_offset_4k();
-        assert_eq!(seg_pad, segement.offset % PAGE_SIZE_4K);
+        let seg_pad = segment.vaddr.align_offset_4k();
+        assert_eq!(seg_pad, segment.offset % PAGE_SIZE_4K);
 
         let seg_align_size =
-            (segement.memsz as usize + seg_pad + PAGE_SIZE_4K - 1) & !(PAGE_SIZE_4K - 1);
+            (segment.memsz as usize + seg_pad + PAGE_SIZE_4K - 1) & !(PAGE_SIZE_4K - 1);
         uspace.map_alloc(
-            segement.vaddr.align_down_4k(),
+            segment.vaddr.align_down_4k(),
             seg_align_size,
-            segement.flags,
+            segment.flags,
             true,
         )?;
         let seg_data = elf
             .input
-            .get(segement.offset..segement.offset + segement.filesz as usize)
+            .get(segment.offset..segment.offset + segment.filesz as usize)
             .ok_or(AxError::InvalidData)?;
-        uspace.write(segement.vaddr, seg_data)?;
+        uspace.write(segment.vaddr, seg_data)?;
         // TDOO: flush the I-cache
     }
 

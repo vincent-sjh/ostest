@@ -22,38 +22,41 @@ fn main() {
         .split(',')
         .filter(|&x| !x.is_empty());
 
-    let allocator = global_allocator();
+    let command = testcases.collect::<Vec<_>>().join("\n");
+    let args = vec!["/musl/busybox", "sh", "-c", &command];
+    let args: Vec<String> = args.into_iter().map(String::from).collect();
 
-    for testcase in testcases {
-        error!(
-            "memory statistic: used: [{} KiB, {} pages], available: [{} KiB, {} pages]",
-            allocator.used_bytes() / 1024,
-            allocator.used_pages(),
-            allocator.available_bytes() / 1024,
-            allocator.available_pages()
-        );
-        let testcase = testcase.trim();
-        if testcase.is_empty() {
-            continue;
-        }
-        // sh mode
-        let args = vec!["/musl/busybox", "sh", "-c", testcase];
-        // direct mode
-        // let args = testcase.split(" ");
-        let args: Vec<String> = args.into_iter().map(String::from).collect();
+    let envs = vec![
+        "PATH=/bin".to_string(),
+        "LD_LIBRARY_PATH=/lib:/lib64".to_string(),
+        // "LD_DEBUG=all".to_string(),
+    ];
 
-        info!("[task manager] Running user task: {}", testcase);
-
-        let envs = vec![
-            "PATH=/bin".to_string(),
-            "LD_LIBRARY_PATH=/lib:/lib64".to_string(),
-            // "LD_DEBUG=all".to_string(),
-        ];
-
-        let exit_code = run_user_app(&args, &envs);
-        info!(
-            "[task manager] User task {} exited with code: {:?}",
-            testcase, exit_code
-        );
-    }
+    let exit_code = run_user_app(&args, &envs);
+    info!("[task manager] Shell exited with code: {:?}", exit_code);
+    // for testcase in testcases {
+    //     let testcase = testcase.trim();
+    //     if testcase.is_empty() {
+    //         continue;
+    //     }
+    //     // sh mode
+    //     let args = vec!["/musl/busybox", "sh", "-c", testcase];
+    //     // direct mode
+    //     // let args = testcase.split(" ");
+    //     let args: Vec<String> = args.into_iter().map(String::from).collect();
+    //
+    //     info!("[task manager] Running user task: {}", testcase);
+    //
+    //     let envs = vec![
+    //         "PATH=/bin".to_string(),
+    //         "LD_LIBRARY_PATH=/lib:/lib64".to_string(),
+    //         // "LD_DEBUG=all".to_string(),
+    //     ];
+    //
+    //     let exit_code = run_user_app(&args, &envs);
+    //     info!(
+    //         "[task manager] User task {} exited with code: {:?}",
+    //         testcase, exit_code
+    //     );
+    // }
 }
