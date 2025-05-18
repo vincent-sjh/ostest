@@ -1,6 +1,5 @@
+use crate::ctypes::{AF_INET, in_addr, sockaddr_in};
 use core::net::{Ipv4Addr, SocketAddrV4};
-use crate::ctypes::{in_addr, sockaddr_in, AF_INET};
-
 
 impl From<SocketAddrV4> for sockaddr_in {
     fn from(addr: SocketAddrV4) -> sockaddr_in {

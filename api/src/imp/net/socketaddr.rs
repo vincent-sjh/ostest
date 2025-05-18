@@ -108,7 +108,7 @@ impl From<SocketAddrV4> for SockAddr {
                 &addr as *const sockaddr_in as *const sockaddr,
                 core::mem::size_of::<sockaddr_in>() as socklen_t,
             )
-                .unwrap()
+            .unwrap()
         }
     }
 }
@@ -131,7 +131,7 @@ impl From<SocketAddrV6> for SockAddr {
                 &addr as *const sockaddr_in6 as *const sockaddr,
                 core::mem::size_of::<sockaddr_in6>() as socklen_t,
             )
-                .unwrap()
+            .unwrap()
         }
     }
 }

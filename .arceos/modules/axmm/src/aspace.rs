@@ -180,10 +180,7 @@ impl AddrSpace {
                                     return Err(AxError::NoMemory);
                                 }
                             }
-                            Err(_) => {
-                                error!("Bad Address at {}:{}:{}", module_path!(), file!(), line!());
-                                return Err(AxError::BadAddress);
-                            }
+                            Err(_) => return Err(AxError::BadAddress),
                         };
                     }
                 }

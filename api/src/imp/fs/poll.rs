@@ -1,4 +1,4 @@
-use arceos_posix_api::{get_file_like, Pipe};
+use arceos_posix_api::{Pipe, get_file_like};
 use axerrno::LinuxResult;
 use axtask::yield_now;
 use bitflags::bitflags;

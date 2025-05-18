@@ -19,9 +19,9 @@
 
 #![no_std]
 
+extern crate alloc;
 #[macro_use]
 extern crate log;
-extern crate alloc;
 
 cfg_if::cfg_if! {
     if #[cfg(feature = "smoltcp")] {

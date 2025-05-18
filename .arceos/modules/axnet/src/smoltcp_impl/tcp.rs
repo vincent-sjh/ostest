@@ -211,7 +211,7 @@ impl TcpSocket {
             }
             Ok(())
         })
-            .unwrap_or_else(|_| ax_err!(AlreadyExists, "socket connect() failed: already connected"))?; // EISCONN
+        .unwrap_or_else(|_| ax_err!(AlreadyExists, "socket connect() failed: already connected"))?; // EISCONN
 
         // HACK: yield() to let server to listen
         yield_now();
@@ -267,7 +267,7 @@ impl TcpSocket {
             }
             Ok(())
         })
-            .unwrap_or_else(|_| ax_err!(InvalidInput, "socket bind() failed: already bound"))
+        .unwrap_or_else(|_| ax_err!(InvalidInput, "socket bind() failed: already bound"))
     }
 
     /// Starts listening on the bound address and port.
@@ -284,7 +284,7 @@ impl TcpSocket {
             debug!("TCP socket listening on {}", bound_endpoint);
             Ok(())
         })
-            .unwrap_or(Ok(())) // ignore simultaneous `listen`s.
+        .unwrap_or(Ok(())) // ignore simultaneous `listen`s.
     }
 
     /// Accepts a new connection.
@@ -322,7 +322,7 @@ impl TcpSocket {
             SOCKET_SET.poll_interfaces();
             Ok(())
         })
-            .unwrap_or(Ok(()))?;
+        .unwrap_or(Ok(()))?;
 
         // listener
         self.update_state(STATE_LISTENING, STATE_CLOSED, || {
@@ -334,7 +334,7 @@ impl TcpSocket {
             SOCKET_SET.poll_interfaces();
             Ok(())
         })
-            .unwrap_or(Ok(()))?;
+        .unwrap_or(Ok(()))?;
 
         // ignore for other states
         Ok(())

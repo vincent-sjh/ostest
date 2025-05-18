@@ -49,16 +49,6 @@ pub fn sys_lseek(fd: i32, offset: isize, whence: i32) -> LinuxResult<isize> {
     Ok(api::sys_lseek(fd, offset as off_t, whence) as _)
 }
 
-pub fn sys_pread64(
-    fd: i32,
-    buf: UserPtr<c_void>,
-    count: usize,
-    offset: isize,
-) -> LinuxResult<isize> {
-    let buf = buf.get_as_bytes(count)?;
-    Ok(api::sys_pread64(fd, buf, count, offset as off_t) as _)
-}
-
 pub fn sys_sendfile(
     out_fd: i32,
     in_fd: i32,
@@ -79,4 +69,18 @@ pub fn sys_truncate_impl(file: &File, length: isize) -> LinuxResult<isize> {
     file.truncate(length as u64)
         .map_err(|_| axerrno::LinuxError::EIO)?;
     Ok(0)
+}
+
+pub fn sys_pwrite_impl(fd: i32, buf: &[u8], offset: isize) -> LinuxResult<isize> {
+    let file = api::File::from_fd(fd)?;
+    let file = file.inner();
+    let write_len = file.lock().write_at(offset as _, buf)?;
+    Ok(write_len as _)
+}
+
+pub fn sys_pread_impl(fd: i32, buf: &mut [u8], offset: isize) -> LinuxResult<isize> {
+    let file = api::File::from_fd(fd)?;
+    let file = file.inner();
+    let read_len = file.lock().read_at(offset as _, buf)?;
+    Ok(read_len as _)
 }

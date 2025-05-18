@@ -12,7 +12,6 @@ mod syscall;
 use alloc::string::{String, ToString};
 use alloc::vec;
 use alloc::vec::Vec;
-use axalloc::global_allocator;
 use starry_core::entry::run_user_app;
 
 #[unsafe(no_mangle)]

@@ -1,6 +1,6 @@
 pub mod io;
 pub mod path;
-mod stat;
 pub mod poll;
+mod stat;
 
 pub use stat::*;

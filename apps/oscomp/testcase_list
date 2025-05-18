@@ -26,6 +26,7 @@ busybox ls -l /lib64/
 /musl/libctest_testcode.sh
 /musl/busybox_testcode.sh
 /musl/lua_testcode.sh
+/musl/iozone_testcode.sh
 
 # ============ test cases compiled with glibc ============
 # setup glibc libraries
@@ -39,3 +40,4 @@ busybox ls -l /lib64/
 /glibc/libctest_testcode.sh
 /glibc/busybox_testcode.sh
 /glibc/lua_testcode.sh
+/glibc/iozone_testcode.sh

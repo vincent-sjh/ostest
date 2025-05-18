@@ -1,4 +1,5 @@
 use crate::resource::ResourceLimits;
+use crate::shared_memory::SharedMemory;
 use crate::task::WaitQueueWrapper;
 use alloc::collections::BTreeMap;
 use alloc::string::String;
@@ -11,7 +12,7 @@ use axsignal::api::{ProcessSignalManager, SignalActions, ThreadSignalManager};
 use axsync::RawMutex;
 use axtask::WaitQueue;
 use core::sync::atomic::{AtomicUsize, Ordering};
-use memory_addr::VirtAddrRange;
+use memory_addr::{VirtAddr, VirtAddrRange};
 use spin::Mutex;
 use undefined_process::Pid;
 
@@ -36,6 +37,8 @@ pub struct ProcessData {
     pub signal: Arc<ProcessSignalManager<RawMutex, WaitQueueWrapper>>,
     /// The futex table
     pub futex_table: Mutex<BTreeMap<usize, Arc<WaitQueue>>>,
+    /// Shared memory
+    pub shared_memory: Mutex<BTreeMap<VirtAddr, Arc<SharedMemory>>>,
 }
 
 impl ProcessData {
@@ -58,6 +61,7 @@ impl ProcessData {
                 signal_actions,
                 axconfig::plat::SIGNAL_TRAMPOLINE,
             )),
+            shared_memory: Mutex::new(BTreeMap::new()),
         }
     }
 

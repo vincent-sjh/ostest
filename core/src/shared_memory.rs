@@ -1,27 +1,32 @@
 use alloc::collections::BTreeMap;
+use alloc::sync::Arc;
 use axalloc::global_allocator;
 use axerrno::{LinuxError, LinuxResult};
 use axsync::Mutex;
-use memory_addr::{PAGE_SIZE_4K, align_up_4k};
+use memory_addr::{PAGE_SIZE_4K};
 
-#[derive(Copy, Clone)]
 pub struct SharedMemory {
     /// The key of the shared memory segment
     pub key: u32,
-    /// Physical address of the shared memory segment
+    /// Virtual kernel address of the shared memory segment
     pub addr: usize,
     /// Page count of the shared memory segment
     pub page_count: usize,
 }
 
-pub struct SharedMemoryManager {
-    mem_map: Mutex<BTreeMap<u32, SharedMemory>>,
+impl Drop for SharedMemory {
+    fn drop(&mut self) {
+        let allocator = global_allocator();
+        allocator.dealloc_pages(self.addr, self.page_count);
+        error!(
+            "[SharedMemory] dealloc pages: addr: {:#x}, page_count: {}, key: {}",
+            self.addr, self.page_count, self.key
+        );
+    }
 }
 
-impl SharedMemoryManager {
-    pub fn remove(&self, p0: u32) {
-        todo!()
-    }
+pub struct SharedMemoryManager {
+    mem_map: Mutex<BTreeMap<u32, Arc<SharedMemory>>>,
 }
 
 impl SharedMemoryManager {
@@ -32,14 +37,20 @@ impl SharedMemoryManager {
     }
 
     pub fn next_available_key(&self) -> u32 {
-        self.mem_map.lock().keys().max().unwrap_or(&0) + 1
+        let mamp = self.mem_map.lock();
+        let keys = mamp.keys();
+        // error!("keys {:?}", keys);
+        let m = keys.max();
+        // error!("max key {:?}", m);
+        m.unwrap_or(&0) + 1
+        // self.mem_map.lock().keys().max().unwrap_or(&0) + 1
     }
 
-    pub fn get(&self, key: u32) -> Option<SharedMemory> {
-        self.mem_map.lock().get(&key).copied()
+    pub fn get(&self, key: u32) -> Option<Arc<SharedMemory>> {
+        self.mem_map.lock().get(&key).cloned()
     }
 
-    pub fn create(&self, key: u32, size: usize) -> LinuxResult<SharedMemory> {
+    pub fn create(&self, key: u32, size: usize) -> LinuxResult<Arc<SharedMemory>> {
         let page_count = size.div_ceil(PAGE_SIZE_4K);
         let allocator = global_allocator();
         // TODO: more error checking
@@ -51,19 +62,25 @@ impl SharedMemoryManager {
             addr: vaddr,
             page_count: size,
         };
-        self.mem_map.lock().insert(key, shared_memory);
+        let shared_memory = Arc::new(shared_memory);
+        self.mem_map.lock().insert(key, shared_memory.clone());
+        // error!("create keys {:?}", self.mem_map.lock().keys());
         Ok(shared_memory)
     }
 
-    pub fn insert(&self, addr: usize, size: usize) -> SharedMemory {
-        let key = self.next_available_key();
-        let shared_memory = SharedMemory {
-            key,
-            addr,
-            page_count: size,
-        };
-        self.mem_map.lock().insert(key, shared_memory);
-        shared_memory
+    pub fn delete(&self, key: u32) -> bool {
+        let mut mem_map = self.mem_map.lock();
+        let shared_memory = mem_map.remove(&key);
+        let ret = shared_memory.is_some();
+        if let Some(shared_memory) = shared_memory {
+            error!(
+                "on delete: shared memory {} count {}",
+                shared_memory.key,
+                Arc::strong_count(&shared_memory)
+            );
+        }
+        ret
+        // mem_map.remove(&key).is_some()
     }
 }
 

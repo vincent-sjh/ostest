@@ -193,6 +193,16 @@ impl<T> UserPtr<T> {
         unsafe { Ok(&*ptr) }
     }
 
+    pub fn get_as_slice(&self, length: usize) -> LinuxResult<&[T]> {
+        let buf = self.get()?;
+        unsafe { Ok(slice::from_raw_parts(buf, length)) }
+    }
+
+    pub fn get_as_mut_slice(&self, length: usize) -> LinuxResult<&mut [T]> {
+        let buf = self.get()?;
+        unsafe { Ok(slice::from_raw_parts_mut(buf, length)) }
+    }
+
     pub fn is_null(&self) -> bool {
         self.0.is_null()
     }
@@ -293,6 +303,11 @@ impl<T> UserConstPtr<T> {
         let ptr = self.get()?;
         // SAFETY: We've validated the memory region.
         unsafe { Ok(&*ptr) }
+    }
+
+    pub fn get_as_slice(&self, length: usize) -> LinuxResult<&[T]> {
+        let buf = self.get()?;
+        unsafe { Ok(slice::from_raw_parts(buf, length)) }
     }
 
     pub fn is_null(&self) -> bool {

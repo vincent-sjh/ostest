@@ -1,3 +1,4 @@
+use core::default::Default;
 use alloc::string::String;
 use alloc::vec::Vec;
 use axalloc::global_allocator;
@@ -48,6 +49,11 @@ pub fn sys_execve_impl(path: String, args: Vec<String>, envs: Vec<String>) -> Li
         // set name and path
         current().set_name(&path);
         *process_data.command_line.lock() = args;
+
+        // reset some process attributes
+        // TODO: reset signal dispositions, mmap, shm, etc.
+        *process_data.signal.actions.lock() = Default::default();
+        process_data.shared_memory.lock().clear();
 
         // new user context
         UspaceContext::new(entry_point.as_usize(), user_stack_base, 0)
