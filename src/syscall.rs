@@ -257,6 +257,7 @@ fn handle_syscall(tf: &mut TrapFrame, syscall_num: usize) -> isize {
         Sysno::shmat => sys_shmat(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
         Sysno::shmctl => sys_shmctl(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
         Sysno::shmget => sys_shmget(tf.arg0() as _, tf.arg1() as _, tf.arg2() as _),
+        //Sysno::shmdt => sys_shmdt(tf.arg0() as _,),
         Sysno::sigaltstack => sys_sigaltstack(tf.arg0().into(), tf.arg1().into()),
         #[cfg(target_arch = "x86_64")]
         Sysno::stat => sys_stat(tf.arg0().into(), tf.arg1().into()),

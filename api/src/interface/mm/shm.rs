@@ -27,7 +27,6 @@ const IPC_PRIVATE: c_int = 0;
 pub fn sys_shmget(key: c_int, size: c_ulong, shm_flag: c_int) -> LinuxResult<isize> {
     let size = size as usize;
     let flags = ShmFlags::from_bits_truncate(shm_flag);
-    // TODO: permission check
     if key == IPC_PRIVATE {
         // IPC get private
         let key = SHARED_MEMORY_MANAGER.next_available_key();
@@ -57,7 +56,6 @@ pub fn sys_shmat(shm_id: c_int, shm_addr: c_ulong, shm_flag: c_int) -> LinuxResu
     let flags = ShmFlags::from_bits_truncate(shm_flag);
     let key = shm_id as u32;
     let shared_memory = SHARED_MEMORY_MANAGER.get(key).ok_or(LinuxError::EINVAL)?;
-    // TODO: check if deleted
     let size = shared_memory.page_count * PAGE_SIZE_4K;
     let process_data = current_process_data();
     let mut addr_space = process_data.addr_space.lock();
@@ -102,7 +100,6 @@ pub fn sys_shmat(shm_id: c_int, shm_addr: c_ulong, shm_flag: c_int) -> LinuxResu
     Ok(addr.as_usize() as _)
 }
 
-// TODO: implement shmdt
 #[syscall_trace]
 pub fn sys_shmctl(shm_id: c_int, op: c_int, buf: c_ulong) -> LinuxResult<isize> {
     let key = shm_id as u32;
@@ -117,18 +114,22 @@ pub fn sys_shmctl(shm_id: c_int, op: c_int, buf: c_ulong) -> LinuxResult<isize> 
             }
         }
         1 => {
-            // IPC_STAT
-            // let stat = unsafe { &mut *(buf as *mut libc::shmid_ds) };
-            // stat.shm_perm.key = shared_memory.key as _;
-            // stat.shm_perm.mode = 0o600;
-            // stat.shm_perm.cuid = 0;
-            // stat.shm_perm.uid = 0;
-            // stat.shm_perm.gid = 0;
-            // stat.shm_perm.cpid = 0;
-            // stat.shm_perm.lpid = 0;
-            // stat.shm_segsz = shared_memory.page_count * PAGE_SIZE_4K as _;
             Ok(0)
         }
         _ => Err(LinuxError::EINVAL),
     }
+}
+
+#[syscall_trace]
+pub fn sys_shmdt(shm_addr: c_ulong) -> LinuxResult<isize> {
+    let process_data = current_process_data();
+    let mut shared_memory = process_data.shared_memory.lock();
+    let virt_addr = VirtAddr::from(shm_addr as usize);
+    let shm_to_detach = shared_memory.get(&virt_addr).ok_or(LinuxError::EINVAL)?;
+    let mut shared_memory = process_data.shared_memory.lock();
+    shared_memory.remove(&virt_addr);
+    let mut addr_space = process_data.addr_space.lock();
+    let size = shm_to_detach.page_count * PAGE_SIZE_4K;
+    addr_space.unmap(virt_addr, size)?;
+    Ok(0)
 }
