@@ -25,7 +25,6 @@ const IPC_PRIVATE: c_int = 0;
 
 #[syscall_trace]
 pub fn sys_shmget(key: c_int, size: c_ulong, shm_flag: c_int) -> LinuxResult<isize> {
-    error!("shmget: key: {}, size: {}, shm_flag: {}", key, size, shm_flag);
     let size = size as usize;
     let flags = ShmFlags::from_bits_truncate(shm_flag);
     // TODO: permission check
@@ -106,7 +105,6 @@ pub fn sys_shmat(shm_id: c_int, shm_addr: c_ulong, shm_flag: c_int) -> LinuxResu
 // TODO: implement shmdt
 #[syscall_trace]
 pub fn sys_shmctl(shm_id: c_int, op: c_int, buf: c_ulong) -> LinuxResult<isize> {
-    error!("shmctl: shm_id: {}, op: {}, buf: {}", shm_id, op, buf);
     let key = shm_id as u32;
     let shared_memory = SHARED_MEMORY_MANAGER.get(key).ok_or(LinuxError::EINVAL)?;
     match op {

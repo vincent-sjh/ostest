@@ -1,5 +1,6 @@
 use alloc::collections::BTreeMap;
 use alloc::sync::Arc;
+use core::sync::atomic::{AtomicU32, Ordering};
 use axalloc::global_allocator;
 use axerrno::{LinuxError, LinuxResult};
 use axsync::Mutex;
@@ -18,7 +19,7 @@ impl Drop for SharedMemory {
     fn drop(&mut self) {
         let allocator = global_allocator();
         allocator.dealloc_pages(self.addr, self.page_count);
-        error!(
+        info!(
             "[SharedMemory] dealloc pages: addr: {:#x}, page_count: {}, key: {}",
             self.addr, self.page_count, self.key
         );
@@ -27,23 +28,20 @@ impl Drop for SharedMemory {
 
 pub struct SharedMemoryManager {
     mem_map: Mutex<BTreeMap<u32, Arc<SharedMemory>>>,
+    next_key: AtomicU32,
 }
 
 impl SharedMemoryManager {
     pub const fn new() -> Self {
         SharedMemoryManager {
             mem_map: Mutex::new(BTreeMap::new()),
+            next_key: AtomicU32::new(1),
         }
     }
 
     pub fn next_available_key(&self) -> u32 {
-        let mamp = self.mem_map.lock();
-        let keys = mamp.keys();
-        // error!("keys {:?}", keys);
-        let m = keys.max();
-        // error!("max key {:?}", m);
-        m.unwrap_or(&0) + 1
-        // self.mem_map.lock().keys().max().unwrap_or(&0) + 1
+        let next_key = self.next_key.fetch_add(1, Ordering::Relaxed);
+        self.mem_map.lock().keys().max().unwrap_or(&0) + next_key
     }
 
     pub fn get(&self, key: u32) -> Option<Arc<SharedMemory>> {
@@ -64,23 +62,11 @@ impl SharedMemoryManager {
         };
         let shared_memory = Arc::new(shared_memory);
         self.mem_map.lock().insert(key, shared_memory.clone());
-        // error!("create keys {:?}", self.mem_map.lock().keys());
         Ok(shared_memory)
     }
 
     pub fn delete(&self, key: u32) -> bool {
-        let mut mem_map = self.mem_map.lock();
-        let shared_memory = mem_map.remove(&key);
-        let ret = shared_memory.is_some();
-        if let Some(shared_memory) = shared_memory {
-            error!(
-                "on delete: shared memory {} count {}",
-                shared_memory.key,
-                Arc::strong_count(&shared_memory)
-            );
-        }
-        ret
-        // mem_map.remove(&key).is_some()
+        self.mem_map.lock().remove(&key).is_some()
     }
 }
 
