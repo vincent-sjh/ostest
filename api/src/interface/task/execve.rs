@@ -6,6 +6,7 @@ use alloc::vec;
 use alloc::vec::Vec;
 use axerrno::LinuxResult;
 use core::ffi::c_char;
+use axhal::arch::TrapFrame;
 use syscall_trace::syscall_trace;
 
 fn get_string_array(array: UserConstPtr<usize>) -> LinuxResult<Vec<String>> {
@@ -21,6 +22,7 @@ fn get_string_array(array: UserConstPtr<usize>) -> LinuxResult<Vec<String>> {
 
 #[syscall_trace]
 pub fn sys_execve(
+    tf: &mut TrapFrame,
     path: UserInPtr<c_char>,
     argv: UserInPtr<usize>,
     envp: UserInPtr<usize>,
@@ -35,11 +37,11 @@ pub fn sys_execve(
         info!("[execve] shebang detected, calling sh...");
         let mut new_args = vec![BUSYBOX.to_string(), "sh".to_string()];
         new_args.extend(args);
-        sys_execve_impl(BUSYBOX.to_string(), new_args, envs)
+        sys_execve_impl(tf, BUSYBOX.to_string(), new_args, envs)
     } else {
         let abs_path = resolve_path(path)?;
         let mut new_args = vec![abs_path.to_string()];
         new_args.extend(args[1..].iter().cloned());
-        sys_execve_impl(abs_path.to_string(), new_args, envs)
+        sys_execve_impl(tf, abs_path.to_string(), new_args, envs)
     }
 }

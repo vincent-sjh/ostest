@@ -19,6 +19,9 @@ pub fn syscall_trace(_attr: TokenStream, item: TokenStream) -> TokenStream {
                         syn::Pat::Ident(pat_ident) => &pat_ident.ident,
                         _ => return None, // 跳过复杂模式（如元组解构）
                     };
+                    if arg_name == "tf" {
+                        return None; // 跳过 `tf` 参数 (trap frame)
+                    }
                     // 提取参数类型（例如 `i32`）
                     let arg_type = &pat_type.ty;
                     Some((arg_name, arg_type))
