@@ -1,9 +1,9 @@
 name: Autograding Tests
-on: 
+on:
   push:
 
-    # paths-ignore:
-    #   - '.github/**' 
+  # paths-ignore:
+  #   - '.github/**'
 env:
   IMG_URL_riscv64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.2/sdcard-riscv64.img.gz # 镜像url
   IMG_URL_loongarch64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.2/sdcard-loongarch64.img.gz # 镜像url
@@ -11,8 +11,8 @@ env:
   IMG_URL_x86_64: https://github.com/Azure-stars/testsuits-for-oskernel/releases/download/v0.2/sdcard-x86_64.img.gz # 镜像url
   TIMEOUT: 1000 # 超时时间
   SCRIPT_REPO: https://github.com/oscontent25/EvaluationScript # 脚本仓库
-  
-jobs:  
+
+jobs:
   run-autograding-tests:
     runs-on: ubuntu-latest
     env:
@@ -54,27 +54,21 @@ jobs:
           echo 'start---aarch64' > aarch64_output.txt
           touch x86_64_output.txt
           echo 'start---x86_64' > x86_64_output.txt
-          make oscomp_run ARCH=riscv64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs | tee -a riscv64_output.txt || true
-          echo 'end---riscv64' | tee -a riscv64_output.txt
-          make clean
-          rm *.img
-          make oscomp_run ARCH=loongarch64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs | tee -a loongarch64_output.txt || true
-          echo 'end---loongarch64' | tee -a loongarch64_output.txt
-          make clean
-          rm *.img
-          make oscomp_run ARCH=aarch64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs | tee -a aarch64_output.txt || true
-          echo 'end---aarch64' | tee -a aarch64_output.txt
-          make clean
-          rm *.img
-          make oscomp_run ARCH=x86_64 BLK=y NET=y FEATURES=fp_simd,lwext4_rs ACCEL=n | tee -a x86_64_output.txt || true
-          echo 'end---x86_64' | tee -a x86_64_output.txt
-          rm *.img
+          make oscomp_run ARCH=loongarch64 BLK=y NET=y ACCEL=n FEATURES=fp_simd,lwext4_rs | tee output_single.txt || true
+          cat output_single.txt >> riscv64_output.txt
+          echo 'end---riscv64' >> riscv64_output.txt
+          cat output_single.txt >> loongarch64_output.txt
+          echo 'end---loongarch64' >> loongarch64_output.txt
+          cat output_single.txt >> aarch64_output.txt
+          echo 'end---aarch64' >> aarch64_output.txt
+          cat output_single.txt >> x86_64_output.txt || true
+          echo 'end---x86_64' >> x86_64_output.txt
           touch output.txt
           cat riscv64_output.txt >> output.txt
           cat loongarch64_output.txt >> output.txt
           cat aarch64_output.txt >> output.txt
           cat x86_64_output.txt >> output.txt
-          
+
       - name: Download EvaluationScript
         run: |
             git clone https://github.com/eternalcomet/EvaluationScript/ .github/classroom
@@ -139,7 +133,7 @@ jobs:
         with:
           outputfile: output.txt
           scriptPath: .github/classroom/musl-iozone
-          
+
       - name: Autograding Reporter
         uses: oscontent25/autograding-grading-reporter@v1
         env:
@@ -157,4 +151,4 @@ jobs:
           runners: glibcbasic-test,glibclibctest-test,glibclua-test,glibcbusybox-test,glibciozone-test,muslbasic-test,musllibctest-test,musllua-test,muslbusybox-test,musliozone-test
           token: ${{ secrets.GITHUB_TOKEN }}
 
-        
+
